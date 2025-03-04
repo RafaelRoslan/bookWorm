@@ -1,15 +1,17 @@
 <section class="store-navbar__container">
     <section class="store-logo">
-        <img src="../../../assets/svg/PlayStation Store.svg" alt="logo Playstation Store">
+        <img src="../../../assets/svg/PlayStation Store.svg" alt="logo BookWorm">
     </section>
     <nav class="store__navbar">
         <ul class="store__nav-list">
-            <li class="store__nav-item">Novidades</li>
-            <li class="store__nav-item">Coleções</li>
-            <li class="store__nav-item">Ofertas</li>
-            <li class="store__nav-item">PS5</li>
-            <li class="store__nav-item">Assinaturas</li>
-            <li class="store__nav-item">Navegar</li>
+            <li class="store__nav-item"><a [routerLink]="['']" >Home</a></li>
+            <li class="store__nav-item"><a [routerLink]="['/article']" >Artigos</a></li>
+            <li class="store__nav-item"><a [routerLink]="['/bookcase']" >Estante</a></li>
+            <li class="store__nav-item"><a [routerLink]="['/bazar']" >Bazar</a></li>
+            <li class="store__nav-item"><a [routerLink]="['/forum']" >Forum</a></li>
+            <li class="store__nav-item"><a [routerLink]="['/subscription']" >Assinatura</a></li>
+            <li class="store__nav-item"><a [routerLink]="['/login']" >Login</a></li>
+            <li class="store__nav-item"><a [routerLink]="['/signup']">Cadastro</a></li>
         </ul>
     </nav>
 </section>
