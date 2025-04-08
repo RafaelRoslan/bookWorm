@@ -1,0 +1,12 @@
+.footer-container{
+    margin-top: 2rem;
+    background-color: var(--primary-color);
+    min-height: 20rem;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-content{
+    padding: 2rem;
+
+}

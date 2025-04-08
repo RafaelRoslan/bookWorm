@@ -1,0 +1,11 @@
+<div class="banner-container">
+    <ng-container *ngIf="imageUrl; else placeholder">
+      <img [src]="imageUrl" alt="Banner" class="banner-image">
+    </ng-container>
+  
+    <ng-template #placeholder>
+      <div class="banner-placeholder">
+        <p class="placeholder-text">IMAGEM BANNER</p>
+      </div>
+    </ng-template>
+  </div>

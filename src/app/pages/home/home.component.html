@@ -1,8 +1,50 @@
 <main class="main">
-    <section>Area banners</section>
-    <article>
-        <section>Assunto do momento</section>
-        <section>Em Alta</section>
+  <section>
+    <app-banner></app-banner>
+  </section>
+  <article>
+    <section class="destaques-container">
+      <h2 class="titulo-destaques">DESTAQUES</h2>
 
-    </article>
+      <div class="carousel-container">
+        <button class="nav-btn left" (click)="scrollLeft()">&lt;</button>
+
+        <div class="carousel-wrapper" #carousel>
+          <ng-container *ngFor="let livro of livros.slice(0, 8); let i = index">
+            <ng-container *ngIf="i < 7; else vejaMais">
+              <app-card-book
+                [imageUrl]="livro.imageUrl"
+                [titulo]="livro.titulo"
+                [autor]="livro.autor"
+                [ano]="livro.ano"
+                [status]="livro.status"
+              >
+              </app-card-book>
+            </ng-container>
+          </ng-container>
+
+          <ng-template #vejaMais>
+            <div class="veja-mais-card" (click)="irParaPaginaCompleta()">
+              <p>Veja Mais</p>
+            </div>
+          </ng-template>
+        </div>
+
+        <button class="nav-btn right" (click)="scrollRight()">&gt;</button>
+      </div>
+    </section>
+
+    <section class="artigos">
+      <h3>Assunto do momento</h3>
+      <div class="container-artigos">
+        <app-card-article-mini
+          *ngFor="let artigo of artigos"
+          [imagemUrl]="artigo.imagemUrl"
+          [titulo]="artigo.titulo"
+          [resumo]="artigo.resumo"
+          [idArtigo]="artigo.id"
+        ></app-card-article-mini>
+      </div>
+    </section>
+  </article>
 </main>

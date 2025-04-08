@@ -1,4 +1,144 @@
-main{
+main {
     display: flex;
     flex-direction: column;
 }
+
+/* destaques */
+
+.destaques-container{
+    padding-top: 20px;
+}
+
+.titulo-destaques {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-wrapper {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 10px 40px;
+    max-width: 100%;
+    scrollbar-width: none;
+}
+
+.carousel-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.card-livro,
+.veja-mais-card {
+    width: 180px;
+    min-width: 180px !important;
+    height: 320px;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    padding: 10px;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.imagem-livro {
+    height: 150px;
+    background-color: #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.veja-mais-card {
+    background: #f0f0f0;
+    border: 2px dashed #aaa;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.nav-btn.left {
+    left: 0;
+}
+
+.nav-btn.right {
+    right: 0;
+}
+
+.artigos{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.container-artigos {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Responsividade 
+@media (max-width: 1200px) {
+
+    app-card-book,
+    .veja-mais-card {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+
+@media (max-width: 992px) {
+
+    app-card-book,
+    .veja-mais-card {
+        flex: 0 0 33.33%;
+        max-width: 33.33%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    app-card-book,
+    .veja-mais-card {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 480px) {
+
+    app-card-book,
+    .veja-mais-card {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}   */

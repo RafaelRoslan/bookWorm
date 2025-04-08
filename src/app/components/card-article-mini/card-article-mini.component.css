@@ -1,0 +1,44 @@
+.card-article-mini {
+    width: 100%;
+    max-width: 300px;
+    background-color: #e0e0e0;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card-article-mini:hover {
+    transform: translateY(-4px);
+}
+
+.img-container {
+    width: 100%;
+    height: 150px;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-article-mini h3 {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+.card-article-mini p {
+    font-size: 0.9rem;
+}
+
+.leia-mais {
+    color: blue;
+    font-weight: 500;
+}
