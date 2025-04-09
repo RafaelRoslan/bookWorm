@@ -1,0 +1,23 @@
+<div class="comment">
+  <div class="avatar-container">
+    <ng-container *ngIf="avatarUrl; else placeholder">
+      <img [src]="avatarUrl" alt="Avatar do usuário" class="avatar-image" />
+    </ng-container>
+
+    <ng-template #placeholder>
+      <div class="avatar-placeholder">
+        <p class="placeholder-text">AVATAR</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="content">
+    <div class="meta">
+      <strong>{{ author }}</strong> — <span class="date">{{ date }}</span>
+    </div>
+    <div class="quote" *ngIf="quote">"{{ quote }}"</div>
+    <div class="text">
+      {{ content }}
+    </div>
+  </div>
+</div>

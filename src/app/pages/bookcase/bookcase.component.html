@@ -1,1 +1,19 @@
-<p>bookcase works!</p>
+<main>
+  <div class="bookshelf-container">
+    <h2>Sua Estante</h2>
+
+    <div class="shelf-grid">
+      <app-card-collection
+        *ngFor="let collection of collections"
+        [name]="collection.name"
+        [image]="collection.image"
+      ></app-card-collection>
+
+      <!-- Card de adicionar nova coleção -->
+      <div class="add-card">
+        <div class="plus-icon">+</div>
+        <div class="collection-title">Nova Coleção</div>
+      </div>
+    </div>
+  </div>
+</main>

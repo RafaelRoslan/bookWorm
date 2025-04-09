@@ -1,0 +1,89 @@
+.bookshelf-container {
+  padding: 2rem;
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+h2 {
+  text-align: center;
+  color: var(--text-color);
+  margin-bottom: 2rem;
+}
+
+.shelf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem 1.5rem; /* row-gap col-gap */
+  align-items: start;
+  position: relative;
+}
+
+.collection-card {
+  width: 220px;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, width 0.3s ease;
+  cursor: pointer;
+}
+
+.collection-card:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.collection-image {
+  width: 100%;
+  height: auto;
+}
+
+.collection-title {
+  padding: 12px;
+  font-weight: bold;
+  color: var(--text-color);
+  text-align: center;
+}
+
+/* Card de adicionar - atualizado para igualar aos outros cards */
+.add-card {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  height: 170px;
+  background-color: var(--highlight-color);
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.add-card:hover {
+  transform: scale(1.03);
+  border-color: var(--primary-color);
+}
+
+/* Parte de cima (área onde ficaria a imagem) */
+.plus-icon {
+  height: 160px;
+  width: 100%;
+  font-size: 3rem;
+  color: var(--muted-text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Parte inferior, simulando o rodapé do card */
+.collection-title {
+  height: 60px;
+  font-weight: 600;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+}

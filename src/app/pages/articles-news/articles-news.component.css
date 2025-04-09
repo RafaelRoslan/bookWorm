@@ -1,0 +1,60 @@
+.artigos-main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.title h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.main-content {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.aside-content {
+    flex: 1;
+    min-width: 260px;
+    padding-left: 20px;
+    border-left: 2px solid #ddd;
+}
+
+.aside-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+}
+
+aside {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Responsivo */
+@media (max-width: 960px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .main-content,
+    .aside-content {
+        width: 100%;
+    }
+}

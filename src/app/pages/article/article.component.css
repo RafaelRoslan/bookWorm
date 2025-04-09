@@ -1,0 +1,87 @@
+.article-page {
+    background-color: var(--background-color);
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.article-container {
+    max-width: 900px;
+    width: 100%;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.article-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.article-title {
+    font-size: 2rem;
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+.article-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    margin-top: 0.5rem;
+}
+
+/* Banner */
+.article-banner {
+    margin-bottom: 2rem;
+}
+
+/* Texto do artigo */
+.article-body p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+}
+
+/* Autor */
+.article-author {
+    margin-top: 3rem;
+    border-top: 1px solid #ddd;
+    padding-top: 2rem;
+}
+
+.article-author h3 {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+/* Comentários */
+.article-comments {
+    margin-top: 3rem;
+    border-top: 1px solid #ddd;
+    padding-top: 2rem;
+}
+
+.article-comments h3 {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .article-container {
+        padding: 1rem;
+    }
+
+    .article-title {
+        font-size: 1.5rem;
+    }
+
+    .article-body p {
+        font-size: 1rem;
+    }
+}

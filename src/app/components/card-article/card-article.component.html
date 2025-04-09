@@ -1,25 +1,25 @@
-  <div class="blog-card">
-    <div class="meta">
-      <div class="photo" style="background-image: url(https://storage.googleapis.com/chydlx/codepen/blog-cards/image-1.jpg)"></div>
-      <ul class="details">
-        <li class="author"><a href="#">John Doe</a></li>
-        <li class="date">Aug. 24, 2015</li>
-        <li class="tags">
-          <ul>
-            <li><a href="#">Learn</a></li>
-            <li><a href="#">Code</a></li>
-            <li><a href="#">HTML</a></li>
-            <li><a href="#">CSS</a></li>
-          </ul>
-        </li>
-      </ul>
+<div class="article-card">
+  <a [routerLink]="['/article', id]">
+    <div class="article-image">
+      <ng-container *ngIf="imagemUrl; else placeholder">
+        <img [src]="imagemUrl" alt="card" class="card-image">
+      </ng-container>
+    
+      <ng-template #placeholder>
+        <div class="card-placeholder">
+          <p class="placeholder-text">IMAGEM ARTIGO</p>
+        </div>
+      </ng-template>
     </div>
-    <div class="description">
-      <h1>Learning to Code</h1>
-      <h2>Opening a door to the future</h2>
-      <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad eum dolorum architecto obcaecati enim dicta praesentium, quam nobis! Neque ad aliquam facilis numquam. Veritatis, sit.</p>
-      <p class="read-more">
-        <a href="#">Read More</a>
-      </p>
+  
+    <div class="article-content">
+      <h3 class="article-title">{{ titulo }}</h3>
+      <p class="article-resumo">{{ resumo }}</p>
+      <p class="article-info">Há {{ tempo }} - Por {{ autor }}</p>
+  
+      <div class="article-tags">
+        <span *ngFor="let tag of tags">#{{ tag }}</span>
+      </div>
     </div>
-  </div>
+  </a>
+</div>

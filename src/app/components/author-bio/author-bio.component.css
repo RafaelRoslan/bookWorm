@@ -1,0 +1,41 @@
+.author-bio {
+    display: flex;
+    gap: 1rem;
+    background-color: var(--background-color);
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 8px;
+    align-items: center;
+  }
+  
+  .author-image img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .placeholder {
+    width: 80px;
+    height: 80px;
+    background-color: #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+  
+  .author-info h4 {
+    margin: 0;
+    color: var(--secondary-color);
+  }
+  
+  .author-info p {
+    margin: 0.25rem 0 0;
+    color: var(--text-color);
+    font-size: 0.9rem;
+  }
+  

@@ -1,0 +1,18 @@
+<div class="author-bio">
+    <div class="author-image">
+      <ng-container *ngIf="fotoUrl; else placeholder">
+        <img [src]="fotoUrl" alt="Foto do autor">
+      </ng-container>
+      <ng-template #placeholder>
+        <div class="placeholder">
+          <p>FOTO</p>
+        </div>
+      </ng-template>
+    </div>
+  
+    <div class="author-info">
+      <h4>{{ nome }}</h4>
+      <p>{{ bio }}</p>
+    </div>
+  </div>
+  

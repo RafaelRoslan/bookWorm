@@ -3,15 +3,14 @@ import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-card-article',
+  selector: 'app-aside-card',
   imports: [NgFor, NgIf, RouterLink],
-  templateUrl: './card-article.component.html',
-  styleUrl: './card-article.component.css'
+  templateUrl: './aside-card.component.html',
+  styleUrl: './aside-card.component.css'
 })
-export class CardArticleComponent {
+export class AsideCardComponent {
   @Input() imagemUrl!: string;
   @Input() titulo!: string;
-  @Input() resumo!: string;
   @Input() autor!: string;
   @Input() tempo!: string;
   @Input() tags!: string[];

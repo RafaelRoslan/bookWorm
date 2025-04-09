@@ -1,0 +1,23 @@
+<div class="card-mini" >
+  <a class="a-mini" [routerLink]="['/article', id]">
+    <div class="mini-image">
+      <ng-container *ngIf="imagemUrl; else placeholder">
+        <img [src]="imagemUrl" alt="card" class="card-image" />
+      </ng-container>
+  
+      <ng-template #placeholder>
+        <div class="card-placeholder">
+          <p class="placeholder-text">IMAGEM ARTIGO</p>
+        </div>
+      </ng-template>
+    </div>
+  
+    <div class="mini-content">
+      <h3 class="mini-title">{{ titulo }}</h3>
+      <p class="mini-meta">Há {{ tempo }} — Por {{ autor }}</p>
+      <div class="mini-tags">
+        <span *ngFor="let tag of tags">#{{ tag }}</span>
+      </div>
+    </div>
+  </a>
+</div>

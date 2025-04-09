@@ -1,6 +1,45 @@
-<main>
-    <p>article works!</p>
-    <app-card-article></app-card-article>
-    <app-card-article></app-card-article>
-    <app-card-article></app-card-article>
+<main class="article-page">
+  <article class="article-container">
+
+    <!-- Título e Metadados -->
+    <header class="article-header">
+      <h1 class="article-title">{{ artigo.titulo }}</h1>
+      <p class="article-subtitle">
+        Publicado em {{ artigo.dataPublicacao }} por {{ artigo.autor }}
+      </p>
+    </header>
+
+    <!-- Banner -->
+    <div class="article-banner">
+      <app-banner [imageUrl]="artigo.imagemBanner"></app-banner>
+    </div>
+
+    <!-- Conteúdo -->
+    <section class="article-body">
+      <p *ngFor="let paragrafo of artigo.conteudo">{{ paragrafo }}</p>
+    </section>
+
+    <!-- Autor -->
+    <section class="article-author">
+      <h3>Sobre o autor</h3>
+      <app-author-bio
+        [nome]="artigo.autorBio.nome"
+        [bio]="artigo.autorBio.bio"
+        [fotoUrl]="artigo.autorBio.fotoUrl"
+      ></app-author-bio>
+    </section>
+
+    <!-- Comentários -->
+    <section class="article-comments">
+      <h3>Comentários</h3>
+      <app-comment
+        *ngFor="let comentario of comentarios"
+        [author]="comentario.usuario"
+        [content]="comentario.texto"
+        [date]="comentario.data"
+        [avatarUrl]="comentario.imagemUrl"
+      ></app-comment>
+    </section>
+
+  </article>
 </main>
