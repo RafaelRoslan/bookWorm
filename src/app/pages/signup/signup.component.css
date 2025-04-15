@@ -1,0 +1,103 @@
+.signup-form {
+    width: 100%;
+    max-width: 900px;
+    background-color: var(--background-color);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.signup-form h2 {
+    color: var(--primary-color);
+    margin-bottom: 24px;
+    font-size: 28px;
+    text-align: center;
+}
+
+.form-section {
+    background-color: var(--highlight-color);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.form-section p {
+    font-weight: bold;
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: var(--secondary-color);
+}
+
+.form-section label {
+    display: block;
+    font-weight: 500;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    color: var(--text-color);
+}
+
+.form-section input[type="text"],
+.form-section input[type="email"],
+.form-section input[type="password"],
+.form-section input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 16px;
+    color: var(--text-color);
+    background-color: #fff;
+}
+
+.tipo-cadastro {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+input[type="radio"] {
+    margin-left: 10px;
+}
+
+input[type="submit"] {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    margin-top: 16px;
+}
+
+input[type="submit"]:hover {
+    background-color: #21867a;
+}
+
+.form-section.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.form-section .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="checkbox"] {
+    margin-top: 12px;
+    margin-right: 8px;
+}
+
+.signup-form div:last-child {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+}

@@ -34,6 +34,30 @@ export class ArticlesNewsComponent {
       autor: 'Setor de Capacitação',
       tempo: '1d',
       tags: ['capacitação', 'tecnologia']
+    },
+    {
+      titulo: 'Tendências em capacitação para servidores',
+      resumo: 'Novas tecnologias e metodologias estão mudando o jeito de aprender no serviço público...',
+      imagem: '',
+      autor: 'Setor de Capacitação',
+      tempo: '1d',
+      tags: ['capacitação', 'tecnologia']
+    },
+    {
+      titulo: 'Tendências em capacitação para servidores',
+      resumo: 'Novas tecnologias e metodologias estão mudando o jeito de aprender no serviço público...',
+      imagem: '',
+      autor: 'Setor de Capacitação',
+      tempo: '1d',
+      tags: ['capacitação', 'tecnologia']
+    },
+    {
+      titulo: 'Tendências em capacitação para servidores',
+      resumo: 'Novas tecnologias e metodologias estão mudando o jeito de aprender no serviço público...',
+      imagem: '',
+      autor: 'Setor de Capacitação',
+      tempo: '1d',
+      tags: ['capacitação', 'tecnologia']
     }
   ];
 

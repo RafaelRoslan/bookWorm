@@ -1,0 +1,46 @@
+<main class="main">
+  <article class="collection-article">
+    <div class="collection-header">
+      <div class="collection-info">
+        <ng-container *ngIf="!editMode; else editTitle">
+          <h1>{{ collection.name }}</h1>
+        </ng-container>
+        <ng-template #editTitle>
+          <input
+            [(ngModel)]="collection.name"
+            type="text"
+            class="collection-title-input"
+            placeholder="Nome da coleção"
+          />
+        </ng-template>
+
+        <div class="collection-actions">
+          <button class="add-book-btn">+ Adicionar Livro</button>
+          <button class="edit-btn" (click)="toggleEditMode()">
+            {{ editMode ? 'Concluir Edição' : 'Editar Coleção' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-grid">
+      <div *ngFor="let book of books; let i = index" class="book-wrapper">
+        <app-card-book
+          [titulo]="book.titulo"
+          [ano]="book.ano"
+          [autor]="book.autor"
+          [status]="book.status"
+          [imageUrl]="book.imageUrl"
+        ></app-card-book>
+
+        <button
+          *ngIf="editMode"
+          class="remove-book-btn"
+          (click)="removeBook(i)"
+        >
+          Remover
+        </button>
+      </div>
+    </div>
+  </article>
+</main>

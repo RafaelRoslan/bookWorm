@@ -3,6 +3,7 @@ import { ArticleComponent } from './pages/article/article.component';
 import { ArticlesNewsComponent } from './pages/articles-news/articles-news.component';
 import { BazarComponent } from './pages/bazar/bazar.component';
 import { BookcaseComponent } from './pages/bookcase/bookcase.component';
+import { CollectionComponent } from './pages/collection/collection.component';
 import { ForumComponent } from './pages/forum/forum.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -16,6 +17,7 @@ export const routes: Routes = [
     { path: 'article/:id', component: ArticleComponent },
     { path: 'bookcase', component: BookcaseComponent },
     { path: 'bazar', component: BazarComponent },
+    { path: 'collection/:id', component: CollectionComponent},
     { path: 'forum', component: ForumComponent },
     { path: 'subscription', component: SubscriptionComponent },
     { path: 'login', component: LoginComponent },
