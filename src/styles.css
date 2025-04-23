@@ -17,6 +17,4 @@ main {
     max-width: 72rem;
     margin: 0 auto;
     background-color: var(--background-color);
-    display: flex;
-    justify-content: center;
 }

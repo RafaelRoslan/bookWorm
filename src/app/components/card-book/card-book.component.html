@@ -1,17 +1,23 @@
 <div class="card-book">
-  <div class="book-cover-wrapper">
-    <img *ngIf="hasImage; else placeholder" [src]="imageUrl" alt="Capa do livro" />
-    <ng-template #placeholder>
-      <div class="empty-cover">
-        <p class="placeholder-text">IMAGEM LIVRO</p>
-      </div>
-    </ng-template>
-  </div>
+  <a [routerLink]="['/book', id]" class="collection-link">
+    <div class="book-cover-wrapper">
+      <img
+        *ngIf="hasImage; else placeholder"
+        [src]="imageUrl"
+        alt="Capa do livro"
+      />
+      <ng-template #placeholder>
+        <div class="empty-cover">
+          <p class="placeholder-text">IMAGEM LIVRO</p>
+        </div>
+      </ng-template>
+    </div>
 
-  <div class="book-info">
-    <h3 class="card-title">{{ titulo }}</h3>
-    <p><strong>Ano:</strong> {{ ano }}</p>
-    <p><strong>Autor:</strong> {{ autor }}</p>
-    <p><strong>Status:</strong> {{ status }}</p>
-  </div>
+    <div class="book-info">
+      <h3 class="card-title">{{ titulo }}</h3>
+      <p><strong>Ano:</strong> {{ ano }}</p>
+      <p><strong>Autor:</strong> {{ autor }}</p>
+      <p><strong>Status:</strong> {{ status }}</p>
+    </div>
+  </a>
 </div>

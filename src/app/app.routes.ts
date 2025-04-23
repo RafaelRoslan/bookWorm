@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ArticleComponent } from './pages/article/article.component';
 import { ArticlesNewsComponent } from './pages/articles-news/articles-news.component';
 import { BazarComponent } from './pages/bazar/bazar.component';
+import { BookPageComponent } from './pages/book-page/book-page.component';
 import { BookcaseComponent } from './pages/bookcase/bookcase.component';
 import { CollectionComponent } from './pages/collection/collection.component';
 import { ForumComponent } from './pages/forum/forum.component';
@@ -18,6 +19,7 @@ export const routes: Routes = [
     { path: 'bookcase', component: BookcaseComponent },
     { path: 'bazar', component: BazarComponent },
     { path: 'collection/:id', component: CollectionComponent},
+    { path: 'book/:id', component: BookPageComponent},
     { path: 'forum', component: ForumComponent },
     { path: 'subscription', component: SubscriptionComponent },
     { path: 'login', component: LoginComponent },

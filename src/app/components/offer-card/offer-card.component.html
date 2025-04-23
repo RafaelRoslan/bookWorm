@@ -1,0 +1,12 @@
+<div class="offer-card" [class.highlight]="oferta.menorPreco">
+    <div class="offer-info">
+      <p><strong>Vendido por:</strong> {{ oferta.vendedor }}</p>
+      <p>
+        <strong>Estado:</strong>
+        <span class="book-condition">{{ oferta.estado }}</span>
+      </p>
+      <p><strong>Preço:</strong> R$ {{ oferta.preco}}</p>
+      <p *ngIf="oferta.menorPreco" class="lowest-price-badge">Menor Preço!</p>
+    </div>
+    <button class="buy-button">Comprar</button>
+  </div>

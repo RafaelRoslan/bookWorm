@@ -1,0 +1,54 @@
+.book-page {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 16px;
+}
+
+.book-main {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.book-cover img {
+    max-width: 250px;
+    border-radius: 8px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.book-info {
+    flex: 1;
+}
+
+.book-synopsis {
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+.book-marketplace h3 {
+    margin-bottom: 16px;
+}
+
+.offer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.offer-card {
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.offer-card button {
+    background-color: #5a3ec8;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}

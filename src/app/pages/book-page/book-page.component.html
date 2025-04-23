@@ -1,0 +1,34 @@
+<main>
+  <div class="book-page">
+    <!-- Seção principal com capa e infos -->
+    <div class="book-main">
+      <div class="book-cover">
+        <img src="URL_DA_CAPA_DO_LIVRO" alt="Capa do Livro" />
+      </div>
+      <div class="book-info">
+        <h2>Título do Livro</h2>
+        <p><strong>Autor:</strong> Nome do Autor</p>
+        <p><strong>Editora:</strong> Nome da Editora</p>
+        <p><strong>Ano:</strong> 2024</p>
+        <p><strong>ISBN:</strong> 1234567890</p>
+        <div class="book-synopsis">
+          <strong>Sinopse:</strong>
+          <p>
+            Descrição do livro ou sinopse curta para o usuário entender o
+            conteúdo.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de ofertas (bazar) -->
+    <div class="book-marketplace">
+      <h3>Ofertas de outros usuários</h3>
+      <ul class="offer-list">
+        <li *ngFor="let oferta of ofertas">
+          <app-offer-card [oferta]="oferta"></app-offer-card>
+        </li>
+      </ul>
+    </div>
+  </div>
+</main>
