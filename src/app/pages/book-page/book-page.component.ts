@@ -1,15 +1,16 @@
-import { NgFor } from '@angular/common';
-import { Component } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { Component, Input } from '@angular/core';
 import { OfferCardComponent } from '../../components/offer-card/offer-card.component';
 
 @Component({
   selector: 'app-book-page',
-  imports: [OfferCardComponent, NgFor],
+  imports: [OfferCardComponent, NgFor, NgIf],
   templateUrl: './book-page.component.html',
   styleUrl: './book-page.component.css'
 })
 export class BookPageComponent {
 
+  @Input() imageUrl!: string;
   ofertas = [
     {
       vendedor: 'João Livros',
@@ -46,6 +47,10 @@ export class BookPageComponent {
       ...o,
       menorPreco: o.preco === menorPreco
     }));
+  }
+
+  get hasImage(): boolean {
+    return !!this.imageUrl;
   }
 
   

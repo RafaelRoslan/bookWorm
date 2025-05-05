@@ -2,8 +2,17 @@
   <div class="book-page">
     <!-- Seção principal com capa e infos -->
     <div class="book-main">
-      <div class="book-cover">
-        <img src="URL_DA_CAPA_DO_LIVRO" alt="Capa do Livro" />
+      <div class="book-cover-wrapper">
+        <img
+          *ngIf="hasImage; else placeholder"
+          [src]="imageUrl"
+          alt="Capa do livro"
+        />
+        <ng-template #placeholder>
+          <div class="empty-cover">
+            <p class="placeholder-text">IMAGEM LIVRO</p>
+          </div>
+        </ng-template>
       </div>
       <div class="book-info">
         <h2>Título do Livro</h2>
