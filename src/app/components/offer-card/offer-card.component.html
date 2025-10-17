@@ -1,12 +1,36 @@
-<div class="offer-card" [class.highlight]="oferta.menorPreco">
-    <div class="offer-info">
-      <p><strong>Vendido por:</strong> {{ oferta.vendedor }}</p>
-      <p>
-        <strong>Estado:</strong>
-        <span class="book-condition">{{ oferta.estado }}</span>
-      </p>
-      <p><strong>Preço:</strong> R$ {{ oferta.preco}}</p>
-      <p *ngIf="oferta.menorPreco" class="lowest-price-badge">Menor Preço!</p>
-    </div>
-    <button class="buy-button">Comprar</button>
+<!-- MODO LISTA -->
+<div *ngIf="variant === 'list'" class="offer-card offer-card--list" [class.highlight]="oferta.menorPreco" (click)="handleOpen()">
+  <div class="offer-info">
+    <p><strong>Vendido por:</strong> {{ seller.nome }}</p>
+    <p><strong>Estado:</strong> <span class="book-condition">{{ oferta.estado }}</span></p>
+    <p><strong>Preço:</strong> {{ oferta.preco | currency:'BRL':'symbol-narrow':'1.2-2' }}</p>
+    <p *ngIf="seller.reputacao"><strong>Reputação:</strong> {{ seller.reputacao | number:'1.1-1' }}</p>
+    <p *ngIf="oferta.menorPreco" class="lowest-price-badge">Menor Preço!</p>
   </div>
+  <button class="buy-button">Comprar</button>
+</div>
+
+<!-- MODO GRADE / VITRINE -->
+<div *ngIf="variant === 'grid'" class="offer-card offer-card--grid" [class.highlight]="oferta.menorPreco" (click)="handleOpen()">
+  <div class="thumb">
+    <ng-container *ngIf="oferta.capa; else thumbPlaceholder">
+      <img [src]="oferta.capa" [alt]="oferta.titulo || 'Capa do livro'">
+    </ng-container>
+    <ng-template #thumbPlaceholder>
+      <div class="thumb-placeholder">CAPA</div>
+    </ng-template>
+    <span *ngIf="oferta.menorPreco" class="badge">Menor Preço</span>
+  </div>
+
+  <div class="grid-info">
+    <h4 class="title" [title]="oferta.titulo">{{ oferta.titulo }}</h4>
+    <p class="author" *ngIf="oferta.autor">{{ oferta.autor }}</p>
+
+    <div class="meta-row">
+      <span class="chip" [ngClass]="conditionClass(oferta.estado)" [title]="oferta.estado">{{ oferta.estado }}</span>
+      <span class="price">{{ oferta.preco | currency:'BRL':'symbol-narrow':'1.2-2' }}</span>
+    </div>
+
+    <p class="seller">por {{ seller.nome }}</p>
+  </div>
+</div>

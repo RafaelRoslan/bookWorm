@@ -1,1 +1,24 @@
-<p>bazar works!</p>
+<main class="bazar-container">
+  <header class="bazar-header">
+    <h1>Bazar</h1>
+
+    <div class="toolbar">
+      <label for="sort">Ordenar por</label>
+      <select id="sort" [value]="sortBy" (change)="sortByChanged($event)">
+        <option *ngFor="let opt of sortOptions" [value]="opt.value">{{ opt.label }}</option>
+      </select>
+    </div>
+  </header>
+
+  <section class="bazar-grid">
+    <ul class="grid-list">
+      <li *ngFor="let oferta of ofertasVisiveis" class="grid-item">
+        <app-offer-card [oferta]="oferta" variant="grid" (open)="onOpen(oferta)"></app-offer-card>
+      </li>
+    </ul>
+
+    <div class="load-more" *ngIf="visibleCount < ofertas.length">
+      <button (click)="loadMore()">Carregar mais</button>
+    </div>
+  </section>
+</main>
