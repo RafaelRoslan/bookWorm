@@ -1,0 +1,37 @@
+<main class="cart-container">
+  <header class="cart-header">
+    <h1>Seu Carrinho</h1>
+    <button class="clear-btn" (click)="clear()">Esvaziar</button>
+  </header>
+
+  <section *ngIf="(items$ | async)?.length === 0" class="cart-empty">
+    <p>Seu carrinho está vazio.</p>
+    <a routerLink="/bazar" class="link">Ir para o Bazar</a>
+  </section>
+
+  <section *ngIf="(items$ | async)?.length">
+    <div class="seller-group" *ngFor="let g of groups()">
+      <h2>Vendedor: {{ g.seller.nome }}</h2>
+      <ul class="item-list">
+        <li *ngFor="let it of g.items; trackBy: trackById" class="item">
+          <div class="thumb">
+            <ng-container *ngIf="it.capa; else ph"><img [src]="it.capa" [alt]="it.titulo"></ng-container>
+            <ng-template #ph><div class="thumb-ph">CAPA</div></ng-template>
+          </div>
+          <div class="info">
+            <h3 class="title">{{ it.titulo }}</h3>
+            <p class="meta">{{ it.autor }} • {{ it.estado }}</p>
+          </div>
+          <div class="price">{{ it.preco | currency:'BRL':'symbol-narrow':'1.2-2' }}</div>
+          <button class="remove" (click)="remove(it.id)">Remover</button>
+        </li>
+      </ul>
+      <div class="seller-total">Subtotal deste vendedor: {{ g.total | currency:'BRL':'symbol-narrow':'1.2-2' }}</div>
+    </div>
+
+    <footer class="cart-footer">
+      <div class="grand-total">Total: {{ total$ | async | currency:'BRL':'symbol-narrow':'1.2-2' }}</div>
+      <button class="checkout-btn" (click)="checkout()">Prosseguir</button>
+    </footer>
+  </section>
+</main>

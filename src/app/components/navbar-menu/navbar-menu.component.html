@@ -13,5 +13,11 @@
             <li class="store__nav-item"><a [routerLink]="['/login']" >Login</a></li>
             <li class="store__nav-item"><a [routerLink]="['/signup']">Cadastro</a></li>
         </ul>
+
+        <!-- Exemplo em algum header.component.html -->
+<a routerLink="/carrinho" class="cart-link">
+  Carrinho <span class="badge">{{ cart.count$ | async }}</span>
+</a>
+
     </nav>
 </section>

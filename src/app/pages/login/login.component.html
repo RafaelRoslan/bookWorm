@@ -1,15 +1,18 @@
-<main>
-    <section class="login-form">
-        <h2>Login</h2>
-        <form>
-          <div class="user-box">
-            <input type="text" name="" required="">
-            <label>Username</label>
-          </div>
-          <div class="user-box">
-            <input type="password" name="" required="">
-            <label>Password</label>
-          </div>
-        </form>
-    </section>
+<main class="auth-main">
+  <section class="auth-card">
+    <h2>Entrar</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>E-mail</label>
+      <input type="email" formControlName="email" placeholder="seu@email.com" />
+
+      <label>Senha</label>
+      <input type="password" formControlName="password" placeholder="••••••••" />
+
+      <button type="submit" [disabled]="loading">Entrar</button>
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+
+    <a routerLink="/signup" class="link">Não tem conta? Cadastre-se</a>
+  </section>
 </main>

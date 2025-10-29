@@ -1,0 +1,36 @@
+<main class="neg-list">
+  <h2>Minhas Negociações</h2>
+
+  <ul class="list" *ngIf="negSvc.list$ | async as list; else vazio">
+    <li class="card" *ngFor="let n of list" [routerLink]="['/negociacoes', n.id]">
+      <div class="row">
+        <span class="badge"
+          [class.pend]="n.status==='PENDING_SELLER_ACCEPT'"
+          [class.act]="n.status==='ACTIVE' || n.status==='WAITING_BUYER' || n.status==='WAITING_SELLER'"
+          [class.done]="n.status==='COMPLETED'"
+          [class.cancel]="n.status==='CANCELLED'"
+          [class.exp]="n.status==='EXPIRED'">
+          {{ n.status | statusLabel }}
+        </span>
+        <strong>#{{ n.id.slice(0,8) }}</strong>
+        <span class="muted">Criada: {{ n.createdAt | date:'short' }}</span>
+      </div>
+
+      <div class="row">
+        <span>Vendedor: <strong>{{ n.seller.nome }}</strong></span>
+        <span>Itens: {{ n.totalItens }}</span>
+        <span>Total: R$ {{ n.totalPrice | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="row" *ngIf="n.acceptedAt">
+        <span class="muted">Aceita: {{ n.acceptedAt | date:'short' }}</span>
+        <span *ngIf="n.buyerDeadline">Prazo do comprador: {{ n.buyerDeadline | date:'shortDate' }}</span>
+        <span *ngIf="n.sellerDeadline">Prazo do vendedor: {{ n.sellerDeadline | date:'shortDate' }}</span>
+      </div>
+    </li>
+  </ul>
+
+  <ng-template #vazio>
+    <p class="muted">Você ainda não possui negociações.</p>
+  </ng-template>
+</main>

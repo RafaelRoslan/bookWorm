@@ -1,0 +1,29 @@
+.neg-detail{padding:20px}
+.head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted-text-color)}
+.badge{padding:4px 8px;border-radius:999px;font-size:12px}
+.badge.pend{background:#fff3cd;color:#8a6d3b}
+.badge.act{background:#e9f5f3;color:var(--secondary-color)}
+.badge.done{background:#d1e7dd;color:#0f5132}
+.badge.cancel{background:#f8d7da;color:#842029}
+.badge.exp{background:#fce8e6;color:#8a1c1c}
+.parties{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.card{border:1px solid var(--border-color);border-radius:10px;padding:12px;background:#fff}
+.items table{width:100%;border-collapse:collapse}
+.items th,.items td{padding:8px;border-bottom:1px solid var(--border-color)}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+label{display:block;font-size:12px;color:var(--muted-text-color);margin-top:8px}
+input,select{width:100%;padding:8px;border:1px solid var(--border-color);border-radius:8px}
+.btn{background:var(--primary-color);color:#fff;padding:8px 12px;border:0;border-radius:8px;margin-top:8px;cursor:pointer}
+.btn.secondary{background:#fff;color:var(--secondary-color);border:1px solid var(--secondary-color)}
+.mtop{margin-top:8px}
+
+.countdown {
+  margin-left: 8px;
+  font-style: normal;
+  color: var(--muted-text-color);
+  background: var(--highlight-color);
+  padding: 2px 6px;
+  border-radius: 8px;
+}

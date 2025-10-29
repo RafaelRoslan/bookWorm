@@ -4,6 +4,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 type Seller = { id?: string; nome: string; reputacao?: number; cidade?: string };
 
 export interface OfertaView {
+  id?: string;
   vendedor: Seller | string;
   estado: string;
   preco: number;
@@ -12,7 +13,6 @@ export interface OfertaView {
   autor?: string;
   capa?: string;
 }
-
 @Component({
   selector: 'app-offer-card',
   standalone: true,
@@ -23,6 +23,7 @@ export interface OfertaView {
 export class OfferCardComponent {
   @Input() variant: 'list' | 'grid' = 'list';
   @Output() open = new EventEmitter<void>();
+  @Output() addToCart = new EventEmitter<void>();
 
   private _oferta!: OfertaView;
 
@@ -40,6 +41,11 @@ export class OfferCardComponent {
   handleOpen() {
     this.open.emit();
   }
+  
+handleAddToCart(ev: Event) {
+  ev.stopPropagation();
+  this.addToCart.emit();
+}
 
 
   conditionClass(estado: string): string {

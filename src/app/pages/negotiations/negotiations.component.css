@@ -1,0 +1,11 @@
+.neg-list{padding:20px}
+.list{list-style:none;padding:0;display:grid;gap:12px}
+.card{border:1px solid var(--border-color);border-radius:10px;padding:12px;cursor:pointer;background:#fff}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.muted{color:var(--muted-text-color)}
+.badge{padding:4px 8px;border-radius:999px;font-size:12px}
+.badge.pend{background:#fff3cd;color:#8a6d3b}
+.badge.act{background:#e9f5f3;color:var(--secondary-color)}
+.badge.done{background:#d1e7dd;color:#0f5132}
+.badge.cancel{background:#f8d7da;color:#842029}
+.badge.exp{background:#fce8e6;color:#8a1c1c}

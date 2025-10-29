@@ -1,0 +1,127 @@
+<main class="neg-detail" *ngIf="neg() as n; else notfound">
+  <header class="head">
+    <div class="left">
+      <h2>Negociação <span class="muted">#{{ n.id.slice(0,8) }}</span></h2>
+      <div class="row">
+        <span class="badge"
+          [class.pend]="n.status==='PENDING_SELLER_ACCEPT'"
+          [class.act]="n.status==='ACTIVE'||n.status==='WAITING_BUYER'||n.status==='WAITING_SELLER'"
+          [class.done]="n.status==='COMPLETED'"
+          [class.cancel]="n.status==='CANCELLED'"
+          [class.exp]="n.status==='EXPIRED'">
+          {{ n.status | statusLabel }}
+        </span>
+        <span>Iniciada: <strong>{{ n.createdAt | date:'short' }}</strong></span>
+        <span *ngIf="n.acceptedAt">Aceita: <strong>{{ n.acceptedAt | date:'short' }}</strong></span>
+      </div>
+
+      <div class="row">
+        <span>Quem faz primeiro: <strong>{{ n.whoFirst === 'buyer' ? 'Comprador' : 'Vendedor' }}</strong></span>
+        <span *ngIf="n.buyerDeadline">
+          Prazo comprador: <strong>{{ n.buyerDeadline | date:'shortDate' }}</strong>
+          <em class="countdown">{{ buyerCountdown() }}</em>
+        </span>
+        <span *ngIf="n.sellerDeadline">
+          Prazo vendedor: <strong>{{ n.sellerDeadline | date:'shortDate' }}</strong>
+          <em class="countdown">{{ sellerCountdown() }}</em>
+        </span>
+      </div>
+    </div>
+
+    <div class="right">
+      <a routerLink="/negociacoes" class="btn secondary">Voltar</a>
+    </div>
+  </header>
+
+  <section class="parties">
+    <div class="card">
+      <h3>Vendedor</h3>
+      <p><strong>{{ n.seller.nome }}</strong></p>
+    </div>
+    <div class="card">
+      <h3>Comprador</h3>
+      <p><strong>{{ n.buyer.nome }}</strong></p>
+    </div>
+  </section>
+
+  <section class="items">
+    <h3>Itens</h3>
+    <table>
+      <thead><tr><th>Título</th><th>Qtd</th><th>Preço</th><th>Cond.</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let it of n.items">
+          <td>{{ it.titulo }}</td>
+          <td>{{ it.quantidade }}</td>
+          <td>R$ {{ it.preco | number:'1.2-2' }}</td>
+          <td class="muted">{{ it.condicao || '-' }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="2"></td><td><strong>Total:</strong></td><td><strong>R$ {{ n.totalPrice | number:'1.2-2' }}</strong></td></tr>
+      </tfoot>
+    </table>
+  </section>
+
+  <section class="actions">
+    <!-- Somente VENDEDOR vê esse card -->
+    <div class="card" *ngIf="isSeller()">
+      <h3>Ações do Vendedor</h3>
+
+      <!-- Aceitar enquanto pendente -->
+      <button
+        *ngIf="n.status==='PENDING_SELLER_ACCEPT'"
+        class="btn"
+        (click)="accept(n.id)">
+        Aceitar negociação
+      </button>
+
+      <!-- Envio quando for a vez dele (ou sempre que whoFirst=vendor) -->
+      <div *ngIf="n.status==='WAITING_SELLER' || n.whoFirst==='seller'">
+        <label>Transportadora</label>
+        <input type="text" [(ngModel)]="carrier" placeholder="Correios, Jadlog..." />
+        <label>Código de rastreio</label>
+        <input type="text" [(ngModel)]="tracking" placeholder="AA123..." />
+        <button class="btn" (click)="markShipped(n.id)">Informar envio</button>
+      </div>
+
+      <div *ngIf="n.shipment?.sentAt" class="muted mtop">
+        Enviado em: {{ n.shipment?.sentAt | date:'short' }} — {{ n.shipment?.carrier }} / {{ n.shipment?.trackingCode }}
+      </div>
+    </div>
+
+    <!-- Somente COMPRADOR vê esse card -->
+    <div class="card" *ngIf="isBuyer()">
+      <h3>Ações do Comprador</h3>
+
+      <!-- Pagamento quando for a vez dele -->
+      <div *ngIf="n.status==='WAITING_BUYER' || n.whoFirst==='buyer'">
+        <label>Método de pagamento</label>
+        <select [(ngModel)]="method">
+          <option value="PIX">PIX</option>
+          <option value="TED">TED</option>
+          <option value="BOLETO">Boleto</option>
+        </select>
+        <label>Comprovante (URL)</label>
+        <input type="text" [(ngModel)]="proof" placeholder="https://..." />
+        <button class="btn" (click)="markPaid(n.id)">Informar pagamento</button>
+      </div>
+
+      <div *ngIf="n.payment?.paidAt" class="muted mtop">
+        Pago em: {{ n.payment?.paidAt | date:'short' }} — {{ n.payment?.method }}
+      </div>
+    </div>
+  </section>
+
+  <section class="logs">
+    <h3>Registro</h3>
+    <ul>
+      <li *ngFor="let l of n.logs">
+        {{ l.at | date:'short' }} — <strong>{{ l.by }}</strong>: {{ l.message }}
+      </li>
+    </ul>
+  </section>
+</main>
+
+<ng-template #notfound>
+  <main class="neg-detail"><p class="muted">Negociação não encontrada.</p></main>
+</ng-template>

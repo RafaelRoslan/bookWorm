@@ -1,24 +1,43 @@
-<main class="bazar-container">
+<main class="bazar-main">
   <header class="bazar-header">
-    <h1>Bazar</h1>
+    <h2>Bazar</h2>
 
-    <div class="toolbar">
-      <label for="sort">Ordenar por</label>
-      <select id="sort" [value]="sortBy" (change)="sortByChanged($event)">
-        <option *ngFor="let opt of sortOptions" [value]="opt.value">{{ opt.label }}</option>
+    <div class="controls">
+      <label for="seller">Vendedor:</label>
+      <input id="seller" type="text" placeholder="ID do vendedor"
+       (change)="sellerChanged($any($event.target).value)">
+      
+
+      <label for="sort">Ordenar:</label>
+      <select id="sort" [value]="sortBy()" (change)="sortByChanged($any($event.target).value)">
+        <option value="recent">Mais recentes</option>
+        <option value="price">Menor preço</option>
+        <option value="rating">Melhor reputação</option>
       </select>
     </div>
   </header>
 
-  <section class="bazar-grid">
-    <ul class="grid-list">
-      <li *ngFor="let oferta of ofertasVisiveis" class="grid-item">
-        <app-offer-card [oferta]="oferta" variant="grid" (open)="onOpen(oferta)"></app-offer-card>
-      </li>
-    </ul>
-
-    <div class="load-more" *ngIf="visibleCount < ofertas.length">
-      <button (click)="loadMore()">Carregar mais</button>
-    </div>
+  <section *ngIf="loading(); else content" class="loading">
+    Carregando ofertas…
   </section>
+
+  <ng-template #content>
+    <section *ngIf="!error(); else erro">
+      <div class="grid">
+        <app-offer-card
+          *ngFor="let oferta of ofertasVisiveis()"
+          [oferta]="oferta"
+          (comprar)="addToCart(oferta)">
+        </app-offer-card>
+      </div>
+
+      <div class="more" *ngIf="ofertasVisiveis().length < filtered().length">
+        <button (click)="loadMore()">Carregar mais</button>
+      </div>
+    </section>
+
+    <ng-template #erro>
+      <p class="error">{{ error() }}</p>
+    </ng-template>
+  </ng-template>
 </main>
