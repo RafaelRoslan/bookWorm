@@ -31,16 +31,20 @@ export class LoginComponent implements OnInit {
   }
 
   submit(): void {
-    if (this.form.invalid || this.loading) return;
-    this.loading = true;
-    this.error = '';
+  if (this.form.invalid || this.loading) return;
+  this.loading = true;
+  this.error = '';
 
-    this.auth.login(this.form.value as { email: string; password: string }).subscribe({
-      next: () => this.router.navigate(['/bookcase']),
-      error: () => {
-        this.error = 'Credenciais inválidas';
-        this.loading = false;
-      }
-    });
-  }
+  this.auth.onLogin(this.form.value as { email: string; password: string }).subscribe({
+    next: () => {
+      this.loading = false;
+      this.router.navigate(['']);
+    },
+    error: (e) => {
+      console.error('LOGIN ERROR', e);
+      this.error = e?.error?.message || e?.message || 'Credenciais inválidas';
+      this.loading = false;
+    }
+  });
+}
 }

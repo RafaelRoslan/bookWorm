@@ -4,13 +4,16 @@
 
     <div class="shelf-grid">
       <app-card-collection
-        *ngFor="let collection of collections"
+        *ngFor="let collection of (collections$ | async) ?? []"
+        [id]="collection._id"
         [name]="collection.name"
         [image]="collection.image"
+        (edit)="editCollection($event)"
+        (remove)="deleteCollection($event)"
       ></app-card-collection>
 
       <!-- Card de adicionar nova coleção -->
-      <div class="add-card">
+      <div class="add-card" (click)="createCollection()">
         <div class="plus-icon">+</div>
         <div class="collection-title">Nova Coleção</div>
       </div>

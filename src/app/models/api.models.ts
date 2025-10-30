@@ -69,3 +69,22 @@ export interface Negotiation {
   shipment?: { sentAt: string; carrier?: string; trackingCode?: string };
   logs: { at: string; by: string; message: string }[];
 }
+
+export interface Collection {
+  _id: string;
+  name: string;
+  userId: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Book {
+  _id: string;
+  collectionId: string;
+  title: string;
+  author: string;
+  description?: string;
+  image?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}

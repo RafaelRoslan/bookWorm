@@ -11,8 +11,8 @@ import { RouterLink } from '@angular/router';
 export class CardBookComponent {
   @Input() imageUrl!: string;
   @Input() titulo!: string;
-  @Input() autor!: string;
-  @Input() ano!: string;
+  @Input() autor!: string | null;
+  @Input() ano!: string | number |null;
   @Input() status!: string;
   @Input() id!: number;
 

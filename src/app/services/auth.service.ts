@@ -20,20 +20,18 @@ export class AuthService {
   isAuthenticated() { return !!this.token; }
 
   // BACK: POST /login
-  login(dto: LoginDto) {
-    return this.http.post<LoginRes>(`${this.api}/login`, dto).pipe(
-      tap(res => localStorage.setItem('bw_token', res.token)),
-      tap(() => this.me().subscribe())
-    );
-  }
-
-  // BACK: GET /users/me (vamos criar já)
-  me() {
-    return this.http.get<MeRes>(`${this.api}/users/me`).pipe(
-      tap(user => this.userSub.next(user))
-    );
-  }
-
+  onLogin(dto: LoginDto) {
+  return this.http.post<LoginRes>(`${this.api}/login`, dto).pipe(
+    
+    tap(res => {
+      const token = (res as any)?.token;
+      if (!token) throw new Error('Resposta do login não contém token');
+      localStorage.setItem('bw_token', token);
+    }),
+    
+  );
+}
+  
   logout() {
     localStorage.removeItem('bw_token');
     this.userSub.next(null);

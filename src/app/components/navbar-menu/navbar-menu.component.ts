@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 
 @Component({
@@ -9,11 +10,19 @@ import { CartService } from '../../services/cart.service';
   templateUrl: './navbar-menu.component.html',
   styleUrl: './navbar-menu.component.css'
 })
-export class NavbarMenuComponent implements OnInit{
+export class NavbarMenuComponent {
+  constructor(
+    public cart: CartService,
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
-  constructor(public cart: CartService) {}
-
-  ngOnInit(): void {
+  isAuth(): boolean {
+    return this.auth.isAuthenticated();
   }
 
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['']);
+  }
 }

@@ -4,20 +4,26 @@
     </section>
     <nav class="store__navbar">
         <ul class="store__nav-list">
-            <li class="store__nav-item"><a [routerLink]="['']" >Home</a></li>
-            <li class="store__nav-item"><a [routerLink]="['/articles']" >Artigos</a></li>
-            <li class="store__nav-item"><a [routerLink]="['/bookcase']" >Estante</a></li>
-            <li class="store__nav-item"><a [routerLink]="['/bazar']" >Bazar</a></li>
-            <li class="store__nav-item"><a [routerLink]="['/forum']" >Forum</a></li>
-            <li class="store__nav-item"><a [routerLink]="['/subscription']" >Assinatura</a></li>
-            <li class="store__nav-item"><a [routerLink]="['/login']" >Login</a></li>
-            <li class="store__nav-item"><a [routerLink]="['/signup']">Cadastro</a></li>
+            <li class="store__nav-item"><a [routerLink]="['']" routerLinkActive="selected" >Home</a></li>
+            <li class="store__nav-item"><a [routerLink]="['/articles']" routerLinkActive="selected">Artigos</a></li>
+            <li class="store__nav-item"><a [routerLink]="['/bazar']" routerLinkActive="selected">Bazar</a></li>
+
+            <ng-container *ngIf="isAuth(); else guestLinks">
+                <li class="store__nav-item"><a [routerLink]="['/bookcase']" routerLinkActive="selected">Estante</a></li>
+                <li class="store__nav-item"><a [routerLink]="['/subscription']" routerLinkActive="selected">Assinatura</a></li>
+                <li class="store__nav-item"><a (click)="logout()" routerLinkActive="selected">Logout</a></li>
+            </ng-container>
+
+            <ng-template #guestLinks>
+                <li class="store__nav-item"><a [routerLink]="['/login']" routerLinkActive="selected">Login</a></li>
+            </ng-template>
+
         </ul>
 
-        <!-- Exemplo em algum header.component.html -->
-<a routerLink="/carrinho" class="cart-link">
-  Carrinho <span class="badge">{{ cart.count$ | async }}</span>
-</a>
+        <a routerLink="/carrinho" class="cart-link">
+            <img src="/src/assets/icons/grocery-store.png" alt="Carrinho" class="cart-icon" />
+            <span class="badge">{{ cart.count$ | async }}</span>
+        </a>
 
     </nav>
 </section>

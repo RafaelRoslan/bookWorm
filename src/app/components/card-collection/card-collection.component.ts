@@ -1,30 +1,30 @@
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-card-collection',
-  imports: [NgIf, RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './card-collection.component.html',
-  styleUrl: './card-collection.component.css'
+  styleUrls: ['./card-collection.component.css']
 })
 export class CardCollectionComponent {
+  @Input() id!: string;
   @Input() name!: string;
-  @Input() image!: string;
-  @Input() id!: number;
+  @Input() image?: string | null;
 
-  @Output() edit = new EventEmitter<void>();
-  @Output() delete = new EventEmitter<void>();
+  // eventos para a página pai (Bookcase)
+  @Output() edit = new EventEmitter<{ id: string; name: string }>();
+  @Output() remove = new EventEmitter<string>();
 
   onEdit() {
-    console.log("clicou em editar");
-    
-    this.edit.emit();
+    // 👇 emite o payload que o Bookcase espera
+    this.edit.emit({ id: this.id, name: this.name });
   }
 
   onDelete() {
-    console.log("clicou em excluir");
-    this.delete.emit();
+    // 👇 emite o id para remover
+    this.remove.emit(this.id);
   }
-
 }

@@ -11,7 +11,6 @@ export class CollectionService {
   constructor(private http: HttpClient) {}
 
   getMyCollections(): Observable<Collection[]> {
-    // back pode inferir pelo token; se precisar, adicione ?owner=me
     return this.http.get<Collection[]>(`${this.api}/collections`);
   }
 
