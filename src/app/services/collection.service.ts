@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Book, Collection } from '../models/api.models';
+import { Collection } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
 export class CollectionService {
@@ -18,10 +18,11 @@ export class CollectionService {
     return this.http.get<Collection>(`${this.api}/collections/${id}`);
   }
 
-  getBooksOfCollection(collectionId: string): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.api}/collections/${collectionId}/books`);
+  getBooksOfCollection(collectionId: string) {
+  return this.http.get<any>(`${this.api}/collections/${collectionId}/books`)
+    .pipe(map(res => Array.isArray(res) ? res : (res?.books ?? [])));
   }
-
+  
   createCollection(body: Partial<Collection>) {
     return this.http.post<Collection>(`${this.api}/collections`, body);
   }

@@ -1,12 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, forkJoin } from 'rxjs';
-
-import { environment } from '../../../environments/environment';
-import { CardBookComponent } from "../../components/card-book/card-book.component";
+import { CardBookComponent } from '../../components/card-book/card-book.component';
 import { Book, Collection } from '../../models/api.models';
 import { CollectionService } from '../../services/collection.service';
 
@@ -14,9 +11,9 @@ type CardBookVM = {
   _id: string;
   titulo: string;
   autor?: string;
-  ano?: string | number;
-  status?: string;
-  imageUrl?: string;
+  ano?: string | number | null;
+  status?: string | null;
+  imageUrl?: string | null;
 };
 
 @Component({
@@ -27,7 +24,7 @@ type CardBookVM = {
   styleUrls: ['./collection.component.css'],
 })
 export class CollectionComponent implements OnInit, OnDestroy {
-  collection!: Collection;
+  collection: Collection | null=null;
   books: CardBookVM[] = [];
 
   editMode = false;
@@ -36,21 +33,17 @@ export class CollectionComponent implements OnInit, OnDestroy {
   error = '';
 
   private sub = new Subscription();
-  private api = environment.apiUrl;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private svc: CollectionService,
-    private http: HttpClient // usaremos para deletar livros, já que o método não está no service
+    private svc: CollectionService
   ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.error = 'Coleção não informada.';
-      // opcional: redirecionar para /bookcase
-      // this.router.navigate(['/bookcase']);
       return;
     }
     this.load(id);
@@ -73,6 +66,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
         this.collection = col;
         this.books = (books ?? []).map(this.toCardVM);
         this.loading = false;
+        console.log('DEBUG books:', this.books);
       },
       error: (e) => {
         console.error(e);
@@ -87,16 +81,13 @@ export class CollectionComponent implements OnInit, OnDestroy {
   /** Alterna modo de edição; ao sair do modo edição, salva o título */
   toggleEditMode(): void {
     if (!this.collection) return;
-
-    // se estava editando e vamos concluir, salva
-    if (this.editMode) {
-      this.saveTitle();
-    }
+    if (this.editMode) this.saveTitle();
     this.editMode = !this.editMode;
   }
 
   /** Salva apenas o nome da coleção */
   private saveTitle(): void {
+    if (!this.collection) return;  
     const { _id, name } = this.collection;
     if (!_id || !name?.trim()) return;
 
@@ -115,44 +106,28 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.sub.add(s);
   }
 
-  /** Remove um livro (chama DELETE /collections/:collectionId/books/:bookId) */
+  /** Remove livro (se quiser ativar o botão “Remover” do seu HTML) */
   removeBook(index: number): void {
-    const book = this.books[index];
-    if (!book?._id || !this.collection?._id) return;
-
-    if (!confirm('Remover este livro da coleção?')) return;
-
-    const url = `${this.api}/collections/${this.collection._id}/books/${book._id}`;
-    const s = this.http.delete<void>(url).subscribe({
-      next: () => {
-        // remove localmente para refletir na UI sem recarregar tudo
-        this.books.splice(index, 1);
-      },
-      error: (e) => {
-        console.error(e);
-        this.error = e?.error?.message || 'Falha ao remover o livro';
-      },
-    });
-
-    this.sub.add(s);
+    // TODO: implemente quando tiver o endpoint (DELETE /collections/:cid/books/:bid)
+    // Por enquanto só remove da UI:
+    this.books.splice(index, 1);
   }
 
-  /** Adapta o Book do back para o CardBook esperado no template */
+  /** Normaliza os campos do back → card-book inputs */
   private toCardVM = (b: Book): CardBookVM => {
-    // cobrimos nomes alternativos caso o back use outro idioma/campos
     const titulo = (b as any).titulo ?? (b as any).title ?? '';
-    const autor = (b as any).autor ?? (b as any).author ?? '';
-    const ano = (b as any).ano ?? (b as any).year ?? '';
-    const status = (b as any).status ?? '';
-    const imageUrl = (b as any).imageUrl ?? (b as any).image ?? (b as any).cover ?? '';
+    const autor  = (b as any).autor  ?? (b as any).author ?? '';
+    const anoRaw = (b as any).ano    ?? (b as any).year   ?? null;
+    const status = (b as any).status ?? null;
+    const image  = (b as any).imageUrl ?? (b as any).image ?? (b as any).cover ?? null;
 
     return {
       _id: (b as any)._id,
       titulo,
       autor,
-      ano,
+      ano: anoRaw,
       status,
-      imageUrl,
+      imageUrl: image,
     };
   };
 }
