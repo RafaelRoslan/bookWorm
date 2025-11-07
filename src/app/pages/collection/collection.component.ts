@@ -138,7 +138,8 @@ onEditImageSelected(e: Event): void {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private svc: CollectionService
+    private svc: CollectionService,
+    
   ) {}
 
   ngOnInit(): void {
@@ -367,7 +368,24 @@ private toCompressedDataURL(img: HTMLImageElement, mime: string, maxWidth: numbe
   });
 }
 
-    
+    setAsCover(index: number): void {
+    if (!this.collection?._id) return;
+    const cid = this.collection._id;
+    const bid = this.books[index]._id;
+
+    this.svc.setBookAsCover(cid, bid).subscribe({
+      next: () => {
+        // opcional: feedback na UI
+        // se quiser refletir na Bookcase, basta recarregar lá quando voltar para a lista
+        alert('Capa definida!');
+      },
+      error: (e) => {
+        console.error(e);
+        this.error = e?.error?.message || 'Falha ao definir capa';
+      }
+    });
+  }
+
 
 
 };

@@ -25,4 +25,5 @@ export class BookService {
   deleteBook(collectionId: string, bookId: string) {
     return this.http.delete<void>(`${this.api}/collections/${collectionId}/books/${bookId}`);
   }
+
 }

@@ -74,6 +74,7 @@ export interface Collection {
   _id: string;
   name: string;
   userId: string;
+  coverImage?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }

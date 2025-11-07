@@ -84,6 +84,12 @@
 
     <!-- Ações em modo edição -->
     <div *ngIf="editMode && (!isEditing || editIndex !== i)" class="book-actions" style="margin-top:8px; display:flex; gap:8px;">
+      <button class="icon-btn"
+        *ngIf="book.imageUrl"
+        (click)="setAsCover(i)">
+  Usar como capa
+</button>
+
       <button class="edit-btn" (click)="startEdit(i)">Editar</button>
       <button class="remove-book-btn" (click)="removeBook(i)">Remover</button>
     </div>

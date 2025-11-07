@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Collection } from '../models/api.models';
-import { Book } from '../models/api.models';
+import { Book, Collection } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
 export class CollectionService {
@@ -47,5 +46,13 @@ export class CollectionService {
   updateBook(collectionId: string, bookId: string, body: Partial<Book>) {
   return this.http.patch<any>(`${this.api}/collections/${collectionId}/books/${bookId}`, body);
 }
+
+ // src/app/services/collection.service.ts
+  setBookAsCover(collectionId: string, bookId: string) {
+    return this.http.patch<{ message: string; book: any }>(
+      `${this.api}/collections/${collectionId}/books/${bookId}/cover`,
+      {}
+    );
+  }
 
 }

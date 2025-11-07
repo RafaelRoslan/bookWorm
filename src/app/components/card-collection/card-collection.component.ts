@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
 export class CardCollectionComponent {
   @Input() id!: string;
   @Input() name!: string;
-  @Input() image?: string | null;
+  @Input() image: string | null = null; 
 
   // eventos para a página pai (Bookcase)
   @Output() edit = new EventEmitter<{ id: string; name: string }>();

@@ -7,7 +7,7 @@
         *ngFor="let collection of (collections$ | async) ?? []"
         [id]="collection._id"
         [name]="collection.name"
-        [image]="collection.image"
+        [image]="collection.coverImage || ''"
         (edit)="editCollection($event)"
         (remove)="deleteCollection($event)"
       ></app-card-collection>
