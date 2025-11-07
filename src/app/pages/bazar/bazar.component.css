@@ -1,54 +1,25 @@
-.bazar-main { padding: 24px; }
+.bazar { padding: 1.5rem; background: var(--background-color, #f7f7f7); min-height: 100vh; }
+h2 { text-align: center; margin-bottom: 1rem; color: var(--text-color, #222); }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 18px; }
+.filters input, .filters select { padding: 8px; border: 1px solid var(--border-color, #ddd); border-radius: 8px; background: #fff; }
+.filters button { padding: 8px 12px; border: 0; border-radius: 8px; background: var(--primary-color, #2a9d8f); color: #fff; font-weight: 700; }
+.filters .secondary { background: #e1e1e1; color: #333; }
 
-.bazar-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 16px;
-  margin-bottom: 16px;
-}
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.card { display: grid; grid-template-columns: 90px 1fr; gap: 10px; background: #fff; border: 1px solid var(--border-color,#e4e4e4); border-radius: 12px; padding: 10px; }
+.thumb { width: 90px; height: 120px; border-radius: 8px; overflow: hidden; background: #f2f2f2; display:flex;align-items:center;justify-content:center; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.noimg { font-size: .75rem; color: #777; }
 
-.bazar-header h2 {
-  margin: 0;
-  margin-right: auto;
-  color: var(--secondary-color);
-}
+.meta .title { font-weight: 700; line-height: 1.2; color: var(--text-color,#222); }
+.meta .author { font-size: .9rem; color: var(--muted-text-color,#555); }
+.price { margin-top: 6px; font-weight: 700; }
 
-.controls label {
-  margin-right: 6px;
-  color: var(--muted-text-color);
-}
+.badges { margin-top: 6px; display:flex; gap:6px; flex-wrap: wrap; }
+.badge { font-size: .75rem; padding: 4px 8px; border:1px solid #ddd; border-radius: 999px; color:#444; background:#fafafa; }
 
-.controls input,
-.controls select {
-  padding: 6px 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: #fff;
-  outline: none;
-}
+.pager { display:flex; gap:10px; align-items:center; justify-content:center; margin: 16px 0; }
+.pager button { padding: 6px 10px; border: 0; border-radius: 8px; background: var(--primary-color, #2a9d8f); color: #fff; font-weight: 700; }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 16px;
-}
-
-.more {
-  display: grid;
-  place-items: center;
-  margin-top: 16px;
-}
-
-.more button {
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: 0;
-  background: var(--primary-color);
-  color: #fff;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.loading { color: var(--muted-text-color); }
+.muted { color: #666; }
 .error { color: #b00020; }

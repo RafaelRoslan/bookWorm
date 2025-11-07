@@ -1,0 +1,58 @@
+<!-- Backdrop bloqueia clique no fundo -->
+<div class="backdrop" (click)="close.emit()">
+  <!-- Conteúdo do modal -->
+  <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <header class="modal__header">
+      <h3>Vender livro</h3>
+      <button class="icon-btn" aria-label="Fechar" (click)="close.emit()">✕</button>
+    </header>
+
+    <section class="modal__body">
+      <div class="bookline">
+        <img *ngIf="book.imageUrl" [src]="book.imageUrl" alt="" class="thumb">
+        <div class="meta">
+          <div class="title" [title]="book.titulo">{{ book.titulo }}</div>
+          <div class="author" *ngIf="book.autor">{{ book.autor }}</div>
+        </div>
+      </div>
+
+      <form class="form" (ngSubmit)="doSubmit()">
+        <label>Preço (R$)
+          <input type="text"
+                 inputmode="decimal"
+                 placeholder="Ex.: 10,00"
+                 [value]="priceStr"
+                 (input)="onPriceInput($event)"
+                 required>
+        </label>
+
+        <label>Condição
+          <select [(ngModel)]="form.condition" name="condition">
+            <option value="novo">novo</option>
+            <option value="como_novo">como_novo</option>
+            <option value="bom">bom</option>
+            <option value="regular">regular</option>
+            <option value="danificado">danificado</option>
+          </select>
+        </label>
+
+        <label>Estoque
+          <input type="number" min="1" step="1" [(ngModel)]="form.stock" name="stock">
+        </label>
+
+        <label>Entrega
+          <select [(ngModel)]="form.shipping" name="shipping">
+            <option value="combinado">combinado</option>
+            <option value="retirada">retirada</option>
+            <option value="correios">correios</option>
+          </select>
+        </label>
+
+        <div class="actions">
+          <button type="button" class="secondary" (click)="close.emit()">Cancelar</button>
+          <button type="submit">Criar anúncio</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

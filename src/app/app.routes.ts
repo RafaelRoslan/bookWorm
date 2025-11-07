@@ -12,6 +12,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { SubscriptionComponent } from './pages/subscription/subscription.component';
+import { MeuBazarComponent } from './pages/meu-bazar/meu-bazar.component';
 
 
 export const routes: Routes = [
@@ -21,6 +22,7 @@ export const routes: Routes = [
     { path: 'article/:id', component: ArticleComponent },
     { path: 'bookcase', component: BookcaseComponent, canActivate: [authGuard] },
     { path: 'bazar', component: BazarComponent },
+    { path: 'meu-bazar',component:MeuBazarComponent, canActivate:[authGuard]},
     { path: 'collection/:id', component: CollectionComponent, canActivate:[authGuard]},
     { path: 'book/:id', component: BookPageComponent},
     { path: 'subscription', component: SubscriptionComponent, canActivate:[authGuard]},

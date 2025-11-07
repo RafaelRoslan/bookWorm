@@ -1,43 +1,48 @@
-<main class="bazar-main">
-  <header class="bazar-header">
-    <h2>Bazar</h2>
+<main class="bazar">
+  <h2>Bazar</h2>
 
-    <div class="controls">
-      <label for="seller">Vendedor:</label>
-      <input id="seller" type="text" placeholder="ID do vendedor"
-       (change)="sellerChanged($any($event.target).value)">
-      
+  <section class="filters">
+    <input [(ngModel)]="q" placeholder="Buscar título/autor/ISBN" />
+    <input type="number" [(ngModel)]="minPrice" placeholder="Preço mín." />
+    <input type="number" [(ngModel)]="maxPrice" placeholder="Preço máx." />
 
-      <label for="sort">Ordenar:</label>
-      <select id="sort" [value]="sortBy()" (change)="sortByChanged($any($event.target).value)">
-        <option value="recent">Mais recentes</option>
-        <option value="price">Menor preço</option>
-        <option value="rating">Melhor reputação</option>
-      </select>
-    </div>
-  </header>
+    <select [(ngModel)]="sort">
+      <option value="recent">Mais recentes</option>
+      <option value="price_asc">Preço ↑</option>
+      <option value="price_desc">Preço ↓</option>
+      <option value="title_asc">Título A→Z</option>
+    </select>
 
-  <section *ngIf="loading(); else content" class="loading">
-    Carregando ofertas…
+    <button (click)="load(1)">Filtrar</button>
+    <button class="secondary" (click)="clearFilters()">Limpar</button>
   </section>
 
-  <ng-template #content>
-    <section *ngIf="!error(); else erro">
-      <div class="grid">
-        <app-offer-card
-          *ngFor="let oferta of ofertasVisiveis()"
-          [oferta]="oferta"
-          (comprar)="addToCart(oferta)">
-        </app-offer-card>
+  <p class="muted" *ngIf="loading">Carregando…</p>
+  <p class="error" *ngIf="!loading && error">{{ error }}</p>
+
+  <section class="grid" *ngIf="!loading && !error">
+    <article class="card" *ngFor="let it of items">
+      <div class="thumb">
+        <img *ngIf="it.bookSnapshot.image" [src]="it.bookSnapshot.image" alt="" />
+        <div class="noimg" *ngIf="!it.bookSnapshot.image">SEM CAPA</div>
       </div>
 
-      <div class="more" *ngIf="ofertasVisiveis().length < filtered().length">
-        <button (click)="loadMore()">Carregar mais</button>
+      <div class="meta">
+        <div class="title" [title]="it.bookSnapshot.title">{{ it.bookSnapshot.title }}</div>
+        <div class="author">{{ it.bookSnapshot.author }}</div>
+        <div class="price">R$ {{ it.price | number:'1.2-2' }}</div>
+        <div class="badges">
+          <span class="badge">{{ it.condition }}</span>
+          <span class="badge">Disp.: {{ it.stock }}</span>
+          <span class="badge">{{ it.shipping }}</span>
+        </div>
       </div>
-    </section>
+    </article>
+  </section>
 
-    <ng-template #erro>
-      <p class="error">{{ error() }}</p>
-    </ng-template>
-  </ng-template>
+  <footer class="pager" *ngIf="total > pageSize && !loading && !error">
+    <button (click)="load(page-1)" [disabled]="page<=1">◀</button>
+    <span>Página {{page}} / {{ pages }}</span>
+    <button (click)="load(page+1)" [disabled]="page>=pages">▶</button>
+  </footer>
 </main>

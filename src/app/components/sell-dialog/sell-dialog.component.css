@@ -1,0 +1,53 @@
+.backdrop{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  display: grid; place-items: center;
+  z-index: 1000;
+}
+
+.modal{
+  width: min(560px, 92vw);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 20px 80px rgba(0,0,0,.35);
+  overflow: hidden;
+  animation: pop .12s ease-out;
+}
+
+@keyframes pop{ from{ transform: translateY(8px); opacity:.95 } to{ transform:none; opacity:1 } }
+
+.modal__header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 16px; border-bottom: 1px solid #eee;
+}
+.modal__header h3{ margin:0; }
+
+.icon-btn{
+  border:0; background:transparent; font-size: 18px; cursor:pointer; padding:6px; line-height: 1;
+}
+
+.modal__body{ padding: 14px 16px 18px; }
+
+.bookline{ display:flex; gap:10px; align-items:center; margin-bottom: 10px; }
+.thumb{ width: 48px; height: 64px; object-fit: cover; border-radius: 6px; }
+.title{ font-weight: 700; }
+.author{ font-size:.9rem; color:#666; }
+
+.form{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 12px;
+}
+.form label{ display:flex; flex-direction:column; gap:6px; font-size:.92rem; }
+input, select{
+  padding:8px 10px; border:1px solid #ddd; border-radius: 8px; background:#fff;
+}
+
+.actions{
+  display:flex; justify-content:flex-end; gap:8px; margin-top: 12px;
+}
+.actions button{
+  padding: 10px 14px; border:0; border-radius: 10px; font-weight: 700; cursor:pointer;
+  background: var(--primary-color, #2a9d8f); color:#fff;
+}
+.actions .secondary{ background:#e6e6e6; color:#333; }

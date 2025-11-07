@@ -1,0 +1,80 @@
+<main class="mylistings">
+  <h2>Meu Bazar</h2>
+
+  <p class="muted" *ngIf="loading">Carregando…</p>
+  <p class="error" *ngIf="!loading && error">{{ error }}</p>
+
+  <table class="tbl" *ngIf="!loading && !error && items.length; else vazio">
+    <thead>
+      <tr>
+        <th>Livro</th>
+        <th>Preço</th>
+        <th>Condição</th>
+        <th>Estoque</th>
+        <th>Entrega</th>
+        <th>Status</th>
+        <th>Expira em</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let it of items">
+        <td class="book">
+          <img *ngIf="it.bookSnapshot.image" [src]="it.bookSnapshot.image" alt="">
+          <div>
+            <div class="title">{{ it.bookSnapshot.title }}</div>
+            <div class="author">{{ it.bookSnapshot.author }}</div>
+          </div>
+        </td>
+
+        <ng-container *ngIf="editId !== it._id; else editing">
+          <td>R$ {{ it.price | number:'1.2-2' }}</td>
+          <td>{{ it.condition }}</td>
+          <td>{{ it.stock }}</td>
+          <td>{{ it.shipping }}</td>
+        </ng-container>
+
+        <ng-template #editing>
+          <td><input type="number" [(ngModel)]="form.price" min="0" /></td>
+          <td>
+            <select [(ngModel)]="form.condition">
+              <option value="novo">novo</option>
+              <option value="como_novo">como_novo</option>
+              <option value="bom">bom</option>
+              <option value="regular">regular</option>
+              <option value="danificado">danificado</option>
+            </select>
+          </td>
+          <td><input type="number" [(ngModel)]="form.stock" min="1" /></td>
+          <td>
+            <select [(ngModel)]="form.shipping">
+              <option value="combinado">combinado</option>
+              <option value="retirada">retirada</option>
+              <option value="correios">correios</option>
+            </select>
+          </td>
+        </ng-template>
+
+        <td>{{ it.status }}</td>
+        <td>{{ it.expiresAt | date:'short' }}</td>
+
+        <td class="actions" *ngIf="editId !== it._id">
+          <button (click)="startEdit(it)">Editar</button>
+          <button (click)="mark(it,'pausado')" [disabled]="it.status!=='ativo'">Pausar</button>
+          <button (click)="mark(it,'ativo')"   [disabled]="it.status!=='pausado'">Ativar</button>
+          <button (click)="mark(it,'vendido')">Vendido</button>
+          <button (click)="remove(it)">Remover</button>
+        </td>
+
+        <td class="actions" *ngIf="editId === it._id">
+          <button (click)="saveEdit(it)">Salvar</button>
+          <button class="secondary" (click)="cancelEdit()">Cancelar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #vazio>
+    <p>Você ainda não tem anúncios.</p>
+  </ng-template>
+</main>
