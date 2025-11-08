@@ -14,7 +14,8 @@ export class CardBookComponent {
   @Input() autor!: string | null;
   @Input() ano!: string | number |null;
   @Input() status!: string;
-  @Input() id!: number;
+  @Input() id!: string;
+  @Input() collectionId!: string;
 
   get hasImage(): boolean {
     return !!this.imageUrl;

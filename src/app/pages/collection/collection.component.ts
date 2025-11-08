@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, forkJoin } from 'rxjs';
 import { CardBookComponent } from '../../components/card-book/card-book.component';
+import { SellDialogComponent, SellForm } from '../../components/sell-dialog/sell-dialog.component';
 import { Book, Collection } from '../../models/api.models';
 import { CollectionService } from '../../services/collection.service';
 import { ListingService } from '../../services/listing.service';
-import { SellDialogComponent, SellForm } from '../../components/sell-dialog/sell-dialog.component';
 
 type CardBookVM = {
   _id: string;

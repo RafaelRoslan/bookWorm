@@ -1,6 +1,4 @@
-<!-- Backdrop bloqueia clique no fundo -->
-<div class="backdrop" (click)="close.emit()">
-  <!-- Conteúdo do modal -->
+<div class="backdrop">
   <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
     <header class="modal__header">
       <h3>Vender livro</h3>
@@ -18,12 +16,16 @@
 
       <form class="form" (ngSubmit)="doSubmit()">
         <label>Preço (R$)
-          <input type="text"
-                 inputmode="decimal"
-                 placeholder="Ex.: 10,00"
-                 [value]="priceStr"
-                 (input)="onPriceInput($event)"
-                 required>
+          <!-- Dupla via + normalização no change -->
+          <input
+            type="text"
+            inputmode="decimal"
+            placeholder="Ex.: 10,00"
+            [(ngModel)]="priceStr"
+            (ngModelChange)="onPriceInput($event)"
+            name="priceStr"
+            [attr.pattern]="priceBR.source"
+            required>
         </label>
 
         <label>Condição

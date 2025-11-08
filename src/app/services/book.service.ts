@@ -1,8 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Book } from '../models/api.models';
+
+export type BookDto = {
+  _id: string;
+  title: string;
+  author: string;
+  description?: string;
+  isbn?: string;
+  image?: string;         // base64 ou URL
+  collectionId: string;
+};
+
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
@@ -10,8 +21,10 @@ export class BookService {
 
   constructor(private http: HttpClient) {}
 
-  getBook(id: string): Observable<Book> {
-    return this.http.get<Book>(`${this.api}/books/${id}`);
+  getBook(collectionId: string, bookId: string): Observable<BookDto> {
+    return this.http
+      .get<{ book: BookDto }>(`${this.api}/collections/${collectionId}/books/${bookId}`)
+      .pipe(map(res => res.book));
   }
 
   createBook(collectionId: string, body: Partial<Book>) {

@@ -1,43 +1,30 @@
 <main>
   <div class="book-page">
-    <!-- Seção principal com capa e infos -->
-    <div class="book-main">
-      <div class="book-cover-wrapper">
-        <img
-          *ngIf="hasImage; else placeholder"
-          [src]="imageUrl"
-          alt="Capa do livro"
-        />
-        <ng-template #placeholder>
-          <div class="empty-cover">
-            <p class="placeholder-text">IMAGEM LIVRO</p>
+    <div *ngIf="loading">Carregando…</div>
+    <div *ngIf="!loading && error" class="error">{{ error }}</div>
+
+    <ng-container *ngIf="!loading && !error">
+      <div class="book-main">
+        <div class="book-cover-wrapper">
+          <img *ngIf="hasImage; else placeholder" [src]="imageUrl" alt="Capa do livro" />
+          <ng-template #placeholder>
+            <div class="empty-cover"><p class="placeholder-text">IMAGEM LIVRO</p></div>
+          </ng-template>
+        </div>
+
+        <div class="book-info">
+          <h2>{{ title }}</h2>
+          <p *ngIf="author"><strong>Autor:</strong> {{ author }}</p>
+          <p *ngIf="publisher"><strong>Editora:</strong> {{ publisher }}</p>
+          <p *ngIf="year !== null"><strong>Ano:</strong> {{ year }}</p>
+          <p *ngIf="isbn"><strong>ISBN:</strong> {{ isbn }}</p>
+
+          <div class="book-synopsis" *ngIf="description">
+            <strong>Descrição:</strong>
+            <p>{{ description }}</p>
           </div>
-        </ng-template>
-      </div>
-      <div class="book-info">
-        <h2>Título do Livro</h2>
-        <p><strong>Autor:</strong> Nome do Autor</p>
-        <p><strong>Editora:</strong> Nome da Editora</p>
-        <p><strong>Ano:</strong> 2024</p>
-        <p><strong>ISBN:</strong> 1234567890</p>
-        <div class="book-synopsis">
-          <strong>Sinopse:</strong>
-          <p>
-            Descrição do livro ou sinopse curta para o usuário entender o
-            conteúdo.
-          </p>
         </div>
       </div>
-    </div>
-
-    <!-- Lista de ofertas (bazar) -->
-    <div class="book-marketplace">
-      <h3>Ofertas de outros usuários</h3>
-      <ul class="offer-list">
-        <li *ngFor="let oferta of ofertas">
-          <app-offer-card [oferta]="oferta"></app-offer-card>
-        </li>
-      </ul>
-    </div>
+    </ng-container>
   </div>
 </main>

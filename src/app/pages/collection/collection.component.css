@@ -87,3 +87,86 @@
   padding:8px 12px; border:0; border-radius:8px;
   background: var(--primary-color,#2a9d8f); color:#fff; font-weight:700; cursor:pointer;
 }
+
+/* ==== SEU BLOCO EXISTENTE (mantém igual) ==== */
+/* ... (o bloco que você já me passou) ... */
+
+/* Mensagem de erro */
+.error-text {
+  color: #b00020;
+}
+
+/* Formulário inline (criar livro) */
+.inline-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  max-width: 640px;
+}
+
+.form-group {
+  display: grid;
+  gap: 6px;
+}
+
+.help-text {
+  color: var(--muted-text-color, #666);
+  font-size: 0.85rem;
+}
+
+/* Preview de imagem no form de criação */
+.img-preview {
+  max-width: 160px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+
+/* Ações do formulário (botões) */
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* Bloco de ações sob o card (modo edição) */
+.book-actions {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Botão "usar como capa" (neutro) */
+.icon-btn {
+  background: #f1f3f5;
+  color: #333;
+  border: 1px solid var(--border-color);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+.icon-btn:hover {
+  background: #e9ecef;
+  border-color: #d0d7de;
+}
+
+/* Form de edição inline do livro */
+.edit-inline-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+/* Preview menor no form de edição */
+.img-preview-sm {
+  max-width: 140px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}

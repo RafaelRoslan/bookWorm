@@ -26,39 +26,37 @@
       </div>
 
       <!-- Formulário inline para criar livro -->
-      <form *ngIf="showAddForm"
-            (ngSubmit)="submitAddBook()"
-            style="display:grid; gap:8px; margin-top:12px; max-width:640px;">
-        <div style="display:grid; gap:6px;">
+      <form *ngIf="showAddForm" (ngSubmit)="submitAddBook()" class="inline-form">
+        <div class="form-group">
           <label>Título *</label>
           <input [(ngModel)]="addForm.title" name="title" required placeholder="Ex.: Harry Potter" />
         </div>
 
-        <div style="display:grid; gap:6px;">
+        <div class="form-group">
           <label>Autor</label>
           <input [(ngModel)]="addForm.author" name="author" placeholder="Ex.: J.K. Rowling" />
         </div>
 
-        <div style="display:grid; gap:6px;">
+        <div class="form-group">
           <label>Descrição</label>
           <textarea [(ngModel)]="addForm.description" name="description" rows="3"></textarea>
         </div>
 
-        <div style="display:grid; gap:6px;">
+        <div class="form-group">
           <label>ISBN</label>
           <input [(ngModel)]="addForm.isbn" name="isbn" placeholder="Ex.: 978..." />
         </div>
 
-        <div style="display:grid; gap:6px;">
+        <div class="form-group">
           <label>Capa (imagem)</label>
           <input type="file" accept="image/*" (change)="onImageSelected($event)" />
-          <small>Tamanho máx: 200 KB (será redimensionada para ~600px de largura)</small>
+          <small class="help-text">Tamanho máx: 200 KB (será redimensionada para ~600px de largura)</small>
 
           <!-- preview opcional -->
-          <img *ngIf="addForm.image" [src]="addForm.image" alt="Preview" style="max-width:160px; border:1px solid #eee; border-radius:6px;"/>
+          <img *ngIf="addForm.image" [src]="addForm.image" alt="Preview" class="img-preview"/>
         </div>
 
-        <div style="display:flex; gap:8px; margin-top:6px;">
+        <div class="form-actions">
           <button type="submit" class="add-book-btn">Salvar</button>
           <button type="button" class="edit-btn" (click)="addBookToggle()">Cancelar</button>
         </div>
@@ -69,71 +67,68 @@
       <p>Carregando coleção...</p>
     </ng-template>
 
-    <p *ngIf="!loading && error" style="color:#b00020">{{ error }}</p>
+    <p *ngIf="!loading && error" class="error-text">{{ error }}</p>
 
     <div class="book-grid">
       <div *ngFor="let book of books; let i = index" class="book-wrapper">
-      <!-- Card do livro -->
-      <app-card-book
-        [titulo]="book.titulo"
-        [ano]="book.ano ?? null"
-        [autor]="book.autor ?? ''"
-        [status]="book.status ?? ''"
-        [imageUrl]="book.imageUrl ?? ''">
-      </app-card-book>
+        <app-card-book
+          [titulo]="book.titulo"
+          [ano]="book.ano ?? ''"
+          [autor]="book.autor ?? ''"
+          [status]="book.status ?? ''"
+          [imageUrl]="book.imageUrl ?? ''"
+          [collectionId]="collection?._id!"
+          [id]="book._id"
+        ></app-card-book>
 
-      <!-- Ações em modo edição -->
-      <div *ngIf="editMode && (!isEditing || editIndex !== i)" class="book-actions" style="margin-top:8px; display:flex; gap:8px;">
-        <button class="icon-btn"
-          *ngIf="book.imageUrl"
-          (click)="setAsCover(i)">
-          Usar como capa
-        </button>
-        <div class="inline-actions">
-          <button class="edit-btn" (click)="startEdit(i)">Editar</button>
-          <button class="sell-btn" (click)="openSell(book)">Vender</button>
-          <button class="remove-book-btn" (click)="removeBook(i)">Remover</button>
+        <!-- Ações em modo edição -->
+        <div *ngIf="editMode && (!isEditing || editIndex !== i)" class="book-actions">
+          <button class="icon-btn" *ngIf="book.imageUrl" (click)="setAsCover(i)">
+            Usar como capa
+          </button>
+
+          <div class="inline-actions">
+            <button class="edit-btn" (click)="startEdit(i)">Editar</button>
+            <button class="sell-btn" (click)="openSell(book)">Vender</button>
+            <button class="remove-book-btn" (click)="removeBook(i)">Remover</button>
+          </div>
         </div>
-        
+
+        <!-- Form de edição inline para ESTE livro -->
+        <form *ngIf="isEditing && editIndex === i" (ngSubmit)="submitEditBook()" class="edit-inline-form">
+          <div class="form-group">
+            <label>Título *</label>
+            <input [(ngModel)]="editForm.title" name="edit_title" required />
+          </div>
+
+          <div class="form-group">
+            <label>Autor</label>
+            <input [(ngModel)]="editForm.author" name="edit_author" />
+          </div>
+
+          <div class="form-group">
+            <label>Descrição</label>
+            <textarea [(ngModel)]="editForm.description" name="edit_description" rows="2"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>ISBN</label>
+            <input [(ngModel)]="editForm.isbn" name="edit_isbn" />
+          </div>
+
+          <div class="form-group">
+            <label>Nova capa (opcional)</label>
+            <input type="file" accept="image/*" (change)="onEditImageSelected($event)" />
+            <img *ngIf="editForm.image" [src]="editForm.image" alt="Preview" class="img-preview-sm" />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="add-book-btn">Salvar</button>
+            <button type="button" class="edit-btn" (click)="cancelEdit()">Cancelar</button>
+          </div>
+        </form>
+
       </div>
-
-      <!-- Form de edição inline para ESTE livro -->
-      <form *ngIf="isEditing && editIndex === i"
-            (ngSubmit)="submitEditBook()"
-            style="display:grid; gap:8px; margin-top:10px; padding:10px; border:1px solid var(--border-color); border-radius:8px; background:#fafafa;">
-        <div style="display:grid; gap:6px;">
-          <label>Título *</label>
-          <input [(ngModel)]="editForm.title" name="edit_title" required />
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label>Autor</label>
-          <input [(ngModel)]="editForm.author" name="edit_author" />
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label>Descrição</label>
-          <textarea [(ngModel)]="editForm.description" name="edit_description" rows="2"></textarea>
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label>ISBN</label>
-          <input [(ngModel)]="editForm.isbn" name="edit_isbn" />
-        </div>
-
-        <div style="display:grid; gap:6px;">
-          <label>Nova capa (opcional)</label>
-          <input type="file" accept="image/*" (change)="onEditImageSelected($event)" />
-          <img *ngIf="editForm.image" [src]="editForm.image" alt="Preview" style="max-width:140px; border:1px solid #eee; border-radius:6px;"/>
-        </div>
-
-        <div style="display:flex; gap:8px;">
-          <button type="submit" class="add-book-btn">Salvar</button>
-          <button type="button" class="edit-btn" (click)="cancelEdit()">Cancelar</button>
-        </div>
-      </form>
-
-    </div>
     </div>
 
     <app-sell-dialog
@@ -142,8 +137,6 @@
       (close)="closeSell()"
       (submit)="onSellSubmit($event)">
     </app-sell-dialog>
-
-
 
   </article>
 </main>

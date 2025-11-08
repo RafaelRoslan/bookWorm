@@ -6,7 +6,7 @@
 }
 
 .book-cover img {
-    max-width: 250px;
+    max-width: 300px;
     border-radius: 8px;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 }
@@ -54,8 +54,7 @@
 }
 
 .book-cover-wrapper {
-    width: 255px;
-    height: 316px;
+    width: 300px;
     overflow: hidden;
     border-radius: 4px;
     margin-bottom: 0.75rem;
@@ -66,8 +65,7 @@
 }
 
 .book-cover-wrapper img {
-    width: 255px;
-    height: 316px;
+    width: 300px;
     object-fit: cover;
     border-radius: 4px;
 }

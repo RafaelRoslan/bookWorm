@@ -1,57 +1,56 @@
-import { NgFor, NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { OfferCardComponent } from '../../components/offer-card/offer-card.component';
+import { CommonModule, NgIf } from '@angular/common';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { BookService } from '../../services/book.service';
 
 @Component({
   selector: 'app-book-page',
-  imports: [OfferCardComponent, NgFor, NgIf],
+  imports: [CommonModule,NgIf],
   templateUrl: './book-page.component.html',
   styleUrl: './book-page.component.css'
 })
+
 export class BookPageComponent {
+  loading = false;
+  error = '';
 
-  @Input() imageUrl!: string;
-  ofertas = [
-    {
-      vendedor: 'João Livros',
-      estado: 'Usado - Bom estado',
-      preco: 29.90
-    },
-    {
-      vendedor: 'Maria Sebo',
-      estado: 'Usado - Excelente estado',
-      preco: 27.50
-    },
-    {
-      vendedor: 'Antônio Colecionador',
-      estado: 'Novo (Lacrado)',
-      preco: 45.00
-    },
-    {
-      vendedor: 'Sebo da Esquina',
-      estado: 'Usado - Regular',
-      preco: 24.00 // esse é o menor preço
-    },
-    {
-      vendedor: 'Edições Raras',
-      estado: 'Usado - Quase novo',
-      preco: 31.00
-    }
-  ];
-  
+  // dados do livro
+  imageUrl = '';
+  title = '';
+  author = '';
+  publisher = '';  // se não existir no back, deixa vazio
+  year: string | number | null = null;
+  isbn = '';
+  description = '';
 
+  constructor(private route: ActivatedRoute, private books: BookService) {}
 
   ngOnInit(): void {
-    const menorPreco = Math.min(...this.ofertas.map(o => o.preco));
-    this.ofertas = this.ofertas.map(o => ({
-      ...o,
-      menorPreco: o.preco === menorPreco
-    }));
-  }
-
-  get hasImage(): boolean {
-    return !!this.imageUrl;
-  }
-
+  const collectionId = this.route.snapshot.paramMap.get('collectionId');
+  const bookId       = this.route.snapshot.paramMap.get('bookId');
   
+  if (!collectionId || !bookId) {
+    this.error = 'Livro não informado';
+    return;
+  }
+
+  this.loading = true;
+  this.books.getBook(collectionId, bookId).subscribe({
+    next: (b) => {
+      this.title = b.title ?? '';
+      this.author = b.author ?? '';
+      this.isbn = b.isbn ?? '';
+      this.description = b.description ?? '';
+      this.imageUrl = b.image ?? '';
+      this.loading = false;
+    },
+    error: (e) => {
+      console.error(e);
+      this.error = e?.error?.message || 'Falha ao carregar o livro';
+      this.loading = false;
+    }
+  });
+}
+
+  get hasImage(): boolean { return !!this.imageUrl; }
 }
