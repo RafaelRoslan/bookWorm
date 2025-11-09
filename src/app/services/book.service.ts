@@ -4,15 +4,23 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Book } from '../models/api.models';
 
+
 export type BookDto = {
   _id: string;
-  title: string;
-  author: string;
-  description?: string;
-  isbn?: string;
-  image?: string;         // base64 ou URL
-  collectionId: string;
+  title?: string;
+  titulo?: string;
+  author?: string;
+  autor?: string;
+  publisher?: string | null;
+  year?: number | string | null;
+  ano?: number | string | null;
+  isbn?: string | null;
+  description?: string | null;
+  image?: string | null;
+  imageUrl?: string | null;
+  cover?: string | null;
 };
+
 
 
 @Injectable({ providedIn: 'root' })
@@ -24,7 +32,7 @@ export class BookService {
   getBook(collectionId: string, bookId: string): Observable<BookDto> {
     return this.http
       .get<{ book: BookDto }>(`${this.api}/collections/${collectionId}/books/${bookId}`)
-      .pipe(map(res => res.book));
+      .pipe(map(res => res.book)); // 👈 devolve só o objeto do livro
   }
 
   createBook(collectionId: string, body: Partial<Book>) {

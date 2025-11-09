@@ -16,51 +16,12 @@
         </ng-template>
 
         <div class="collection-actions">
-          <button class="add-book-btn" (click)="addBookToggle()">
-            {{ showAddForm ? 'Cancelar' : '+ Adicionar Livro' }}
-          </button>
+          <button class="add-book-btn" (click)="openAdd()">+ Adicionar Livro</button>
           <button class="edit-btn" (click)="toggleEditMode()">
             {{ editMode ? 'Concluir Edição' : 'Editar Coleção' }}
           </button>
         </div>
       </div>
-
-      <!-- Formulário inline para criar livro -->
-      <form *ngIf="showAddForm" (ngSubmit)="submitAddBook()" class="inline-form">
-        <div class="form-group">
-          <label>Título *</label>
-          <input [(ngModel)]="addForm.title" name="title" required placeholder="Ex.: Harry Potter" />
-        </div>
-
-        <div class="form-group">
-          <label>Autor</label>
-          <input [(ngModel)]="addForm.author" name="author" placeholder="Ex.: J.K. Rowling" />
-        </div>
-
-        <div class="form-group">
-          <label>Descrição</label>
-          <textarea [(ngModel)]="addForm.description" name="description" rows="3"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>ISBN</label>
-          <input [(ngModel)]="addForm.isbn" name="isbn" placeholder="Ex.: 978..." />
-        </div>
-
-        <div class="form-group">
-          <label>Capa (imagem)</label>
-          <input type="file" accept="image/*" (change)="onImageSelected($event)" />
-          <small class="help-text">Tamanho máx: 200 KB (será redimensionada para ~600px de largura)</small>
-
-          <!-- preview opcional -->
-          <img *ngIf="addForm.image" [src]="addForm.image" alt="Preview" class="img-preview"/>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="add-book-btn">Salvar</button>
-          <button type="button" class="edit-btn" (click)="addBookToggle()">Cancelar</button>
-        </div>
-      </form>
     </div>
 
     <ng-template #carregando>
@@ -69,8 +30,9 @@
 
     <p *ngIf="!loading && error" class="error-text">{{ error }}</p>
 
+    <!-- LISTA DE LIVROS -->
     <div class="book-grid">
-      <div *ngFor="let book of books; let i = index" class="book-wrapper">
+      <div *ngFor="let book of books; let i = index; trackBy: trackById" class="book-wrapper">
         <app-card-book
           [titulo]="book.titulo"
           [ano]="book.ano ?? ''"
@@ -78,65 +40,67 @@
           [status]="book.status ?? ''"
           [imageUrl]="book.imageUrl ?? ''"
           [collectionId]="collection?._id!"
-          [id]="book._id"
-        ></app-card-book>
+          [id]="book._id">
+        </app-card-book>
 
         <!-- Ações em modo edição -->
-        <div *ngIf="editMode && (!isEditing || editIndex !== i)" class="book-actions">
-          <button class="icon-btn" *ngIf="book.imageUrl" (click)="setAsCover(i)">
-            Usar como capa
+        <div *ngIf="editMode" class="book-actions">
+          <button class="icon-btn"
+                  [class.done]="coveredIds.has(book._id)"
+                  *ngIf="book.imageUrl"
+                  (click)="setAsCover(i)"
+                  [disabled]="coverBusy || coveredIds.has(book._id)">
+            {{ coveredIds.has(book._id) ? 'Capa definida' : 'Usar como capa' }}
           </button>
 
           <div class="inline-actions">
-            <button class="edit-btn" (click)="startEdit(i)">Editar</button>
-            <button class="sell-btn" (click)="openSell(book)">Vender</button>
-            <button class="remove-book-btn" (click)="removeBook(i)">Remover</button>
+            <button class="edit-btn"  type="button" (click)="openEdit(i)">Editar</button>
+            <button class="sell-btn"  type="button" (click)="openSell(book)">Vender</button>
+            <button class="remove-book-btn" type="button" (click)="confirmRemove(i)">Remover</button>
           </div>
         </div>
-
-        <!-- Form de edição inline para ESTE livro -->
-        <form *ngIf="isEditing && editIndex === i" (ngSubmit)="submitEditBook()" class="edit-inline-form">
-          <div class="form-group">
-            <label>Título *</label>
-            <input [(ngModel)]="editForm.title" name="edit_title" required />
-          </div>
-
-          <div class="form-group">
-            <label>Autor</label>
-            <input [(ngModel)]="editForm.author" name="edit_author" />
-          </div>
-
-          <div class="form-group">
-            <label>Descrição</label>
-            <textarea [(ngModel)]="editForm.description" name="edit_description" rows="2"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>ISBN</label>
-            <input [(ngModel)]="editForm.isbn" name="edit_isbn" />
-          </div>
-
-          <div class="form-group">
-            <label>Nova capa (opcional)</label>
-            <input type="file" accept="image/*" (change)="onEditImageSelected($event)" />
-            <img *ngIf="editForm.image" [src]="editForm.image" alt="Preview" class="img-preview-sm" />
-          </div>
-
-          <div class="form-actions">
-            <button type="submit" class="add-book-btn">Salvar</button>
-            <button type="button" class="edit-btn" (click)="cancelEdit()">Cancelar</button>
-          </div>
-        </form>
-
       </div>
     </div>
 
+    <!-- ====================== MODAIS (UMA ÚNICA INSTÂNCIA) ====================== -->
+
+    <!-- Adicionar livro -->
+    <app-add-book-dialog
+      *ngIf="addOpen"
+      (close)="closeAdd()"
+      (submit)="onAddSubmit($event)">
+    </app-add-book-dialog>
+
+    <!-- Editar livro -->
+    <app-add-book-dialog
+      *ngIf="editOpen"
+      [dialogTitle]="'Editar livro'"
+      [submitLabel]="'Atualizar'"
+      [initial]="editInitial"
+      [canClearImage]="true"
+      (close)="closeEdit()"
+      (submit)="onEditSubmit($event)">
+    </app-add-book-dialog>
+
+    <!-- Vender -->
     <app-sell-dialog
       *ngIf="sellOpen && sellBook"
       [book]="sellBook"
       (close)="closeSell()"
       (submit)="onSellSubmit($event)">
     </app-sell-dialog>
+
+    <!-- Confirmar remoção -->
+    <app-confirm-dialog
+      *ngIf="confirmRemoveOpen"
+      [title]="'Remover livro'"
+      [message]="'Esta ação excluirá o livro desta coleção e do seu acervo.'"
+      [confirmLabel]="'Remover'"
+      [cancelLabel]="'Cancelar'"
+      [danger]="true"
+      (confirm)="doRemoveConfirmed()"
+      (cancel)="closeConfirmRemove()">
+    </app-confirm-dialog>
 
   </article>
 </main>

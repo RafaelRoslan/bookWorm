@@ -1,92 +1,143 @@
 <main class="main">
-  <section class="signup-form">
-    <h2>Create Account</h2>
-    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-      <!-- Account Data -->
-      <div class="form-section">
-        <p>Account Information</p>
-        <label for="nickname">Nickname</label>
-        <input type="text" id="nickname" formControlName="nickname" />
+  <section class="signup">
+    <h2>Criar conta</h2>
+    <p class="legend">Preencha os campos obrigatórios. Endereço, dados bancários e chave PIX são opcionais e podem ser adicionados depois.</p>
 
-        <label for="email">Email</label>
-        <input type="email" id="email" formControlName="email" />
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Tipo de conta -->
+      <fieldset class="block">
+        <legend>Tipo de conta *</legend>
+        <label class="radio">
+          <input type="radio" formControlName="type" value="Fisica" />
+          Pessoa Física
+        </label>
+        <label class="radio">
+          <input type="radio" formControlName="type" value="Juridica" />
+          Pessoa Jurídica
+        </label>
+      </fieldset>
 
-        <label for="confirmEmail">Confirm Email</label>
-        <input type="email" id="confirmEmail" formControlName="confirmEmail" />
-
-        <label for="password">Password</label>
-        <input type="password" id="password" formControlName="password" />
-
-        <label for="confirmPassword">Confirm Password</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          formControlName="confirmPassword"
-        />
-      </div>
-
-      <!-- Personal Data -->
-      <div class="form-section">
-        <p>Personal Information</p>
-        <div class="form-radio-group">
-          <label for="type">Account Type</label>
-          <label>
-            <input type="radio" formControlName="type" value="Fisica" />Pessoa
-            Física
-          </label>
-          <label>
-            <input type="radio" formControlName="type" value="Juridica" />Pessoa
-            Jurídica
-          </label>
+      <!-- Dados pessoais -->
+      <fieldset class="block two">
+        <legend>Dados pessoais *</legend>
+        <div class="field">
+          <label for="name">Nome</label>
+          <input id="name" type="text" formControlName="name" placeholder="Ex.: Rafael" />
+          <small class="error" *ngIf="f.get('name')?.touched && f.get('name')?.invalid">Informe seu nome.</small>
         </div>
 
-        <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" formControlName="fullName" />
+        <div class="field">
+          <label for="lastname">Sobrenome</label>
+          <input id="lastname" type="text" formControlName="lastname" placeholder="Ex.: Roslan" />
+          <small class="error" *ngIf="f.get('lastname')?.touched && f.get('lastname')?.invalid">Informe seu sobrenome.</small>
+        </div>
+      </fieldset>
 
-        <label for="cpf">CPF</label>
-        <input type="text" id="cpf" formControlName="cpf" />
+      <!-- Conta (email/senha) -->
+      <fieldset class="block two" formGroupName="conta">
+        <legend>Acesso *</legend>
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input id="email" type="email" formControlName="email" placeholder="seu@email.com" />
+        </div>
+        <div class="field">
+          <label for="confirmEmail">Confirmar e-mail</label>
+          <input id="confirmEmail" type="email" formControlName="confirmEmail" placeholder="Repita o e-mail" />
+        </div>
+        <small class="error --full" *ngIf="mostrarErroEmail()">{{ mostrarErroEmail() }}</small>
 
-        <label for="birthDate">Birth Date</label>
-        <input type="date" id="birthDate" formControlName="birthDate" />
-      </div>
+        <div class="field">
+          <label for="password">Senha</label>
+          <input id="password" type="password" formControlName="password" placeholder="Mín. 6 caracteres" />
+        </div>
+        <div class="field">
+          <label for="confirmPassword">Confirmar senha</label>
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Repita a senha" />
+        </div>
+        <small class="error --full" *ngIf="mostrarErroSenha()">{{ mostrarErroSenha() }}</small>
+      </fieldset>
 
-      <!-- Address -->
-      <div class="form-section" formGroupName="address">
-        <p>Address</p>
-        <label for="country">Country</label>
-        <input type="text" id="country" formControlName="country" />
+      <!-- Endereço (opcional) -->
+      <fieldset class="block two" formGroupName="address">
+        <legend>Endereço (opcional)</legend>
+        <div class="field">
+          <label for="logradouro">Logradouro</label>
+          <input id="logradouro" type="text" formControlName="logradouro" placeholder="Rua, avenida..." />
+        </div>
+        <div class="field">
+          <label for="numero">Número</label>
+          <input id="numero" type="text" formControlName="numero" placeholder="Número" />
+        </div>
+        <div class="field">
+          <label for="bairro">Bairro</label>
+          <input id="bairro" type="text" formControlName="bairro" placeholder="Bairro" />
+        </div>
+        <div class="field">
+          <label for="complemento">Complemento</label>
+          <input id="complemento" type="text" formControlName="complemento" placeholder="Apartamento, bloco..." />
+        </div>
+        <div class="field">
+          <label for="cidade">Cidade</label>
+          <input id="cidade" type="text" formControlName="cidade" placeholder="Cidade" />
+        </div>
+        <div class="field">
+          <label for="estado">Estado</label>
+          <input id="estado" type="text" formControlName="estado" placeholder="UF" />
+        </div>
+      </fieldset>
 
-        <label for="postalCode">Postal Code</label>
-        <input type="text" id="postalCode" formControlName="postalCode" />
+      <!-- Dados bancários (opcional) -->
+      <fieldset class="block two" formGroupName="bankDetails">
+        <legend>Dados bancários (opcional)</legend>
+        <div class="field">
+          <label for="conta">Conta</label>
+          <input id="conta" type="text" formControlName="conta" placeholder="Conta" />
+        </div>
+        <div class="field">
+          <label for="agencia">Agência</label>
+          <input id="agencia" type="text" formControlName="agencia" placeholder="Agência" />
+        </div>
+        <div class="field">
+          <label for="tipoConta">Tipo de conta</label>
+          <input id="tipoConta" type="text" formControlName="tipoConta" placeholder="Corrente / Poupança" />
+        </div>
+        <div class="field">
+          <label for="titular">Titular</label>
+          <input id="titular" type="text" formControlName="titular" placeholder="Nome do titular" />
+        </div>
+        <div class="field">
+          <label for="cpfTitular">CPF do titular</label>
+          <input id="cpfTitular" type="text" formControlName="cpfTitular" placeholder="Somente números" />
+        </div>
+      </fieldset>
 
-        <label for="state">State</label>
-        <input type="text" id="state" formControlName="state" />
+      <!-- PIX (opcional) -->
+      <fieldset class="block" formGroupName="pix">
+        <legend>PIX (opcional)</legend>
+        <div class="field">
+          <label for="pixChave">Chave PIX</label>
+          <input id="pixChave" type="text" formControlName="chave" placeholder="E-mail, CPF, telefone ou chave aleatória" />
+        </div>
+      </fieldset>
 
-        <label for="city">City</label>
-        <input type="text" id="city" formControlName="city" />
-
-        <label for="street">Street</label>
-        <input type="text" id="street" formControlName="street" />
-
-        <label for="number">Number</label>
-        <input type="text" id="number" formControlName="number" />
-
-        <label for="neighborhood">Neighborhood</label>
-        <input type="text" id="neighborhood" formControlName="neighborhood" />
-
-        <label for="complement">Complement</label>
-        <input type="text" id="complement" formControlName="complement" />
-      </div>
-
-      <!-- Privacy -->
-      <div class="form-section">
-        <label>
-          <input type="checkbox" formControlName="acceptTerms" />
-          I accept the Privacy Policy and Terms of Service
+      <!-- Política -->
+      <div class="block">
+        <label class="check">
+          <input type="checkbox" formControlName="aceitarPolitica" />
+          Eu li e aceito a <a href="#" (click)="$event.preventDefault()">Política de Privacidade</a> e os Termos de Uso.
         </label>
+        <small class="error" *ngIf="f.get('aceitarPolitica')?.touched && f.get('aceitarPolitica')?.invalid">
+          Você precisa aceitar para continuar.
+        </small>
       </div>
 
-      <input type="submit" value="Register" [disabled]="!signupForm.valid" />
+      <!-- Mensagens -->
+      <p class="msg erro" *ngIf="erro()">{{ erro() }}</p>
+      <p class="msg ok" *ngIf="sucesso()">{{ sucesso() }}</p>
+
+      <button class="primary" type="submit" [disabled]="invalido()">
+        {{ carregando() ? 'Enviando...' : 'Cadastrar' }}
+      </button>
     </form>
   </section>
 </main>

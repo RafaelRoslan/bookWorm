@@ -1,1 +1,79 @@
-<p>add-book-dialog works!</p>
+<div class="backdrop">
+  <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <header class="modal__header">
+      <h3>{{ dialogTitle }}</h3>
+      <button class="icon-btn" aria-label="Fechar" (click)="close.emit()">✕</button>
+    </header>
+
+    <section class="modal__body modal-grid">
+      <!-- COLUNA ESQUERDA: FORM -->
+      <form class="form" (ngSubmit)="doSubmit()">
+        <!-- Título -->
+        <div class="form-row">
+          <label for="title">Título *</label>
+          <input id="title" name="title" type="text" [(ngModel)]="form.title" required placeholder="Ex.: Harry Potter" />
+        </div>
+
+        <!-- Autor -->
+        <div class="form-row">
+          <label for="author">Autor</label>
+          <input id="author" name="author" type="text" [(ngModel)]="form.author" placeholder="Ex.: J.K. Rowling" />
+        </div>
+
+        <!-- 2 colunas: Ano / Editora -->
+        <div class="row-2col">
+          <div class="form-row">
+            <label for="year">Ano</label>
+            <input id="year" name="year" type="number" [(ngModel)]="form.year" placeholder="Ex.: 2007" />
+          </div>
+          <div class="form-row">
+            <label for="publisher">Editora</label>
+            <input id="publisher" name="publisher" type="text" [(ngModel)]="form.publisher" placeholder="Ex.: Rocco" />
+          </div>
+        </div>
+
+        <!-- Descrição -->
+        <div class="form-row">
+          <label for="description">Descrição</label>
+          <textarea id="description" name="description" rows="3" [(ngModel)]="form.description" placeholder="Sinopse ou observações"></textarea>
+        </div>
+
+        <!-- ISBN -->
+        <div class="form-row">
+          <label for="isbn">ISBN</label>
+          <input id="isbn" name="isbn" type="text" [(ngModel)]="form.isbn" placeholder="Ex.: 978..." />
+        </div>
+
+        <!-- Capa -->
+        <div class="form-row">
+          <label for="image">Capa (imagem)</label>
+          <input id="image" type="file" accept="image/*" (change)="onImageSelected($event)" />
+          <small class="help-text">Tamanho máx.: ~200 KB (redimensionamos para ~600px de largura)</small>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="secondary" (click)="close.emit()">Cancelar</button>
+          <button type="submit" class="primary">{{ submitLabel }}</button>
+        </div>
+      </form>
+
+      <!-- COLUNA DIREITA: PREVIEW -->
+      <aside class="preview-pane">
+        <div class="preview-box">
+          <ng-container *ngIf="form.image; else noImage">
+            <img [src]="form.image!" alt="Preview capa" class="preview-img" />
+          </ng-container>
+          <ng-template #noImage>
+            <div class="preview-placeholder">Prévia da capa (300px)</div>
+          </ng-template>
+        </div>
+
+        <!-- Limpar capa (só em edição) -->
+        <label *ngIf="canClearImage" class="clear-toggle">
+            <input type="checkbox" [(ngModel)]="clearImage" name="clearImage" />
+            Remover capa deste livro
+        </label>
+      </aside>
+    </section>
+  </div>
+</div>

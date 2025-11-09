@@ -1,30 +1,31 @@
+<!-- src/app/pages/book-page/book-page.component.html -->
 <main>
   <div class="book-page">
-    <div *ngIf="loading">Carregando…</div>
-    <div *ngIf="!loading && error" class="error">{{ error }}</div>
 
-    <ng-container *ngIf="!loading && !error">
-      <div class="book-main">
-        <div class="book-cover-wrapper">
-          <img *ngIf="hasImage; else placeholder" [src]="imageUrl" alt="Capa do livro" />
-          <ng-template #placeholder>
-            <div class="empty-cover"><p class="placeholder-text">IMAGEM LIVRO</p></div>
-          </ng-template>
-        </div>
+    <p *ngIf="loading">Carregando...</p>
+    <p *ngIf="!loading && error" class="error-text">{{ error }}</p>
 
-        <div class="book-info">
-          <h2>{{ title }}</h2>
-          <p *ngIf="author"><strong>Autor:</strong> {{ author }}</p>
-          <p *ngIf="publisher"><strong>Editora:</strong> {{ publisher }}</p>
-          <p *ngIf="year !== null"><strong>Ano:</strong> {{ year }}</p>
-          <p *ngIf="isbn"><strong>ISBN:</strong> {{ isbn }}</p>
+    <div *ngIf="!loading && book as bk" class="book-main">
+      <div class="book-cover-wrapper">
+        <img *ngIf="hasImage; else placeholder" [src]="bk.image!" alt="Capa do livro" />
+        <ng-template #placeholder>
+          <div class="empty-cover"><p class="placeholder-text">IMAGEM LIVRO</p></div>
+        </ng-template>
+      </div>
 
-          <div class="book-synopsis" *ngIf="description">
-            <strong>Descrição:</strong>
-            <p>{{ description }}</p>
-          </div>
+      <div class="book-info">
+        <h2>{{ bk.title }}</h2>
+        <p *ngIf="bk.author"><strong>Autor:</strong> {{ bk.author }}</p>
+        <p *ngIf="bk.publisher"><strong>Editora:</strong> {{ bk.publisher }}</p>
+        <p *ngIf="bk.year"><strong>Ano:</strong> {{ bk.year }}</p>
+        <p *ngIf="bk.isbn"><strong>ISBN:</strong> {{ bk.isbn }}</p>
+
+        <div class="book-synopsis" *ngIf="bk.description">
+          <strong>Sinopse:</strong>
+          <p>{{ bk.description }}</p>
         </div>
       </div>
-    </ng-container>
+    </div>
+
   </div>
 </main>

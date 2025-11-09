@@ -3,9 +3,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, forkJoin } from 'rxjs';
+
+import { AddBookDialogComponent, AddBookForm } from '../../components/add-book-dialog/add-book-dialog.component';
 import { CardBookComponent } from '../../components/card-book/card-book.component';
 import { SellDialogComponent, SellForm } from '../../components/sell-dialog/sell-dialog.component';
+
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { Book, Collection } from '../../models/api.models';
+import { BookService } from '../../services/book.service';
 import { CollectionService } from '../../services/collection.service';
 import { ListingService } from '../../services/listing.service';
 
@@ -14,6 +19,9 @@ type CardBookVM = {
   titulo: string;
   autor?: string;
   ano?: string | number | null;
+  publisher?: string | null;
+  description?: string | null;
+  isbn?: string | null;  
   status?: string | null;
   imageUrl?: string | null;
 };
@@ -21,165 +29,58 @@ type CardBookVM = {
 @Component({
   selector: 'app-collection',
   standalone: true,
-  imports: [CommonModule, FormsModule, CardBookComponent, SellDialogComponent],
+  imports: [CommonModule, FormsModule, CardBookComponent, SellDialogComponent, AddBookDialogComponent, ConfirmDialogComponent],
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.css'],
 })
-
 export class CollectionComponent implements OnInit, OnDestroy {
-  collection: Collection | null=null;
+  collection: Collection | null = null;
   books: CardBookVM[] = [];
 
-  editMode = false;
+  // estados gerais
   loading = false;
-  saving = false;
-  error = '';
+  saving  = false;
+  error   = '';
 
-  showAddForm = false;
-  addForm = {
-    title: '',
-    author: '',
-    description: '',
-    isbn: '',
-    image: ''
-  };
+  // edição título da coleção
+  editMode = false;
 
-  
-  // estado de edição
-  isEditing = false;
-  editIndex: number | null = null;
-  editForm = {
-    _id: '',
-    title: '',
-    author: '',
-    description: '',
-    isbn: '',
-    image: '' as string | null  // base64 opcional
-  };
+  // edição de livro
+  editOpen = false;
+  editInitial: AddBookForm | null = null;
+  editingId: string | null = null;
 
+  // remover livro
+  confirmRemoveOpen = false;
+  confirmRemoveIndex: number | null = null;
+  removing = false;
+
+  // modal de venda
   sellOpen = false;
   sellBook: CardBookVM | null = null;
   selling = false;
+
+  // modal de adicionar livro
+  addOpen = false;
+
+  // usar como capa (desabilitar/rotular após definido)
+  coverBusy = false;
+  coveredIds = new Set<string>();
+
+  private sub = new Subscription();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private svc: CollectionService,
+    private svb: BookService,
     private listing: ListingService
-    
   ) {}
 
-  // abrir edição do i-ésimo livro
-  startEdit(i: number): void {
-    const b = this.books[i];
-    this.isEditing = true;
-    this.editIndex = i;
-    this.editForm = {
-      _id: b._id,
-      title: b.titulo ?? '',
-      author: b.autor ?? '',
-      description: '', // se você já tiver no VM, preencha aqui
-      isbn: '',        // idem
-      image: b.imageUrl ?? null
-    };
-  }
+  trackById(index: number, item: any): string {
+  return item._id;
+}
 
-  // cancelar edição
-  cancelEdit(): void {
-    this.isEditing = false;
-    this.editIndex = null;
-    this.editForm = { _id:'', title:'', author:'', description:'', isbn:'', image: null };
-  }
-
-  // salvar edição
-  submitEditBook(): void {
-    if (!this.collection?._id || !this.isEditing || this.editIndex === null) return;
-    const cid = this.collection._id;
-    const bid = this.editForm._id;
-
-    const payload: any = {
-    title: this.editForm.title?.trim() || '',
-    author: this.editForm.author?.trim() || '',
-    description: this.editForm.description?.trim() || '',
-    isbn: this.editForm.isbn?.trim() || ''
-  };
-
-  //console.log(payload);
-
-
-  if (this.editForm.image) payload.image = this.editForm.image;
-
-    this.svc.updateBook(cid, bid, payload).subscribe({
-      next: (res) => {
-        // Se o back devolver o livro atualizado:
-        const updated = res?.book;
-        if (updated) {
-          // atualiza localmente o VM daquele card
-          this.books[this.editIndex!] = this.toCardVM(updated as any);
-        } else {
-          // ou recarrega tudo
-          this.load(cid);
-        }
-        this.cancelEdit();
-      },
-      error: (e) => {
-        console.error(e);
-        this.error = e?.error?.message || 'Falha ao atualizar livro';
-      }
-    });
-  }
-
-  // trocar capa na edição (reaproveita seu compressor)
-  onEditImageSelected(e: Event): void {
-    const input = e.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-
-    const maxBytes = 200 * 1024;
-    const maxWidth = 600;
-
-    this.readAndCompressImage(file, maxWidth, maxBytes)
-      .then(base64 => this.editForm.image = base64)
-      .catch(err => {
-        console.error(err);
-        this.error = 'Não foi possível processar a nova imagem.';
-      });
-  }
-
-  openSell(book: CardBookVM) {
-    this.sellBook = book;
-    this.sellOpen = true;
-    // opcional: travar scroll do body
-    document.body.style.overflow = 'hidden';
-  }
-
-  closeSell() {
-    this.sellOpen = false;
-    this.sellBook = null;
-    document.body.style.overflow = ''; // libera scroll
-  }
-
-  onSellSubmit(form: SellForm) {
-    if (!this.sellBook?._id || this.selling) return;
-    this.selling = true;
-
-    this.listing.createListing({
-      bookId: this.sellBook._id,
-      price: form.price,
-      condition: form.condition,
-      stock: form.stock,
-      shipping: form.shipping
-    }).subscribe({
-      next: () => { this.selling = false; this.closeSell(); },
-      error: (e) => { this.selling = false; this.error = e?.error?.message || 'Falha ao criar anúncio'; }
-    });
-  }
-
-
-
-  private sub = new Subscription();
-
-  
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -192,11 +93,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+    document.body.style.overflow = ''; // garante que o scroll não fique travado
   }
 
-  
-
-  
   /** Carrega coleção + livros */
   private load(collectionId: string): void {
     this.loading = true;
@@ -210,7 +109,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
         this.collection = col;
         this.books = (books ?? []).map(this.toCardVM);
         this.loading = false;
-        console.log('DEBUG books:', this.books);
       },
       error: (e) => {
         console.error(e);
@@ -229,32 +127,215 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.editMode = !this.editMode;
   }
 
+  /** Salva apenas o nome da coleção */
   private saveTitle(): void {
-  if (!this.collection) return;
-  const { _id, name } = this.collection;
-  if (!_id || !name?.trim()) return;
+    if (!this.collection) return;
+    const { _id, name } = this.collection;
+    if (!_id || !name?.trim()) return;
 
-  this.saving = true;
-  const s = this.svc.updateCollection(_id, { name: name.trim() }).subscribe({
-    next: (updated) => {
-      if (updated && (updated as any).name) {
-        this.collection = updated;       // 👈 aplica o nome retornado
-      } else {
-        this.load(_id);                  // 👈 fallback (se necessário)
-      }
-      this.editMode = false;             // 👈 sai do modo edição
-      this.saving = false;
-    },
-    error: (e) => {
-      console.error(e);
-      this.error = e?.error?.message || 'Falha ao salvar a coleção';
-      this.saving = false;
-    },
-  });
-  this.sub.add(s);
+    this.saving = true;
+    const s = this.svc.updateCollection(_id, { name: name.trim() }).subscribe({
+      next: (updated) => {
+        if (updated && (updated as any).name) {
+          this.collection = updated;
+        } else {
+          this.load(_id);
+        }
+        this.editMode = false;
+        this.saving = false;
+      },
+      error: (e) => {
+        console.error(e);
+        this.error = e?.error?.message || 'Falha ao salvar a coleção';
+        this.saving = false;
+      },
+    });
+    this.sub.add(s);
   }
 
 
+ 
+  /** --------- VENDER (modal) ---------- */
+  openSell(book: CardBookVM) {
+    this.sellBook = book;
+    this.sellOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeSell() {
+    this.sellOpen = false;
+    this.sellBook = null;
+    document.body.style.overflow = '';
+  }
+
+  onSellSubmit(form: SellForm) {
+    if (!this.sellBook?._id || this.selling) return;
+    this.selling = true;
+
+    this.listing.createListing({
+      bookId: this.sellBook._id,
+      price: form.price,
+      condition: form.condition,
+      stock: form.stock,
+      shipping: form.shipping
+    }).subscribe({
+      next: () => { this.selling = false; this.closeSell(); },
+      error: (e) => { this.selling = false; this.error = e?.error?.message || 'Falha ao criar anúncio'; }
+    });
+  }
+
+  /** --------- ADICIONAR LIVRO (modal) ---------- */
+  openAdd(): void {
+    this.addOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeAdd(): void {
+    this.addOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  onAddSubmit(f: AddBookForm): void {
+    if (!this.collection?._id) return;
+    const cid = this.collection._id;
+
+    const payload: any = {
+      title: f.title,
+      author: f.author,
+      description: f.description || '',
+      isbn: f.isbn || '',
+      image: f.image || ''
+    };
+    // Se year/publisher já existem no back:
+    if (f.year != null) payload.year = f.year;
+    if (f.publisher) payload.publisher = f.publisher;
+
+    this.svc.addBookToCollection(cid, payload).subscribe({
+      next: () => {
+        this.closeAdd();
+        this.load(cid);
+      },
+      error: (e) => {
+        console.error(e);
+        this.error = e?.error?.message || 'Falha ao adicionar livro';
+      }
+    });
+  }
+
+  /** --------- EDITAR LIVRO (modal) ---------- */
+  openEdit(i: number): void {
+  if (!this.collection?._id) return;
+  const cid = this.collection._id;
+  const vm = this.books[i];
+
+  // Busca o livro completo no back
+  this.svb.getBook(cid, vm._id).subscribe({
+    next: (res: any) => {
+      const b = res?.book ?? res; // tanto faz se o service já mapear
+      this.editingId = vm._id;
+      this.editInitial = {
+        title: b.title ?? b.titulo ?? '',
+        author: b.author ?? b.autor ?? '',
+        description: b.description ?? '',        // 👈 agora vem do back
+        isbn: b.isbn ?? '',
+        year: b.year ?? b.ano ?? null,
+        publisher: b.publisher ?? '',
+        image: b.image ?? b.imageUrl ?? b.cover ?? ''
+      };
+      this.editOpen = true;
+      document.body.style.overflow = 'hidden';
+    },
+    error: (e) => {
+      console.error(e);
+      this.error = e?.error?.message || 'Não foi possível carregar o livro para edição';
+    }
+  });
+  }
+
+
+  closeEdit(): void {
+    this.editOpen = false;
+    this.editInitial = null;
+    this.editingId = null;
+    document.body.style.overflow = '';
+  }
+
+  onEditSubmit(f: AddBookForm): void {
+    if (!this.collection?._id || !this.editingId) return;
+    const cid = this.collection._id;
+    const bid = this.editingId;
+
+    // monta payload apenas com o que deve mudar
+    const payload: any = {
+      title: f.title,
+      author: f.author,
+      description: f.description || '',
+      isbn: f.isbn || ''
+    };
+    if (typeof f.year !== 'undefined') payload.year = f.year ?? null;
+    if (typeof f.publisher !== 'undefined') payload.publisher = f.publisher ?? '';
+
+    // imagem:
+    // - '' => limpar
+    // - base64 => trocar
+    // - undefined => não mexer
+    if (f.image === '') payload.image = '';
+    else if (typeof f.image === 'string') payload.image = f.image; // base64
+    // se undefined, não inclui
+
+    this.svc.updateBook(cid, bid, payload).subscribe({
+      next: (res) => {
+        const updated = res?.book;
+        if (updated) {
+          // atualiza o VM local sem recarregar tudo
+          const idx = this.books.findIndex(x => x._id === bid);
+          if (idx >= 0) this.books[idx] = this.toCardVM(updated as any);
+        } else {
+          this.load(cid);
+        }
+        this.closeEdit();
+      },
+      error: (e) => {
+        console.error(e);
+        this.error = e?.error?.message || 'Falha ao atualizar livro';
+      }
+    });
+  }
+
+  /** --------- REMOVER LIVRO (modal) ---------- */
+  confirmRemove(i: number){
+    this.confirmRemoveIndex = i;
+    this.confirmRemoveOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+  closeConfirmRemove(){
+    this.confirmRemoveOpen = false;
+    this.confirmRemoveIndex = null;
+    document.body.style.overflow = '';
+  }
+  doRemoveConfirmed(){
+    if (this.confirmRemoveIndex == null || !this.collection?._id) return;
+    const idx = this.confirmRemoveIndex;
+    const book = this.books[idx];
+    this.removing = true;
+
+    this.svc.removeBook(this.collection._id, book._id).subscribe({
+      next: () => {
+        this.books.splice(idx, 1);
+        this.removing = false;
+        this.closeConfirmRemove();
+      },
+      error: (e) => {
+        console.error(e);
+        this.error = e?.error?.message || 'Falha ao remover o livro';
+        this.removing = false;
+      }
+    });
+  }
+
+
+
+  /** --------- OUTROS ---------- */
   removeBook(index: number): void {
     const book = this.books[index];
     if (!book || !this.collection?._id) return;
@@ -269,171 +350,48 @@ export class CollectionComponent implements OnInit, OnDestroy {
     });
   }
 
-   addBookToggle(): void {
-    this.showAddForm = !this.showAddForm;
-    if (!this.showAddForm) {
-      this.resetAddForm();
-    }
-  }
+    setAsCover(index: number): void {
+    if (!this.collection?._id || this.coverBusy) return;
+    const cid = this.collection._id;
+    const bid = this.books[index]._id;
 
-  private resetAddForm() {
-    this.addForm = { title: '', author: '', description: '', isbn: '', image: '' };
-  }
-
-  submitAddBook(): void {
-    if (!this.collection?._id) return;
-
-    const title = this.addForm.title?.trim();
-    if (!title) {
-      this.error = 'Informe ao menos o título';
-      return;
-    }
-
-    const payload = {
-      title,
-      author: this.addForm.author?.trim() || '',
-      description: this.addForm.description?.trim() || '',
-      isbn: this.addForm.isbn?.trim() || '',
-      image: this.addForm.image?.trim() || ''
-    };
-
-    this.svc.addBookToCollection(this.collection._id, payload).subscribe({
+    this.coverBusy = true;
+    this.svc.setBookAsCover(cid, bid).subscribe({
       next: () => {
-        this.resetAddForm();
-        this.showAddForm = false;
-        this.load(this.collection!._id); // recarrega lista de livros
+        this.coverBusy = false;
+        this.coveredIds.add(bid); // marca como já definido
       },
       error: (e) => {
         console.error(e);
-        this.error = e?.error?.message || 'Falha ao adicionar livro';
+        this.error = e?.error?.message || 'Falha ao definir capa';
+        this.coverBusy = false;
       }
     });
   }
 
-  /** Normaliza os campos do back → card-book inputs */
+
+  /** Normaliza os campos do back → card-book */
   private toCardVM = (b: Book): CardBookVM => {
-    const titulo = (b as any).titulo ?? (b as any).title ?? '';
-    const autor  = (b as any).autor  ?? (b as any).author ?? '';
-    const anoRaw = (b as any).ano    ?? (b as any).year   ?? null;
-    const status = (b as any).status ?? null;
-    const image  = (b as any).imageUrl ?? (b as any).image ?? (b as any).cover ?? null;
+    const titulo     = (b as any).titulo     ?? (b as any).title     ?? '';
+    const autor      = (b as any).autor      ?? (b as any).author    ?? '';
+    const anoRaw     = (b as any).ano        ?? (b as any).year      ?? null;
+    const status     = (b as any).status     ?? null;
+    const image      = (b as any).imageUrl   ?? (b as any).image     ?? (b as any).cover ?? null;
+    const publisher  = (b as any).publisher  ?? null;            // ✅
+    const isbn       = (b as any).isbn       ?? null;            // ✅
+    const description= (b as any).description?? null;            // ✅
 
     return {
       _id: (b as any)._id,
       titulo,
       autor,
       ano: anoRaw,
+      publisher,
+      isbn,
+      description,
       status,
       imageUrl: image,
     };
-  }
+  };
 
-  onImageSelected(e: Event) {
-    const input = e.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-
-    const maxBytes = 200 * 1024; // 200KB alvo
-    const maxWidth = 600;        // limite de largura
-
-    this.readAndCompressImage(file, maxWidth, maxBytes).then((base64) => {
-      this.addForm.image = base64; // salva no form
-    }).catch(err => {
-      console.error(err);
-      this.error = 'Não foi possível processar a imagem.';
-    });
-  }
-
-  /** Lê arquivo, redimensiona mantendo proporção e tenta ficar <= maxBytes */
-  private readAndCompressImage(file: File, maxWidth: number, maxBytes: number): Promise<string> {
-    return new Promise((resolve, reject) => {
-      if (!file.type.startsWith('image/')) return reject('Arquivo não é imagem');
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = new Image();
-        img.onload = async () => {
-          try {
-            const base64 = await this.toCompressedDataURL(img, file.type, maxWidth, maxBytes);
-            resolve(base64);
-          } catch (e) { reject(e); }
-        };
-        img.onerror = reject;
-        img.src = reader.result as string;
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  /** Redimensiona e ajusta qualidade para tentar ficar no teto de bytes */
-  private toCompressedDataURL(img: HTMLImageElement, mime: string, maxWidth: number, maxBytes: number): Promise<string> {
-    return new Promise((resolve) => {
-      const canvas = document.createElement('canvas');
-      const scale = img.width > maxWidth ? maxWidth / img.width : 1;
-      const w = Math.round(img.width * scale);
-      const h = Math.round(img.height * scale);
-
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext('2d')!;
-      ctx.drawImage(img, 0, 0, w, h);
-
-      // Tenta qualidade adaptativa (apenas para formatos com qualidade: jpeg/webp)
-      const supportsQuality = /jpeg|jpg|webp/i.test(mime);
-      let quality = supportsQuality ? 0.85 : 1.0;
-
-      const toSize = (b64: string) => {
-        // estima bytes de base64 (descontando prefixo data:)
-        const pure = b64.split(',')[1] || '';
-        return Math.floor((pure.length * 3) / 4);
-      };
-
-      let dataUrl = canvas.toDataURL(supportsQuality ? 'image/jpeg' : mime, quality);
-      let bytes = toSize(dataUrl);
-
-      // se ainda passou do teto, baixa a qualidade em passos
-      while (bytes > maxBytes && supportsQuality && quality > 0.4) {
-        quality -= 0.1;
-        dataUrl = canvas.toDataURL('image/jpeg', quality);
-        bytes = toSize(dataUrl);
-      }
-
-      // fallback: se ainda ficou grande demais, reduz mais a largura
-      if (bytes > maxBytes && w > 320) {
-        const newMax = Math.max(320, Math.floor(w * 0.8));
-        resolve(this.toCompressedDataURL(img, mime, newMax, maxBytes)); // recursivo
-        return;
-      }
-
-      resolve(dataUrl);
-    });
-  }
-
-  setAsCover(index: number): void {
-      if (!this.collection?._id) return;
-      const cid = this.collection._id;
-      const bid = this.books[index]._id;
-
-      this.svc.setBookAsCover(cid, bid).subscribe({
-        next: () => {
-          // opcional: feedback na UI
-          // se quiser refletir na Bookcase, basta recarregar lá quando voltar para a lista
-          alert('Capa definida!');
-        },
-        error: (e) => {
-          console.error(e);
-          this.error = e?.error?.message || 'Falha ao definir capa';
-        }
-      });
-  }
-
-
-
-};
-
-
-
-  
-
-
+}

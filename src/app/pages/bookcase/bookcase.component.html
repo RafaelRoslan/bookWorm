@@ -13,10 +13,42 @@
       ></app-card-collection>
 
       <!-- Card de adicionar nova coleção -->
-      <div class="add-card" (click)="createCollection()">
+      <div class="add-card" (click)="openCreate()">
         <div class="plus-icon">+</div>
         <div class="collection-title">Nova Coleção</div>
       </div>
     </div>
   </div>
 </main>
+
+<!-- Criar -->
+<app-name-dialog
+  *ngIf="createOpen"
+  [title]="'Nova coleção'"
+  [submitLabel]="'Criar'"
+  (cancel)="closeCreate()"
+  (submit)="doCreate($event)">
+</app-name-dialog>
+
+<!-- Renomear -->
+<app-name-dialog
+  *ngIf="renameOpen && renameTarget"
+  [title]="'Renomear coleção'"
+  [submitLabel]="'Salvar'"
+  [initial]="renameTarget!.name"
+  (cancel)="closeRename()"
+  (submit)="doRename($event)">
+</app-name-dialog>
+
+<!-- Excluir -->
+<app-confirm-dialog
+  *ngIf="deleteOpen"
+  [title]="'Excluir coleção'"
+  [message]="'Todos os livros desta coleção serão EXCLUÍDOS também. Deseja continuar?'"
+  [confirmLabel]="'Excluir'"
+  [cancelLabel]="'Cancelar'"
+  [danger]="true"
+  (cancel)="closeDelete()"
+  (confirm)="doDelete()">
+</app-confirm-dialog>
+

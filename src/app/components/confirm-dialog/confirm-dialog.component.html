@@ -1,0 +1,21 @@
+<div class="backdrop">
+  <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <header class="modal__header">
+      <h3>{{ title }}</h3>
+      <button class="icon-btn" (click)="cancel.emit()">✕</button>
+    </header>
+
+    <section class="modal__body">
+      <p class="msg">{{ message }}</p>
+    </section>
+
+    <footer class="modal__footer">
+      <button class="btn secondary" type="button" (click)="cancel.emit()">
+        {{ cancelLabel }}
+      </button>
+      <button class="btn" [class.danger]="danger" type="button" (click)="confirm.emit()">
+        {{ confirmLabel }}
+      </button>
+    </footer>
+  </div>
+</div>
