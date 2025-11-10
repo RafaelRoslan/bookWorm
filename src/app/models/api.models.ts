@@ -1,7 +1,25 @@
 export interface User {
-  id: string;
+  _id: string;               // padronize _id
   name: string;
+  lastname: string;
   email: string;
+  status?: 'ativo' | 'inativo';
+  address?: {
+    logradouro?: string;
+    numero?: string;
+    bairro?: string;
+    complemento?: string;
+    cidade?: string;
+    estado?: string;
+  };
+  bankDetails?: {
+    conta?: string;
+    agencia?: string;
+    tipoConta?: string;
+    titular?: string;
+    cpfTitular?: string;
+  };
+  pix?: { chave?: string };
 }
 
 export interface Collection {

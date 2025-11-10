@@ -1,6 +1,6 @@
 <section class="store-navbar__container">
     <section class="store-logo">
-        <img src="../../../assets/svg/PlayStation Store.svg" alt="logo BookWorm">
+        <img src="" alt="logo BookWorm">
     </section>
     <nav class="store__navbar">
         <ul class="store__nav-list">
@@ -11,7 +11,7 @@
             <ng-container *ngIf="isAuth(); else guestLinks">
                 <li class="store__nav-item"><a [routerLink]="['/meu-bazar']" routerLinkActive="selected">Meu Bazar</a></li>
                 <li class="store__nav-item"><a [routerLink]="['/bookcase']" routerLinkActive="selected">Minha Estante</a></li>
-                <li class="store__nav-item"><a [routerLink]="['/subscription']" routerLinkActive="selected">Assinatura</a></li>
+                <li class="store__nav-item"><a [routerLink]="['/my-profile']" routerLinkActive="selected">Meu Perfil</a></li>
                 <li class="store__nav-item"><a (click)="logout()" routerLinkActive="selected">Logout</a></li>
             </ng-container>
 
@@ -22,7 +22,7 @@
         </ul>
 
         <a routerLink="/carrinho" class="cart-link">
-            <img src="/src/assets/icons/grocery-store.png" alt="Carrinho" class="cart-icon" />
+            <img src="/assets/icons/grocery-store.png" alt="Carrinho" class="cart-icon" />
             <span class="badge">{{ cart.count$ | async }}</span>
         </a>
 

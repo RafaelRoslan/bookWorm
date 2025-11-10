@@ -1,0 +1,216 @@
+<main class="main">
+  <section class="profile">
+    <h2>Meu perfil</h2>
+    <p class="profile-legend">
+      Atualize seus dados pessoais, endereço e informações de recebimento.<br />
+      <strong>Obs.:</strong> alteração de e-mail e senha será feita em uma área própria.
+    </p>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Tipo de conta -->
+      <fieldset class="profile-block">
+        <legend>Tipo de conta</legend>
+        <label class="profile-radio">
+          <input type="radio" formControlName="type" value="Fisica" />
+          Pessoa Física
+        </label>
+        <label class="profile-radio">
+          <input type="radio" formControlName="type" value="Juridica" />
+          Pessoa Jurídica
+        </label>
+      </fieldset>
+
+      <!-- Dados pessoais (nome apenas leitura) -->
+      <fieldset class="profile-block profile-two">
+        <legend>Dados pessoais</legend>
+        <div class="profile-field">
+          <label for="name">Nome</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Seu nome"
+          />
+          <small class="profile-hint">
+            Nome não pode ser alterado aqui.
+          </small>
+        </div>
+
+        <div class="profile-field">
+          <label for="lastname">Sobrenome</label>
+          <input
+            id="lastname"
+            type="text"
+            formControlName="lastname"
+            placeholder="Seu sobrenome"
+          />
+          <small class="profile-hint">
+            Sobrenome não pode ser alterado aqui.
+          </small>
+        </div>
+      </fieldset>
+
+      <!-- Endereço -->
+      <fieldset class="profile-block profile-two" formGroupName="address">
+        <legend>Endereço</legend>
+        <div class="profile-field">
+            <label for="cep">CEP</label>
+            <input
+            id="cep"
+            type="text"
+            formControlName="cep"
+            placeholder="Somente números"
+            />
+        </div>
+        <div class="profile-field">
+          <label for="logradouro">Logradouro</label>
+          <input
+            id="logradouro"
+            type="text"
+            formControlName="logradouro"
+            placeholder="Rua, avenida..."
+          />
+        </div>
+        <div class="profile-field">
+          <label for="numero">Número</label>
+          <input
+            id="numero"
+            type="text"
+            formControlName="numero"
+            placeholder="Número"
+          />
+        </div>
+        <div class="profile-field">
+          <label for="bairro">Bairro</label>
+          <input
+            id="bairro"
+            type="text"
+            formControlName="bairro"
+            placeholder="Bairro"
+          />
+        </div>
+        <div class="profile-field">
+          <label for="complemento">Complemento</label>
+          <input
+            id="complemento"
+            type="text"
+            formControlName="complemento"
+            placeholder="Apartamento, bloco..."
+          />
+        </div>
+        <div class="profile-field">
+          <label for="cidade">Cidade</label>
+          <input
+            id="cidade"
+            type="text"
+            formControlName="cidade"
+            placeholder="Cidade"
+          />
+        </div>
+        <div class="profile-field">
+          <label for="estado">Estado</label>
+          <input
+            id="estado"
+            type="text"
+            formControlName="estado"
+            placeholder="UF"
+          />
+        </div>
+
+        <small
+          class="profile-error profile-error--full"
+          *ngIf="f.get('address')?.touched && f.get('address')?.hasError('enderecoIncompleto')"
+        >
+          Se começar a preencher o endereço, preencha também rua, número, bairro, cidade e estado.
+        </small>
+      </fieldset>
+
+      <!-- Dados bancários -->
+      <fieldset class="profile-block profile-two" formGroupName="bankDetails">
+        <legend>Dados bancários</legend>
+        <div class="profile-field">
+          <label for="conta">Conta</label>
+          <input
+            id="conta"
+            type="text"
+            formControlName="conta"
+            placeholder="Conta"
+          />
+        </div>
+        <div class="profile-field">
+          <label for="agencia">Agência</label>
+          <input
+            id="agencia"
+            type="text"
+            formControlName="agencia"
+            placeholder="Agência"
+          />
+        </div>
+        <div class="profile-field">
+          <label for="tipoConta">Tipo de conta</label>
+          <input
+            id="tipoConta"
+            type="text"
+            formControlName="tipoConta"
+            placeholder="Corrente / Poupança"
+          />
+        </div>
+        <div class="profile-field">
+          <label for="titular">Titular</label>
+          <input
+            id="titular"
+            type="text"
+            formControlName="titular"
+            placeholder="Nome do titular"
+          />
+        </div>
+        <div class="profile-field">
+          <label for="cpfTitular">CPF do titular</label>
+          <input
+            id="cpfTitular"
+            type="text"
+            formControlName="cpfTitular"
+            placeholder="Somente números"
+          />
+        </div>
+
+        <small
+          class="profile-error profile-error--full"
+          *ngIf="f.get('bankDetails')?.touched && f.get('bankDetails')?.hasError('dadosBancariosIncompletos')"
+        >
+          Se começar a preencher os dados bancários, preencha todos os campos.
+        </small>
+      </fieldset>
+
+      <!-- PIX -->
+      <fieldset class="profile-block" formGroupName="pix">
+        <legend>PIX</legend>
+        <div class="profile-field">
+          <label for="pixChave">Chave PIX</label>
+          <input
+            id="pixChave"
+            type="text"
+            formControlName="chave"
+            placeholder="E-mail, CPF, telefone ou chave aleatória"
+          />
+        </div>
+      </fieldset>
+
+      <!-- Mensagens -->
+      <p class="profile-msg profile-msg--error" *ngIf="erro()">
+        {{ erro() }}
+      </p>
+      <p class="profile-msg profile-msg--ok" *ngIf="sucesso()">
+        {{ sucesso() }}
+      </p>
+
+      <button
+        class="profile-primary"
+        type="submit"
+        [disabled]="invalido()"
+      >
+        {{ carregando() ? 'Salvando...' : 'Salvar alterações' }}
+      </button>
+    </form>
+  </section>
+</main>

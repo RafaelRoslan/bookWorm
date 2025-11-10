@@ -11,9 +11,9 @@ import { CollectionComponent } from './pages/collection/collection.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { MeuBazarComponent } from './pages/meu-bazar/meu-bazar.component';
+import { MyProfileComponent } from './pages/my-profile/my-profile.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { SubscriptionComponent } from './pages/subscription/subscription.component';
-
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -25,7 +25,8 @@ export const routes: Routes = [
     { path: 'meu-bazar',component:MeuBazarComponent, canActivate:[authGuard]},
     { path: 'collection/:id', component: CollectionComponent, canActivate:[authGuard]},
     { path: 'collection/:collectionId/book/:bookId', component: BookPageComponent},
-    { path: 'subscription', component: SubscriptionComponent, canActivate:[authGuard]},
+    { path: 'my-profile', component: MyProfileComponent, canActivate: [authGuard] },
+    { path: 'subscription', component: SubscriptionComponent, canActivate:[authGuard]},//assinatura
     { path: 'login', component: LoginComponent, canActivate:[guestGuard]},
     { path: 'signup', component: SignupComponent, canActivate:[guestGuard]},
     { path: 'carrinho', component: CartComponent },
