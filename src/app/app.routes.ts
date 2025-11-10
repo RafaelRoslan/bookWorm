@@ -11,6 +11,8 @@ import { CollectionComponent } from './pages/collection/collection.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { MeuBazarComponent } from './pages/meu-bazar/meu-bazar.component';
+import { NegotiationDetailComponent } from './pages/negotiation-detail/negotiation-detail.component';
+import { NegotiationsComponent } from './pages/negotiations/negotiations.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { SubscriptionComponent } from './pages/subscription/subscription.component';
 
@@ -29,10 +31,8 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent, canActivate:[guestGuard]},
     { path: 'signup', component: SignupComponent, canActivate:[guestGuard]},
     { path: 'carrinho', component: CartComponent },
-    /*{ path: 'negociacoes', loadComponent: () => import('./pages/negotiations/negotiations.component').then(m => m.NegotiationsComponent) },
-    { path: 'negociacoes/:id', loadComponent: () => import('./pages/negotiation-detail/negotiation-detail.component').then(m => m.NegotiationDetailComponent) },
-    { path: 'negociacoes', loadComponent: () => import('./pages/negotiations/negotiations.component').then(m => m.NegotiationsComponent) },
-    { path: 'negociacoes/:id', loadComponent: () => import('./pages/negotiation-detail/negotiation-detail.component').then(m => m.NegotiationDetailComponent) },*/
+    { path: 'negociacoes', component: NegotiationsComponent, canActivate:[authGuard]},
+    { path: 'negociacoes/:id', component: NegotiationDetailComponent, canActivate:[authGuard]},
 
     { path: '**', redirectTo: 'home' }
 ];

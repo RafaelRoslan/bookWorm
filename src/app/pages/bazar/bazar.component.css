@@ -18,6 +18,99 @@ h2 { text-align: center; margin-bottom: 1rem; color: var(--text-color, #222); }
 .badges { margin-top: 6px; display:flex; gap:6px; flex-wrap: wrap; }
 .badge { font-size: .75rem; padding: 4px 8px; border:1px solid #ddd; border-radius: 999px; color:#444; background:#fafafa; }
 
+.actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.actions button {
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter .2s ease;
+}
+
+.actions .add {
+  background: #f1f1f1;
+  color: #333;
+}
+
+.actions .quantity {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--border-color,#ddd);
+  border-radius:999px;
+  padding:4px 8px;
+  background:#fff;
+}
+
+.actions .quantity .qty-btn {
+  width:24px;
+  height:24px;
+  border:none;
+  background:transparent;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.actions .quantity .qty-btn:disabled {
+  opacity:0.35;
+  cursor:not-allowed;
+}
+
+.actions .quantity .qty {
+  min-width:20px;
+  text-align:center;
+  font-weight:600;
+  font-size:0.95rem;
+}
+
+.actions .quantity small {
+  font-size:0.75rem;
+  color:var(--muted-text-color,#777);
+}
+
+.actions button:hover {
+  filter: brightness(0.95);
+}
+
+.actions .quantity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.actions .quantity .qty-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-color,#ddd);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.actions .quantity .qty-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.actions .quantity .qty {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 600;
+}
+.actions .quantity small {
+  font-size: 0.75rem;
+  color: var(--muted-text-color,#777);
+}
+
 .pager { display:flex; gap:10px; align-items:center; justify-content:center; margin: 16px 0; }
 .pager button { padding: 6px 10px; border: 0; border-radius: 8px; background: var(--primary-color, #2a9d8f); color: #fff; font-weight: 700; }
 

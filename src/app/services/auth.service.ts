@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, switchMap, tap, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { User } from '../models/api.models';
 
@@ -18,19 +18,45 @@ export class AuthService {
 
   get token() { return localStorage.getItem('bw_token'); }
   isAuthenticated() { return !!this.token; }
+  get currentUser(): User | null { return this.userSub.value; }
 
   // BACK: POST /login
   onLogin(dto: LoginDto) {
-  return this.http.post<LoginRes>(`${this.api}/login`, dto).pipe(
-    
-    tap(res => {
-      const token = (res as any)?.token;
-      if (!token) throw new Error('Resposta do login não contém token');
-      localStorage.setItem('bw_token', token);
-    }),
-    
-  );
-}
+    return this.http.post<LoginRes>(`${this.api}/login`, dto).pipe(
+      tap(res => {
+        const token = (res as any)?.token;
+        if (!token) throw new Error('Resposta do login não contém token');
+        localStorage.setItem('bw_token', token);
+      }),
+      switchMap(() => this.loadMe())
+    );
+  }
+
+  loadMe(): Observable<User | null> {
+    if (!this.isAuthenticated()) {
+      this.userSub.next(null);
+      return of(null);
+    }
+
+    return this.http.get<Partial<User> & { _id?: string } | { user: Partial<User> & { _id?: string } }>(`${this.api}/users/me`).pipe(
+      map(res => {
+        const payload = (res && typeof res === 'object' && 'user' in res)
+          ? (res as { user: Partial<User> & { _id?: string } }).user
+          : (res as Partial<User> & { _id?: string });
+
+        if (!payload) return null;
+
+        const normalized: User = {
+          id: (payload.id as string) ?? (payload._id as string) ?? '',
+          name: (payload.name as string) ?? '',
+          email: (payload.email as string) ?? ''
+        };
+
+        return normalized;
+      }),
+      tap(user => this.userSub.next(user ?? null))
+    );
+  }
   
   logout() {
     localStorage.removeItem('bw_token');

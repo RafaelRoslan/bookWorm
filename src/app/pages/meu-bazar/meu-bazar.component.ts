@@ -45,13 +45,6 @@ export class MeuBazarComponent implements OnInit {
     });
   }
 
-  mark(it: Listing, status: Listing['status']) {
-    this.listing.markStatus(it._id, status).subscribe({
-      next: () => this.load(),
-      error: e => alert(e?.error?.message || 'Falha ao atualizar status')
-    });
-  }
-
   remove(it: Listing) {
     if (!confirm('Remover este anúncio?')) return;
     this.listing.deleteListing(it._id).subscribe({

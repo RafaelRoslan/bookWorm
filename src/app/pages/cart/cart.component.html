@@ -9,7 +9,7 @@
     <a routerLink="/bazar" class="link">Ir para o Bazar</a>
   </section>
 
-  <section *ngIf="(items$ | async)?.length">
+  <section *ngIf="(items$ | async)?.length as _items">
     <div class="seller-group" *ngFor="let g of groups()">
       <h2>Vendedor: {{ g.seller.nome }}</h2>
       <ul class="item-list">
@@ -22,7 +22,16 @@
             <h3 class="title">{{ it.titulo }}</h3>
             <p class="meta">{{ it.autor }} • {{ it.estado }}</p>
           </div>
-          <div class="price">{{ it.preco | currency:'BRL':'symbol-narrow':'1.2-2' }}</div>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" (click)="decrease(it)" [disabled]="!canDecrease(it)">−</button>
+            <span class="qty">{{ it.qty ?? 1 }}</span>
+            <button type="button" class="qty-btn" (click)="increase(it)" [disabled]="!canIncrease(it)">+</button>
+            <small *ngIf="it.stock">/ {{ it.stock }}</small>
+          </div>
+          <div class="price">
+            {{ (it.preco * (it.qty ?? 1)) | currency:'BRL':'symbol-narrow':'1.2-2' }}
+            <small *ngIf="(it.qty ?? 1) > 1">{{ it.preco | currency:'BRL':'symbol-narrow':'1.2-2' }} / un</small>
+          </div>
           <button class="remove" (click)="remove(it.id)">Remover</button>
         </li>
       </ul>

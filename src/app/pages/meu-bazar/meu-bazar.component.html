@@ -60,9 +60,6 @@
 
         <td class="actions" *ngIf="editId !== it._id">
           <button (click)="startEdit(it)">Editar</button>
-          <button (click)="mark(it,'pausado')" [disabled]="it.status!=='ativo'">Pausar</button>
-          <button (click)="mark(it,'ativo')"   [disabled]="it.status!=='pausado'">Ativar</button>
-          <button (click)="mark(it,'vendido')">Vendido</button>
           <button (click)="remove(it)">Remover</button>
         </td>
 

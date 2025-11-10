@@ -1,11 +1,157 @@
-.neg-list{padding:20px}
-.list{list-style:none;padding:0;display:grid;gap:12px}
-.card{border:1px solid var(--border-color);border-radius:10px;padding:12px;cursor:pointer;background:#fff}
-.row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-.muted{color:var(--muted-text-color)}
-.badge{padding:4px 8px;border-radius:999px;font-size:12px}
-.badge.pend{background:#fff3cd;color:#8a6d3b}
-.badge.act{background:#e9f5f3;color:var(--secondary-color)}
-.badge.done{background:#d1e7dd;color:#0f5132}
-.badge.cancel{background:#f8d7da;color:#842029}
-.badge.exp{background:#fce8e6;color:#8a1c1c}
+.neg-list {
+  padding: 24px;
+}
+
+.neg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #e5e5e5);
+  box-shadow: 0 2px 8px rgba(15, 18, 49, 0.04);
+}
+
+.neg-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 960px;
+}
+
+.neg-table thead tr {
+  background: var(--table-header-bg, #f6f7fb);
+}
+
+.neg-table th,
+.neg-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color, #ececec);
+  font-size: 0.92rem;
+}
+
+.neg-table tbody tr.neg-row {
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.neg-table tbody tr.neg-row:hover {
+  background: #f9f9ff;
+}
+
+.id-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.role-chip {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  background: #8257e6;
+}
+
+.role-chip.buyer {
+  background: #6c63ff;
+}
+
+.role-chip.seller {
+  background: #ff6584;
+}
+
+.id-link {
+  font-weight: 600;
+  color: var(--primary-color, #2a2a44);
+  text-decoration: none;
+}
+
+.id-link:hover {
+  text-decoration: underline;
+}
+
+.counterparty strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.muted {
+  color: var(--muted-text-color, #6b7280);
+  font-size: 0.82rem;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #3730a3;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.status-pill {
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.status-pill.pend {
+  background: #fff7d6;
+  color: #b08900;
+}
+
+.status-pill.act {
+  background: #e9f5f3;
+  color: #0c766e;
+}
+
+.status-pill.done {
+  background: #d1f0d6;
+  color: #0b4f1a;
+}
+
+.status-pill.cancel {
+  background: #ffe6e6;
+  color: #b00020;
+}
+
+.status-pill.exp {
+  background: #fce4ec;
+  color: #ad1457;
+}
+
+.tracking {
+  font-family: 'Fira Code', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.8rem;
+}
+
+.tracking.is-empty {
+  color: var(--muted-text-color, #9ca3af);
+}
+
+.vazio-texto {
+  text-align: center;
+  margin-top: 40px;
+}
