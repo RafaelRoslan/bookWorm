@@ -40,6 +40,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   // estados gerais
   loading = false;
   saving  = false;
+  updating = false;
   error   = '';
 
   // edição título da coleção
@@ -257,11 +258,13 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.editOpen = false;
     this.editInitial = null;
     this.editingId = null;
+    this.updating = false;
     document.body.style.overflow = '';
   }
 
   onEditSubmit(f: AddBookForm): void {
-    if (!this.collection?._id || !this.editingId) return;
+    if (!this.collection?._id || !this.editingId || this.updating) return;
+    this.updating = true;
     const cid = this.collection._id;
     const bid = this.editingId;
 
@@ -293,11 +296,13 @@ export class CollectionComponent implements OnInit, OnDestroy {
         } else {
           this.load(cid);
         }
+        this.updating = false;
         this.closeEdit();
       },
       error: (e) => {
         console.error(e);
         this.error = e?.error?.message || 'Falha ao atualizar livro';
+        this.updating = false;
       }
     });
   }

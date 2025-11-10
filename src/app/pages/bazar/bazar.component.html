@@ -36,6 +36,15 @@
           <span class="badge">Disp.: {{ it.stock }}</span>
           <span class="badge">{{ it.shipping }}</span>
         </div>
+        <div class="actions">
+          <div class="quantity">
+            <button type="button" class="qty-btn" (click)="decrease(it)" [disabled]="getQuantity(it) <= 1">−</button>
+            <span class="qty">{{ getQuantity(it) }}</span>
+            <button type="button" class="qty-btn" (click)="increase(it)" [disabled]="getQuantity(it) >= it.stock">+</button>
+            <small *ngIf="it.stock">/ {{ it.stock }}</small>
+          </div>
+          <button class="add" type="button" (click)="addToCart(it)">Adicionar ao carrinho</button>
+        </div>
       </div>
     </article>
   </section>

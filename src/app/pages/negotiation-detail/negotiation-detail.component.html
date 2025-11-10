@@ -1,126 +1,302 @@
 <main class="neg-detail" *ngIf="neg() as n; else notfound">
-  <header class="head">
-    <div class="left">
-      <h2>Negociação <span class="muted">#{{ n.id.slice(0,8) }}</span></h2>
-      <div class="row">
-        <span class="badge"
-          [class.pend]="n.status==='PENDING_SELLER_ACCEPT'"
-          [class.act]="n.status==='ACTIVE'||n.status==='WAITING_BUYER'||n.status==='WAITING_SELLER'"
-          [class.done]="n.status==='COMPLETED'"
-          [class.cancel]="n.status==='CANCELLED'"
-          [class.exp]="n.status==='EXPIRED'">
-          {{ n.status | statusLabel }}
-        </span>
-        <span>Iniciada: <strong>{{ n.createdAt | date:'short' }}</strong></span>
-        <span *ngIf="n.acceptedAt">Aceita: <strong>{{ n.acceptedAt | date:'short' }}</strong></span>
-      </div>
+  <nav class="breadcrumb">
+    <a routerLink="/negociacoes">Minhas negociações</a>
+    <span>/</span>
+    <span>#{{ n.id.slice(0, 8) }}</span>
+  </nav>
 
-      <div class="row">
-        <span>Quem faz primeiro: <strong>{{ n.whoFirst === 'buyer' ? 'Comprador' : 'Vendedor' }}</strong></span>
-        <span *ngIf="n.buyerDeadline">
-          Prazo comprador: <strong>{{ n.buyerDeadline | date:'shortDate' }}</strong>
-          <em class="countdown">{{ buyerCountdown() }}</em>
-        </span>
-        <span *ngIf="n.sellerDeadline">
-          Prazo vendedor: <strong>{{ n.sellerDeadline | date:'shortDate' }}</strong>
-          <em class="countdown">{{ sellerCountdown() }}</em>
-        </span>
-      </div>
+  <section class="summary-card">
+    <div class="summary-left">
+      <span class="role-chip" [class.buyer]="isBuyer()" [class.seller]="isSeller()">{{ roleLabel() }}</span>
+      <h1>Negociação #{{ n.id.slice(0, 8) }}</h1>
+      <p class="muted">Aberta em {{ n.createdAt | date:'short' }}</p>
+      <p class="muted" *ngIf="n.acceptedAt">Aceita em {{ n.acceptedAt | date:'short' }}</p>
     </div>
 
-    <div class="right">
+    <div class="summary-right">
+      <span class="status-chip"
+        [class.pend]="n.status==='PENDING_SELLER_ACCEPT'"
+        [class.act]="n.status==='ACTIVE'||n.status==='WAITING_BUYER'||n.status==='WAITING_SELLER'"
+        [class.done]="n.status==='COMPLETED'"
+        [class.cancel]="n.status==='CANCELLED'"
+        [class.exp]="n.status==='EXPIRED'">
+          {{ (n.status ?? '') | statusLabel }}
+      </span>
       <a routerLink="/negociacoes" class="btn secondary">Voltar</a>
     </div>
-  </header>
+  </section>
+
+  <section class="info-grid">
+    <div class="info-card">
+      <span class="label">Participante</span>
+      <strong>{{ counterparty(n).nome || '—' }}</strong>
+      <small class="muted" *ngIf="counterparty(n).cidade || counterparty(n).estado">
+        {{ counterparty(n).cidade || 'Cidade não informada' }}
+        <span *ngIf="counterparty(n).estado"> / {{ counterparty(n).estado }}</span>
+      </small>
+    </div>
+    <div class="info-card">
+      <span class="label">Prazo comprador</span>
+      <strong>{{ n.buyerDeadline ? (n.buyerDeadline | date:'shortDate') : '—' }}</strong>
+      <small class="countdown" *ngIf="buyerCountdown()">{{ buyerCountdown() }}</small>
+    </div>
+    <div class="info-card">
+      <span class="label">Prazo vendedor</span>
+      <strong>{{ n.sellerDeadline ? (n.sellerDeadline | date:'shortDate') : '—' }}</strong>
+      <small class="countdown" *ngIf="sellerCountdown()">{{ sellerCountdown() }}</small>
+    </div>
+    <div class="info-card">
+      <span class="label">Itens</span>
+      <strong>{{ n.items.length }}</strong>
+      <small class="muted">Total de anúncios incluídos</small>
+    </div>
+    <div class="info-card">
+      <span class="label">Total da negociação</span>
+      <strong>R$ {{ n.totalPrice | number:'1.2-2' }}</strong>
+    </div>
+  </section>
 
   <section class="parties">
     <div class="card">
       <h3>Vendedor</h3>
       <p><strong>{{ n.seller.nome }}</strong></p>
+      <p class="muted" *ngIf="n.seller.cidade || n.seller.estado">
+        {{ n.seller.cidade || 'Cidade não informada' }}<span *ngIf="n.seller.estado"> / {{ n.seller.estado }}</span>
+      </p>
+      <p class="muted" *ngIf="n.seller.email">{{ n.seller.email }}</p>
     </div>
     <div class="card">
       <h3>Comprador</h3>
       <p><strong>{{ n.buyer.nome }}</strong></p>
+      <p class="muted" *ngIf="n.buyer.cidade || n.buyer.estado">
+        {{ n.buyer.cidade || 'Cidade não informada' }}<span *ngIf="n.buyer.estado"> / {{ n.buyer.estado }}</span>
+      </p>
+      <p class="muted" *ngIf="n.buyer.email">{{ n.buyer.email }}</p>
     </div>
   </section>
 
   <section class="items">
-    <h3>Itens</h3>
+    <h3>Itens negociados</h3>
     <table>
-      <thead><tr><th>Título</th><th>Qtd</th><th>Preço</th><th>Cond.</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Condição</th>
+          <th>Envio</th>
+          <th>Preço</th>
+        </tr>
+      </thead>
       <tbody>
         <tr *ngFor="let it of n.items">
-          <td>{{ it.titulo }}</td>
-          <td>{{ it.quantidade }}</td>
+          <td>
+            <div class="item-info">
+              <img *ngIf="it.image" [src]="it.image" alt="" class="cover" />
+              <div>
+                <div class="title">{{ it.titulo }}</div>
+                <div class="muted">{{ it.autor || 'Autor não informado' }}</div>
+                <div class="muted">Qtd: {{ it.quantidade }}</div>
+              </div>
+            </div>
+          </td>
+          <td>{{ it.condicao || '-' }}</td>
+          <td>{{ it.shipping || '-' }}</td>
           <td>R$ {{ it.preco | number:'1.2-2' }}</td>
-          <td class="muted">{{ it.condicao || '-' }}</td>
         </tr>
       </tbody>
       <tfoot>
-        <tr><td colspan="2"></td><td><strong>Total:</strong></td><td><strong>R$ {{ n.totalPrice | number:'1.2-2' }}</strong></td></tr>
+        <tr>
+          <td colspan="3"><strong>Total</strong></td>
+          <td><strong>R$ {{ n.totalPrice | number:'1.2-2' }}</strong></td>
+        </tr>
       </tfoot>
     </table>
   </section>
 
-  <section class="actions">
-    <!-- Somente VENDEDOR vê esse card -->
-    <div class="card" *ngIf="isSeller()">
-      <h3>Ações do Vendedor</h3>
+  <section class="action-panels">
+    <div class="card action-card">
+      <header>
+        <h3>Minhas ações</h3>
+        <span class="badge-role" [class.buyer]="isBuyer()" [class.seller]="isSeller()">{{ roleLabel() }}</span>
+      </header>
 
-      <!-- Aceitar enquanto pendente -->
-      <button
-        *ngIf="n.status==='PENDING_SELLER_ACCEPT'"
-        class="btn"
-        (click)="accept(n.id)">
-        Aceitar negociação
-      </button>
+      <div *ngIf="isSeller()">
+        <button
+          *ngIf="n.status==='PENDING_SELLER_ACCEPT'"
+          class="btn"
+          (click)="accept(n.id)">
+          Aceitar negociação
+        </button>
 
-      <!-- Envio quando for a vez dele (ou sempre que whoFirst=vendor) -->
-      <div *ngIf="n.status==='WAITING_SELLER' || n.whoFirst==='seller'">
-        <label>Transportadora</label>
-        <input type="text" [(ngModel)]="carrier" placeholder="Correios, Jadlog..." />
-        <label>Código de rastreio</label>
-        <input type="text" [(ngModel)]="tracking" placeholder="AA123..." />
-        <button class="btn" (click)="markShipped(n.id)">Informar envio</button>
+        <button
+          *ngIf="sellerMustAct(n)"
+          class="btn tertiary"
+          (click)="openAction('shipment')">
+          Fiz minha parte
+        </button>
+
+        <div *ngIf="n.shipment?.sentAt" class="muted mtop">
+          Enviado em {{ n.shipment?.sentAt | date:'short' }} — {{ n.shipment?.carrier }} / {{ n.shipment?.trackingCode }}
+        </div>
       </div>
 
-      <div *ngIf="n.shipment?.sentAt" class="muted mtop">
-        Enviado em: {{ n.shipment?.sentAt | date:'short' }} — {{ n.shipment?.carrier }} / {{ n.shipment?.trackingCode }}
+      <div *ngIf="isBuyer()">
+        <button
+          *ngIf="buyerMustAct(n)"
+          class="btn tertiary"
+          (click)="openAction('payment')">
+          Fiz minha parte
+        </button>
+
+        <div *ngIf="n.payment?.paidAt" class="muted mtop">
+          Pago em {{ n.payment?.paidAt | date:'short' }} — {{ n.payment?.method }}
+        </div>
+      </div>
+
+      <div class="action-links">
+        <button class="link-btn" (click)="report()">Denunciar negociação</button>
+        <button class="link-btn" (click)="toggleComment()">
+          {{ commentOpen ? 'Cancelar comentário' : 'Comentar negociação' }}
+        </button>
+      </div>
+
+      <div class="comment-box" *ngIf="commentOpen">
+        <label>Comentário</label>
+        <textarea [(ngModel)]="commentText" rows="3" placeholder="Compartilhe uma atualização sobre a negociação"></textarea>
+        <button class="btn" (click)="submitComment()">Enviar comentário</button>
       </div>
     </div>
 
-    <!-- Somente COMPRADOR vê esse card -->
-    <div class="card" *ngIf="isBuyer()">
-      <h3>Ações do Comprador</h3>
+    <div class="card action-card">
+      <header>
+        <h3>Ações da outra parte</h3>
+        <span class="badge-role inverse">{{ isBuyer() ? 'Vendedor' : 'Comprador' }}</span>
+      </header>
 
-      <!-- Pagamento quando for a vez dele -->
-      <div *ngIf="n.status==='WAITING_BUYER' || n.whoFirst==='buyer'">
-        <label>Método de pagamento</label>
-        <select [(ngModel)]="method">
-          <option value="PIX">PIX</option>
-          <option value="TED">TED</option>
-          <option value="BOLETO">Boleto</option>
-        </select>
-        <label>Comprovante (URL)</label>
-        <input type="text" [(ngModel)]="proof" placeholder="https://..." />
-        <button class="btn" (click)="markPaid(n.id)">Informar pagamento</button>
-      </div>
+      <ul class="action-list">
+        <li *ngIf="n.payment?.paidAt">
+          Comprovou pagamento em {{ n.payment?.paidAt | date:'short' }}
 
-      <div *ngIf="n.payment?.paidAt" class="muted mtop">
-        Pago em: {{ n.payment?.paidAt | date:'short' }} — {{ n.payment?.method }}
-      </div>
+          <button class="link-btn" *ngIf="n.payment?.comprovanteImage" (click)="openProofModal(n.payment?.comprovanteImage || null, 'Comprovante de pagamento')">
+            Ver comprovante
+          </button>
+        </li>
+        <li *ngIf="n.shipment?.trackingCode">
+          Informou envio em {{ n.shipment?.sentAt | date:'short' }} — {{ n.shipment?.trackingCode }}
+          <button class="link-btn" *ngIf="n.shipment?.proofImage" (click)="openProofModal(n.shipment?.proofImage || null, 'Comprovante de postagem')">
+            Ver comprovante
+          </button>
+        </li>
+        <li *ngIf="!n.payment && !n.shipment">Nenhuma ação registrada ainda.</li>
+      </ul>
     </div>
   </section>
 
-  <section class="logs">
-    <h3>Registro</h3>
+  <section class="proofs" *ngIf="hasShipment(n) || hasPayment(n)">
+    <div class="card proof-card" *ngIf="hasShipment(n)">
+      <h3>Envio</h3>
+      <p *ngIf="n.shipment?.carrier">Transportadora: <strong>{{ n.shipment?.carrier }}</strong></p>
+      <p *ngIf="n.shipment?.trackingCode">Código de rastreio: <strong>{{ n.shipment?.trackingCode }}</strong></p>
+      <p *ngIf="n.shipment?.sentAt">Enviado em: <strong>{{ n.shipment?.sentAt | date:'short' }}</strong></p>
+      <p *ngIf="n.shipment?.proofImage">Comprovante disponível</p>
+      <button class="link-btn" *ngIf="n.shipment?.proofImage" (click)="openProofModal(n.shipment?.proofImage ?? null, 'Comprovante de postagem')">
+        Ver comprovante de postagem
+      </button>
+      <div *ngIf="trackingList(n).length > 1" class="tracking-list">
+        <span>Códigos adicionais:</span>
+        <ul>
+          <li *ngFor="let code of trackingList(n)">{{ code }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card proof-card" *ngIf="hasPayment(n)">
+      <h3>Pagamento</h3>
+      <p *ngIf="n.payment?.method">Método: <strong>{{ n.payment?.method }}</strong></p>
+      <p *ngIf="n.payment?.paidAt">Pago em: <strong>{{ n.payment?.paidAt | date:'short' }}</strong></p>
+      <p *ngIf="n.payment?.comprovanteImage">Comprovante disponível</p>
+      <button class="link-btn" *ngIf="n.payment?.comprovanteImage" (click)="openProofModal(n.payment?.comprovanteImage ?? null, 'Comprovante de pagamento')">
+        Ver comprovante de pagamento
+      </button>
+    </div>
+  </section>
+
+  <section class="logs" *ngIf="n.logs?.length">
+    <h3>Histórico da negociação</h3>
     <ul>
       <li *ngFor="let l of n.logs">
-        {{ l.at | date:'short' }} — <strong>{{ l.by }}</strong>: {{ l.message }}
+        <span class="log-date">{{ l.at | date:'short' }}</span>
+        <span class="log-user">{{ l.by }}</span>
+        <span class="log-message">{{ l.message }}</span>
       </li>
     </ul>
   </section>
 </main>
+
+<!-- Modal pagamento -->
+<div class="modal-backdrop" *ngIf="actionFormOpen && actionType==='payment'">
+  <div class="modal" role="dialog" aria-modal="true">
+    <header>
+      <h3>Informar pagamento</h3>
+      <button class="close-btn" (click)="closeAction()">✕</button>
+    </header>
+    <section>
+      <label>Método de pagamento</label>
+      <select [(ngModel)]="method">
+        <option value="PIX">PIX</option>
+        <option value="TED">TED</option>
+        <option value="BOLETO">Boleto</option>
+      </select>
+
+      <label>Comprovante (imagem)</label>
+      <input type="file" accept="image/*" (change)="onPaymentProofSelected($event)" />
+      <p class="error" *ngIf="paymentProofError">{{ paymentProofError }}</p>
+      <div class="preview" *ngIf="paymentPreview">
+        <img [src]="paymentPreview" alt="Comprovante pagamento" />
+      </div>
+
+      <button class="btn" (click)="markPaid(neg()?.id!)">Enviar comprovante</button>
+    </section>
+  </div>
+</div>
+
+<!-- Modal envio -->
+<div class="modal-backdrop" *ngIf="actionFormOpen && actionType==='shipment'">
+  <div class="modal" role="dialog" aria-modal="true">
+    <header>
+      <h3>Informar postagem</h3>
+      <button class="close-btn" (click)="closeAction()">✕</button>
+    </header>
+    <section>
+      <label>Transportadora</label>
+      <input type="text" [(ngModel)]="carrier" placeholder="Correios, Jadlog..." />
+
+      <label>Código de rastreio</label>
+      <input type="text" [(ngModel)]="tracking" placeholder="AA123..." />
+
+      <label>Comprovante de postagem (imagem)</label>
+      <input type="file" accept="image/*" (change)="onShipmentProofSelected($event)" />
+      <p class="error" *ngIf="shipmentProofError">{{ shipmentProofError }}</p>
+      <div class="preview" *ngIf="shipmentPreview">
+        <img [src]="shipmentPreview" alt="Comprovante postagem" />
+      </div>
+
+      <button class="btn" (click)="markShipped(neg()?.id!)">Enviar informações</button>
+    </section>
+  </div>
+</div>
+
+<!-- Modal visualizar comprovante -->
+<div class="modal-backdrop" *ngIf="viewProofOpen && proofModalImage">
+  <div class="modal modal--image" role="dialog" aria-modal="true">
+    <header>
+      <h3>{{ proofModalTitle }}</h3>
+      <button class="close-btn" (click)="closeProofModal()">✕</button>
+    </header>
+    <section class="image-view">
+      <img [src]="proofModalImage!" [alt]="proofModalTitle" />
+    </section>
+  </div>
+</div>
 
 <ng-template #notfound>
   <main class="neg-detail"><p class="muted">Negociação não encontrada.</p></main>

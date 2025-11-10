@@ -1,36 +1,63 @@
 <main class="neg-list">
-  <h2>Minhas Negociações</h2>
+  <header class="neg-header">
+    <h2>Minhas Negociações</h2>
+  </header>
 
-  <ul class="list" *ngIf="negSvc.list$ | async as list; else vazio">
-    <li class="card" *ngFor="let n of list" [routerLink]="['/negociacoes', n.id]">
-      <div class="row">
-        <span class="badge"
-          [class.pend]="n.status==='PENDING_SELLER_ACCEPT'"
-          [class.act]="n.status==='ACTIVE' || n.status==='WAITING_BUYER' || n.status==='WAITING_SELLER'"
-          [class.done]="n.status==='COMPLETED'"
-          [class.cancel]="n.status==='CANCELLED'"
-          [class.exp]="n.status==='EXPIRED'">
-          {{ n.status | statusLabel }}
-        </span>
-        <strong>#{{ n.id.slice(0,8) }}</strong>
-        <span class="muted">Criada: {{ n.createdAt | date:'short' }}</span>
-      </div>
-
-      <div class="row">
-        <span>Vendedor: <strong>{{ n.seller.nome }}</strong></span>
-        <span>Itens: {{ n.totalItens }}</span>
-        <span>Total: R$ {{ n.totalPrice | number:'1.2-2' }}</span>
-      </div>
-
-      <div class="row" *ngIf="n.acceptedAt">
-        <span class="muted">Aceita: {{ n.acceptedAt | date:'short' }}</span>
-        <span *ngIf="n.buyerDeadline">Prazo do comprador: {{ n.buyerDeadline | date:'shortDate' }}</span>
-        <span *ngIf="n.sellerDeadline">Prazo do vendedor: {{ n.sellerDeadline | date:'shortDate' }}</span>
-      </div>
-    </li>
-  </ul>
+  <section class="table-wrapper" *ngIf="rows$ | async as rows; else vazio">
+    <table class="neg-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Abertura</th>
+          <th>Negociando com</th>
+          <th>Ações</th>
+          <th>Valor</th>
+          <th>Status</th>
+          <th>CEP</th>
+          <th>Código de Rastreamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows" class="neg-row" (click)="open(row.id)">
+          <td class="id-cell">
+            <span class="role-chip" [class.buyer]="row.roleChip === 'B'" [class.seller]="row.roleChip === 'V'">
+              {{ row.roleChip }}
+            </span>
+            <a class="id-link" [routerLink]="['/negociacoes', row.id]" (click)="$event.stopPropagation()">#{{ row.idShort }}</a>
+          </td>
+          <td>{{ row.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td class="counterparty">
+            <strong>{{ row.counterpartName }}</strong>
+            <small class="muted">Negociação</small>
+          </td>
+          <td>
+            <div class="actions">
+              <span class="action" *ngFor="let act of row.actions">{{ act }}</span>
+            </div>
+          </td>
+          <td>R$ {{ row.total | number:'1.2-2' }}</td>
+          <td>
+            <span class="status-pill"
+              [class.pend]="row.status==='PENDING_SELLER_ACCEPT'"
+              [class.act]="row.status==='ACTIVE' || row.status==='WAITING_BUYER' || row.status==='WAITING_SELLER'"
+              [class.done]="row.status==='COMPLETED'"
+              [class.cancel]="row.status==='CANCELLED'"
+              [class.exp]="row.status==='EXPIRED'">
+              {{ row.status | statusLabel }}
+            </span>
+          </td>
+          <td>{{ row.zip || '—' }}</td>
+          <td>
+            <span class="tracking" [class.is-empty]="row.tracking === '—'">
+              {{ row.tracking }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
   <ng-template #vazio>
-    <p class="muted">Você ainda não possui negociações.</p>
+    <p class="muted vazio-texto">Você ainda não possui negociações.</p>
   </ng-template>
 </main>

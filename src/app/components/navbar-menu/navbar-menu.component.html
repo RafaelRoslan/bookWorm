@@ -10,6 +10,7 @@
 
             <ng-container *ngIf="isAuth(); else guestLinks">
                 <li class="store__nav-item"><a [routerLink]="['/meu-bazar']" routerLinkActive="selected">Meu Bazar</a></li>
+                <li class="store__nav-item"><a [routerLink]="['/negociacoes']" routerLinkActive="selected">Minhas Negociações</a></li>
                 <li class="store__nav-item"><a [routerLink]="['/bookcase']" routerLinkActive="selected">Minha Estante</a></li>
                 <li class="store__nav-item"><a [routerLink]="['/my-profile']" routerLinkActive="selected">Meu Perfil</a></li>
                 <li class="store__nav-item"><a (click)="logout()" routerLinkActive="selected">Logout</a></li>
