@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, switchMap, tap, map } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { User } from '../models/api.models';
 
@@ -47,8 +47,9 @@ export class AuthService {
         if (!payload) return null;
 
         const normalized: User = {
-          id: (payload.id as string) ?? (payload._id as string) ?? '',
+          _id: (payload._id as string) ?? (payload._id as string) ?? '',
           name: (payload.name as string) ?? '',
+          lastname: (payload.lastname as string) ?? '',
           email: (payload.email as string) ?? ''
         };
 

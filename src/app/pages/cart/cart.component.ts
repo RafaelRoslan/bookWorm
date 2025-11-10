@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { User } from '../../models/api.models';
+import { AuthService } from '../../services/auth.service';
 import { CartItem, CartService } from '../../services/cart.service';
 import { NegotiationsService } from '../../services/negotiations.service';
-import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/api.models';
 
 @Component({
   selector: 'app-cart',
@@ -77,7 +77,7 @@ export class CartComponent {
   private createNegotiations(user: User) {
     const groups = this.cart.groupBySeller().map(g => ({
       seller: { id: g.seller.id, nome: g.seller.nome },
-      buyer:  { id: user.id, nome: user.name },
+      buyer:  { id: user._id, nome: user.name },
       items:  g.items.map(it => ({
         offerId: it.id,
         titulo: it.titulo,

@@ -10,26 +10,27 @@ import {
 } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 
-
-/** Validador: endereço opcional, mas se começar, precisa estar completo */
+/** Validador: endereço opcional, mas se começar, precisa estar completo (inclui CEP) */
 function enderecoCompletoValidator(group: AbstractControl): ValidationErrors | null {
   const g = group as FormGroup;
-  
-  const logradouro = g.get('logradouro')?.value?.trim();
-  const numero     = g.get('numero')?.value?.trim();
-  const bairro     = g.get('bairro')?.value?.trim();
-  const cidade     = g.get('cidade')?.value?.trim();
-  const estado     = g.get('estado')?.value?.trim();
+
+  const cep         = g.get('cep')?.value?.trim();
+  const logradouro  = g.get('logradouro')?.value?.trim();
+  const numero      = g.get('numero')?.value?.trim();
+  const bairro      = g.get('bairro')?.value?.trim();
+  const cidade      = g.get('cidade')?.value?.trim();
+  const estado      = g.get('estado')?.value?.trim();
   const complemento = g.get('complemento')?.value?.trim();
 
-  const valores = [logradouro, numero, bairro, cidade, estado, complemento];
+  // qualquer campo preenchido conta pra “comecei o endereço”
+  const valores = [cep, logradouro, numero, bairro, cidade, estado, complemento];
   const preenchidos = valores.filter(v => !!v).length;
 
   // nada preenchido -> ok
   if (preenchidos === 0) return null;
 
-  // obrigatórios: logradouro, numero, bairro, cidade, estado
-  const obrigatorios = [logradouro, numero, bairro, cidade, estado];
+  // obrigatórios se começou: CEP, logradouro, numero, bairro, cidade, estado
+  const obrigatorios = [cep, logradouro, numero, bairro, cidade, estado];
   const obrigPreenchidos = obrigatorios.filter(v => !!v).length;
 
   if (obrigPreenchidos === obrigatorios.length) return null;
@@ -67,11 +68,11 @@ function bancoCompletoValidator(group: AbstractControl): ValidationErrors | null
 })
 export class MyProfileComponent implements OnInit {
   profileForm!: FormGroup;
-  loading = signal(false);
 
+  loading    = signal(false);
   carregando = signal(false);
-  erro      = signal<string | null>(null);
-  sucesso   = signal<string | null>(null);
+  erro       = signal<string | null>(null);
+  sucesso    = signal<string | null>(null);
 
   invalido = computed(() => this.profileForm?.invalid || this.carregando());
 
@@ -87,6 +88,7 @@ export class MyProfileComponent implements OnInit {
       lastname: ['', [Validators.required, Validators.minLength(2)]],
 
       address: this.fb.group({
+        cep: [''],             // 👈 CEP adicionado
         logradouro: [''],
         numero: [''],
         bairro: [''],
@@ -108,15 +110,12 @@ export class MyProfileComponent implements OnInit {
       }),
     });
 
-      this.loading.set(true);
+    this.loading.set(true);
 
     this.userService.getMyProfile().subscribe({
       next: (res: any) => {
-        // se seu /me devolve { user: {...} }, descomenta a linha abaixo:
-        // const u = res.user ?? res;
-        const u = res.user ?? res; // ajusta de acordo com o que tá vindo no Network
+        const u = res.user ?? res;
 
-        // preenche os campos
         this.profileForm.patchValue({
           type: u.type ?? 'Fisica',
           name: u.name ?? '',
@@ -126,7 +125,7 @@ export class MyProfileComponent implements OnInit {
           pix: u.pix || {},
         });
 
-        // DESABILITA depois de preencher
+        // nome e sobrenome aparecem, mas não podem ser alterados
         this.profileForm.get('name')?.disable({ emitEvent: false });
         this.profileForm.get('lastname')?.disable({ emitEvent: false });
 
@@ -148,12 +147,11 @@ export class MyProfileComponent implements OnInit {
       return;
     }
 
-    // inclui também controls desabilitados, se precisar (getRawValue)
     const v = this.profileForm.getRawValue();
 
     const payload: any = {
-      type: v.type, // pode alterar tipo de conta
-      // name / lastname NÃO vão no payload para não permitir alteração aqui
+      type: v.type,
+      // name/lastname não vão no payload aqui de propósito
     };
 
     // endereço: só manda se tiver algum campo preenchido

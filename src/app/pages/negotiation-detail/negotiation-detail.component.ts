@@ -18,8 +18,8 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { StatusLabelPipe } from '../../pipes/status-label.pipe';
-import { NegotiationDetail, NegotiationsService } from '../../services/negotiations.service';
 import { AuthService } from '../../services/auth.service';
+import { NegotiationDetail, NegotiationsService } from '../../services/negotiations.service';
 
 @Component({
   selector: 'app-negotiation-detail',
@@ -78,12 +78,12 @@ export class NegotiationDetailComponent implements OnInit, OnDestroy {
     const id = this.route.snapshot.params['id'];
 
     const user = this.auth.currentUser;
-    if (user?.id) {
-      this.currentUserId = user.id;
+    if (user?._id) {
+      this.currentUserId = user._id;
       this.loadDetail(id);
     } else {
       this.auth.loadMe().subscribe(u => {
-        this.currentUserId = u?.id ?? null;
+        this.currentUserId = u?._id ?? null;
         this.loadDetail(id);
       });
     }

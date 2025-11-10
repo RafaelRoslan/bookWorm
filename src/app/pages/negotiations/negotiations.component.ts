@@ -1,11 +1,10 @@
 import { CommonModule, DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { StatusLabelPipe } from '../../pipes/status-label.pipe';
-import { NegotiationsService, NegotiationSummary } from '../../services/negotiations.service';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { NegotiationsService, NegotiationSummary } from '../../services/negotiations.service';
 
 @Component({
   selector: 'app-negotiations',
@@ -36,17 +35,17 @@ export class NegotiationsComponent implements OnInit {
     if (!this.auth.isAuthenticated()) return;
 
     const user = this.auth.currentUser;
-    if (user?.id) {
-      this.currentUserId = user.id;
-      this.negSvc.listMine(user.id).subscribe();
+    if (user?._id) {
+      this.currentUserId = user._id;
+      this.negSvc.listMine(user._id).subscribe();
       return;
     }
 
     this.auth.loadMe().subscribe({
       next: (loaded) => {
-        if (loaded?.id) {
-          this.currentUserId = loaded.id;
-          this.negSvc.listMine(loaded.id).subscribe();
+        if (loaded?._id) {
+          this.currentUserId = loaded._id;
+          this.negSvc.listMine(loaded._id).subscribe();
         }
       },
       error: (err) => console.error('Falha ao buscar usuário para listar negociações', err)
