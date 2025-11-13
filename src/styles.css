@@ -3,11 +3,18 @@
     padding: 0;
 }
 
+body{
+    background-color: var(--background-color);
+}
+
 :root {
-    --primary-color: #2a9d8f; /* Verde principal */
-    --secondary-color: #264653; /* Azul escuro */
-    --background-color: #ffffff; /* Fundo */
-    --text-color: #333333; /* Texto padrão */
+    /* --primary-color: #8B1E3F;  Verde principal */
+/*    --secondary-color: #D6C295; /* Azul escuro */
+/*    --background-color: #F9F5EC; Fundo */
+    --primary-color: #7BAE7F; /* Verde principal */
+    --secondary-color: #526E7F; /* Azul escuro */
+    --background-color: #F5F8FA; /* Fundo */
+    --text-color: #2E2E2E; /* Texto padrão */
     --border-color: #e0e0e0; /* Para bordas suaves */
     --muted-text-color: #666666; /* Para datas e textos secundários */
     --highlight-color: #e9f5f3; /* Cor de destaque leve (variação do primary) */
@@ -18,3 +25,14 @@ main {
     margin: 0 auto;
     background-color: var(--background-color);
 }
+
+
+/* --primary-color: #8B1E3F;  Verde principal */
+/*    --secondary-color: #D6C295; /* Azul escuro */
+/*    --background-color: #F9F5EC; Fundo */
+
+
+
+/*--primary-color: #2a9d8f; /* Verde principal */
+  /*  --secondary-color: #264653; /* Azul escuro */
+    /*--background-color: #ffffff; /* Fundo */

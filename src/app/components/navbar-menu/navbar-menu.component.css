@@ -92,3 +92,14 @@
   align-items: center;
   justify-content: center;
 }
+
+.logo-p{
+    max-width:170px;
+    max-height: 56px;
+}
+
+.store-logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

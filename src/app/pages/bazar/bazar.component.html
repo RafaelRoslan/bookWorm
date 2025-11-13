@@ -16,7 +16,7 @@
     <button (click)="load(1)">Filtrar</button>
     <button class="secondary" (click)="clearFilters()">Limpar</button>
   </section>
-
+<hr/>
   <p class="muted" *ngIf="loading">Carregando…</p>
   <p class="error" *ngIf="!loading && error">{{ error }}</p>
 
