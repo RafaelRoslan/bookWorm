@@ -1,31 +1,69 @@
 <section class="store-navbar__container">
-    <section class="store-logo">
-        <img class="logo-p" src="/assets/icons/Logo_Nome_Branco.png" alt="logo BookWorm">
-    </section>
-    <nav class="store__navbar">
-        <ul class="store__nav-list">
-            <li class="store__nav-item"><a [routerLink]="['']" routerLinkActive="selected" >Home</a></li>
-            <li class="store__nav-item"><a [routerLink]="['/articles']" routerLinkActive="selected">Artigos</a></li>
-            <li class="store__nav-item"><a [routerLink]="['/bazar']" routerLinkActive="selected">Bazar</a></li>
+  <section class="store-logo">
+    <img class="logo-img" src="/assets/icons/logo_branco_600.png" alt="logo BookWorm">
+    <h1 class="logo-title">BookWorm</h1>
+  </section>
 
-            <ng-container *ngIf="isAuth(); else guestLinks">
-                <li class="store__nav-item"><a [routerLink]="['/meu-bazar']" routerLinkActive="selected">Meu Bazar</a></li>
-                <li class="store__nav-item"><a [routerLink]="['/negociacoes']" routerLinkActive="selected">Minhas Negociações</a></li>
-                <li class="store__nav-item"><a [routerLink]="['/bookcase']" routerLinkActive="selected">Minha Estante</a></li>
-                <li class="store__nav-item"><a [routerLink]="['/my-profile']" routerLinkActive="selected">Meu Perfil</a></li>
-                <li class="store__nav-item"><a (click)="logout()" routerLinkActive="selected">Logout</a></li>
-            </ng-container>
+  <nav class="store__navbar">
+    <ul class="store__nav-list">
+      <li class="store__nav-item">
+        <a [routerLink]="['']" routerLinkActive="selected">Home</a>
+      </li>
+      <li class="store__nav-item">
+        <a [routerLink]="['/articles']" routerLinkActive="selected">Artigos</a>
+      </li>
+      <li class="store__nav-item">
+        <a [routerLink]="['/bazar']" routerLinkActive="selected">Bazar</a>
+      </li>
 
-            <ng-template #guestLinks>
-                <li class="store__nav-item"><a [routerLink]="['/login']" routerLinkActive="selected">Login</a></li>
-            </ng-template>
+      <!-- Autenticado -->
+      <ng-container *ngIf="isAuth(); else guestLinks">
+        <!-- Minha Estante sempre visível -->
+        <li class="store__nav-item">
+          <a [routerLink]="['/bookcase']" routerLinkActive="selected">Minha Estante</a>
+        </li>
 
-        </ul>
+        <!-- Dropdown Minha conta -->
+        <li class="store__nav-item account" [class.open]="accountOpen">
+          <button
+            class="account-btn"
+            type="button"
+            aria-haspopup="true"
+            [attr.aria-expanded]="accountOpen"
+            (click)="toggleAccount()"
+          >
+            Minha conta
+            <span class="chevron" [class.up]="accountOpen">▾</span>
+          </button>
 
-        <a routerLink="/carrinho" class="cart-link">
-            <img src="/assets/icons/grocery-store.png" alt="Carrinho" class="cart-icon" />
-            <span class="badge">{{ cart.count$ | async }}</span>
-        </a>
+          <ul class="account-dropdown" role="menu">
+            <li role="none">
+              <a role="menuitem" [routerLink]="['/meu-bazar']" routerLinkActive="selected" (click)="closeAccount()">Meu Bazar</a>
+            </li>
+            <li role="none">
+              <a role="menuitem" [routerLink]="['/negociacoes']" routerLinkActive="selected" (click)="closeAccount()">Minhas Negociações</a>
+            </li>
+            <li role="none">
+              <a role="menuitem" [routerLink]="['/my-profile']" routerLinkActive="selected" (click)="closeAccount()">Meu Perfil</a>
+            </li>
+            <li role="none">
+              <button role="menuitem" type="button" class="logout-btn" (click)="onLogout()">Sair</button>
+            </li>
+          </ul>
+        </li>
+      </ng-container>
 
-    </nav>
+      <!-- Visitante -->
+      <ng-template #guestLinks>
+        <li class="store__nav-item">
+          <a [routerLink]="['/login']" routerLinkActive="selected">Login</a>
+        </li>
+      </ng-template>
+    </ul>
+
+    <a routerLink="/carrinho" class="cart-link">
+      <img src="/assets/icons/grocery-store.png" alt="Carrinho" class="cart-icon" />
+      <span class="badge">{{ cart.count$ | async }}</span>
+    </a>
+  </nav>
 </section>
