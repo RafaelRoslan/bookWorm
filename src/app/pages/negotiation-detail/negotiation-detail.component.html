@@ -168,6 +168,13 @@
         <div *ngIf="n.evaluated" class="muted mtop">
           Produto recebido e negociação finalizada
         </div>
+
+        <button
+          *ngIf="canRate(n)"
+          class="btn"
+          (click)="openRating()">
+          {{ currentRating ? 'Editar avaliação' : 'Avaliar negociação' }}
+        </button>
       </div>
 
       <div class="action-links">
@@ -250,6 +257,57 @@
         <span class="log-message">{{ l.message }}</span>
       </li>
     </ul>
+  </section>
+
+  <section class="ratings" *ngIf="canRate(n) || currentRating || counterpartyRating || (n.status === 'concluido' || n.status === 'concluído')">
+    <div class="ratings-header">
+      <h3>Avaliações</h3>
+    </div>
+    
+    <div class="ratings-list">
+      <!-- Avaliação que o usuário atual fez -->
+      <div class="rating-item" *ngIf="currentRating">
+        <div class="rating-avatar">
+          <span>{{ getCurrentUserInitial() }}</span>
+        </div>
+        <div class="rating-content">
+          <div class="rating-header">
+            <strong class="rating-author">{{ getCurrentUserName() }}</strong>
+            <span class="rating-role">{{ roleLabel() }}</span>
+            <span class="rating-date" *ngIf="currentRating.date || currentRating.createdAt">{{ (currentRating.date || currentRating.createdAt) | date:'dd/MM/yy, h:mm a' }}</span>
+          </div>
+          <div class="rating-stars-display">
+            <span *ngFor="let star of [1,2,3,4,5]" class="star-display" [class.active]="star <= currentRating.ratingValue">★</span>
+            <span class="rating-value-text">{{ currentRating.ratingValue }} de 5</span>
+          </div>
+          <p class="rating-comment" *ngIf="currentRating.comment">{{ currentRating.comment }}</p>
+        </div>
+      </div>
+      
+      <!-- Avaliação que a outra parte fez -->
+      <div class="rating-item" *ngIf="counterpartyRating">
+        <div class="rating-avatar">
+          <span>{{ getCounterpartyInitial(n) }}</span>
+        </div>
+        <div class="rating-content">
+          <div class="rating-header">
+            <strong class="rating-author">{{ getCounterpartyRatingName(counterpartyRating) }}</strong>
+            <span class="rating-role">{{ isBuyer() ? 'Vendedor' : 'Comprador' }}</span>
+            <span class="rating-date" *ngIf="counterpartyRating.date || counterpartyRating.createdAt">{{ (counterpartyRating.date || counterpartyRating.createdAt) | date:'dd/MM/yy, h:mm a' }}</span>
+          </div>
+          <div class="rating-stars-display">
+            <span *ngFor="let star of [1,2,3,4,5]" class="star-display" [class.active]="star <= counterpartyRating.ratingValue">★</span>
+            <span class="rating-value-text">{{ counterpartyRating.ratingValue }} de 5</span>
+          </div>
+          <p class="rating-comment" *ngIf="counterpartyRating.comment">{{ counterpartyRating.comment }}</p>
+        </div>
+      </div>
+      
+      <!-- Mensagem quando não há avaliações -->
+      <div class="no-ratings" *ngIf="!currentRating && !counterpartyRating">
+        <p class="muted">Nenhuma avaliação ainda. Avalie a negociação quando ela estiver concluída!</p>
+      </div>
+    </div>
   </section>
 
   <section class="comments">
@@ -365,6 +423,57 @@
         <button class="btn secondary" (click)="closeReport()" [disabled]="loadingReport">Cancelar</button>
         <button class="btn" (click)="submitReport()" [disabled]="loadingReport">
           {{ loadingReport ? 'Enviando...' : 'Enviar denúncia' }}
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Modal avaliação -->
+<div class="modal-backdrop" *ngIf="ratingOpen">
+  <div class="modal" role="dialog" aria-modal="true">
+    <header>
+      <h3>Avaliar negociação</h3>
+      <button class="close-btn" (click)="closeRating()">✕</button>
+    </header>
+    <section>
+      <label>Avaliação *</label>
+      <div class="rating-stars">
+        <button
+          *ngFor="let star of [1,2,3,4,5]"
+          type="button"
+          class="star-btn"
+          [class.active]="star <= ratingValue"
+          (click)="setRating(star)">
+          ★
+        </button>
+        <span class="rating-value" *ngIf="ratingValue > 0">{{ ratingValue }} de 5</span>
+      </div>
+
+      <label>Comentário (opcional)</label>
+      <textarea [(ngModel)]="ratingComment" rows="4" placeholder="Deixe um comentário sobre a negociação..."></textarea>
+      
+      <p class="error" *ngIf="ratingError">{{ ratingError }}</p>
+      
+      <div class="form-actions">
+        <button 
+          class="btn secondary" 
+          (click)="closeRating()" 
+          [disabled]="loadingRating">
+          Cancelar
+        </button>
+        <button 
+          *ngIf="currentRating"
+          class="btn btn-danger" 
+          (click)="deleteRating()" 
+          [disabled]="loadingRating">
+          {{ loadingRating ? 'Deletando...' : 'Deletar' }}
+        </button>
+        <button 
+          class="btn" 
+          (click)="submitRating()" 
+          [disabled]="loadingRating || ratingValue < 1">
+          {{ loadingRating ? 'Salvando...' : (currentRating ? 'Atualizar avaliação' : 'Enviar avaliação') }}
         </button>
       </div>
     </section>

@@ -8,6 +8,7 @@ import {
 } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
@@ -20,6 +21,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { StatusLabelPipe } from '../../pipes/status-label.pipe';
 import { AuthService } from '../../services/auth.service';
 import { NegotiationDetail, NegotiationsService } from '../../services/negotiations.service';
+import { RatingService, Rating, RatingDto } from '../../services/rating.service';
 
 @Component({
   selector: 'app-negotiation-detail',
@@ -37,6 +39,8 @@ export class NegotiationDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private negSvc = inject(NegotiationsService);
   private auth = inject(AuthService);
+  private ratingSvc = inject(RatingService);
+  private cdr = inject(ChangeDetectorRef);
 
   // ⚠️ Trocar quando integrar autenticação real
   private currentUserId: string | null = null;
@@ -67,6 +71,13 @@ export class NegotiationDetailComponent implements OnInit, OnDestroy {
   loadingComment = false;
   loadingReport = false;
   loadingReceived = false;
+  ratingOpen = false;
+  ratingValue = 0;
+  ratingComment = '';
+  ratingError = '';
+  loadingRating = false;
+  currentRating: Rating | null = null;
+  counterpartyRating: Rating | null = null;
 
   // Writable Signal da negociação (permite .set)
   neg = signal<NegotiationDetail | null>(null);
@@ -170,7 +181,71 @@ export class NegotiationDetailComponent implements OnInit, OnDestroy {
   }
 
   private loadDetail(id: string): void {
-    this.negSvc.getById(id).subscribe(detail => this.neg.set(detail));
+    this.negSvc.getById(id).subscribe(detail => {
+      this.neg.set(detail);
+      // Carrega avaliação existente se houver
+      this.loadExistingRating(detail);
+    });
+  }
+
+  private loadExistingRating(negotiation: NegotiationDetail): void {
+    if (!this.currentUserId || !negotiation) return;
+    
+    const counterpartyId = this.isBuyer() ? negotiation.seller.id : negotiation.buyer.id;
+    
+    // Busca avaliações da negociação usando a rota específica
+    this.ratingSvc.getNegotiationRatings(negotiation.id).subscribe({
+      next: (ratings) => {
+       
+        // Separa a avaliação do usuário atual da avaliação da outra parte
+        const currentUserRating = ratings.find(r => {
+          const ratingUserId = typeof r.ratingUserId === 'object' 
+            ? r.ratingUserId?._id 
+            : r.ratingUserId;
+          const match = String(ratingUserId) === String(this.currentUserId);
+          console.log('Comparando ratingUserId:', ratingUserId, 'com currentUserId:', this.currentUserId, 'match:', match);
+          return match;
+        });
+        
+        const otherPartyRating = ratings.find(r => {
+          const ratingUserId = typeof r.ratingUserId === 'object' 
+            ? r.ratingUserId?._id 
+            : r.ratingUserId;
+          const match = String(ratingUserId) === String(counterpartyId);
+          console.log('Comparando ratingUserId:', ratingUserId, 'com counterpartyId:', counterpartyId, 'match:', match);
+          return match;
+        });
+        
+        console.log('Current User Rating encontrada:', currentUserRating);
+        console.log('Other Party Rating encontrada:', otherPartyRating);
+        
+        // Atualiza a avaliação do usuário atual
+        if (currentUserRating) {
+          this.currentRating = currentUserRating;
+          this.ratingValue = currentUserRating.ratingValue;
+          this.ratingComment = currentUserRating.comment || '';
+        } else {
+          this.currentRating = null;
+          this.ratingValue = 0;
+          this.ratingComment = '';
+        }
+        
+        // Atualiza a avaliação da outra parte
+        this.counterpartyRating = otherPartyRating || null;
+        
+        // Força detecção de mudanças
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        // Ignora erro silenciosamente - pode não ter avaliações ainda
+        console.error('Erro ao carregar avaliações:', err);
+        this.currentRating = null;
+        this.ratingValue = 0;
+        this.ratingComment = '';
+        this.counterpartyRating = null;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   roleLabel(): string {
@@ -268,6 +343,157 @@ export class NegotiationDetailComponent implements OnInit, OnDestroy {
         // Você pode adicionar uma mensagem de erro aqui se quiser
       }
     });
+  }
+
+  openRating(): void {
+    const n = this.neg();
+    if (!n || !this.currentUserId) return;
+    
+    this.ratingOpen = true;
+    this.ratingError = '';
+    
+    // Se já existe uma avaliação, carrega os valores
+    if (this.currentRating) {
+      this.ratingValue = this.currentRating.ratingValue;
+      this.ratingComment = this.currentRating.comment || '';
+    } else {
+      this.ratingValue = 0;
+      this.ratingComment = '';
+    }
+  }
+
+  closeRating(): void {
+    this.ratingOpen = false;
+    this.ratingValue = 0;
+    this.ratingComment = '';
+    this.ratingError = '';
+  }
+
+  setRating(value: number): void {
+    this.ratingValue = value;
+  }
+
+  submitRating(): void {
+    const n = this.neg();
+    if (!n || !this.currentUserId) return;
+
+    if (this.ratingValue < 1 || this.ratingValue > 5) {
+      this.ratingError = 'Selecione uma avaliação de 1 a 5 estrelas';
+      return;
+    }
+
+    this.ratingError = '';
+    this.loadingRating = true;
+
+    const counterpartyId = this.isBuyer() ? n.seller.id : n.buyer.id;
+    const body: RatingDto = {
+      ratedUserId: counterpartyId,
+      negotiationId: n.id,
+      ratingValue: this.ratingValue,
+      comment: this.ratingComment.trim() || undefined
+    };
+
+    if (this.currentRating) {
+      // Atualiza avaliação existente
+      this.ratingSvc.updateRating(this.currentRating._id || this.currentRating.id || '', {
+        ratingValue: this.ratingValue,
+        comment: this.ratingComment.trim() || undefined
+      }).subscribe({
+        next: () => {
+          this.loadingRating = false;
+          this.closeRating();
+          this.loadDetail(n.id);
+        },
+        error: (err) => {
+          this.ratingError = err?.error?.message || 'Erro ao atualizar avaliação';
+          this.loadingRating = false;
+        }
+      });
+    } else {
+      // Cria nova avaliação
+      this.ratingSvc.createRating(body).subscribe({
+        next: () => {
+          this.loadingRating = false;
+          this.closeRating();
+          this.loadDetail(n.id);
+        },
+        error: (err) => {
+          this.ratingError = err?.error?.message || 'Erro ao criar avaliação';
+          this.loadingRating = false;
+        }
+      });
+    }
+  }
+
+  deleteRating(): void {
+    if (!this.currentRating) return;
+    
+    const ratingId = this.currentRating._id || this.currentRating.id;
+    if (!ratingId) return;
+
+    this.loadingRating = true;
+    this.ratingSvc.deleteRating(ratingId).subscribe({
+      next: () => {
+        this.loadingRating = false;
+        this.currentRating = null;
+        this.ratingValue = 0;
+        this.ratingComment = '';
+        const n = this.neg();
+        if (n) this.loadDetail(n.id);
+      },
+      error: (err) => {
+        this.ratingError = err?.error?.message || 'Erro ao deletar avaliação';
+        this.loadingRating = false;
+      }
+    });
+  }
+
+  canRate(n: NegotiationDetail | null): boolean {
+    if (!n || !this.currentUserId) return false;
+    // Pode avaliar se a negociação está concluída
+    const status = (n.status || '').toLowerCase();
+    return status === 'concluido' || status === 'concluído' || !!n.evaluated;
+  }
+
+  getCurrentUserName(): string {
+    const user = this.auth.currentUser;
+    if (!user) return 'Você';
+    return `${user.name || ''} ${user.lastname || ''}`.trim() || 'Você';
+  }
+
+  getCurrentUserInitial(): string {
+    const user = this.auth.currentUser;
+    if (!user) return 'V';
+    const first = (user.name || '').charAt(0).toUpperCase();
+    const last = (user.lastname || '').charAt(0).toUpperCase();
+    return (first + last) || 'V';
+  }
+
+  getCounterpartyInitial(n: NegotiationDetail | null): string {
+    if (!n) return 'U';
+    const cp = this.counterparty(n);
+    const nome = cp.nome || '';
+    if (!nome) return 'U';
+    const parts = nome.split(' ');
+    const first = parts[0]?.charAt(0).toUpperCase() || '';
+    const last = parts.length > 1 ? parts[parts.length - 1]?.charAt(0).toUpperCase() || '' : '';
+    return (first + last) || 'U';
+  }
+
+  getCounterpartyRatingName(rating: Rating | null): string {
+    if (!rating) return 'Usuário';
+    const ratingUserId = typeof rating.ratingUserId === 'object' 
+      ? rating.ratingUserId 
+      : null;
+    if (ratingUserId) {
+      return `${ratingUserId.name || ''} ${ratingUserId.lastname || ''}`.trim() || 'Usuário';
+    }
+    // Fallback para o nome da outra parte da negociação
+    const n = this.neg();
+    if (n) {
+      return this.counterparty(n).nome || 'Usuário';
+    }
+    return 'Usuário';
   }
 
   openAction(type: 'payment' | 'shipment'): void {
