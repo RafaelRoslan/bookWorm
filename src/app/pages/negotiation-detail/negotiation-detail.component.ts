@@ -58,6 +58,15 @@ export class NegotiationDetailComponent implements OnInit, OnDestroy {
   actionType: 'payment' | 'shipment' | null = null;
   commentOpen = false;
   commentText = '';
+  commentError = '';
+  reportOpen = false;
+  reportReason = '';
+  reportAccusedId = '';
+  reportAttachments: string[] = [];
+  reportError = '';
+  loadingComment = false;
+  loadingReport = false;
+  loadingReceived = false;
 
   // Writable Signal da negociação (permite .set)
   neg = signal<NegotiationDetail | null>(null);
@@ -186,6 +195,81 @@ export class NegotiationDetailComponent implements OnInit, OnDestroy {
     return (n.trackingCodes ?? []).filter((code): code is string => typeof code === 'string');
   }
 
+  getTrackingCode(n: NegotiationDetail): string | null {
+    // Prioriza o código principal do shipment
+    if (n.shipment?.trackingCode) return n.shipment.trackingCode;
+    
+    // Se não tiver, pega o primeiro do array de trackingCodes
+    const codes = this.trackingList(n);
+    if (codes.length > 0) return codes[0];
+    
+    return null;
+  }
+
+  getPaymentStatus(n: NegotiationDetail): string {
+    if (n.payment?.paidAt) {
+      return 'Pago';
+    }
+    if (n.payment?.method) {
+      return 'Aguardando confirmação';
+    }
+    return 'Aguardando pagamento';
+  }
+
+  getCommentAuthorName(comment: any): string {
+    // Nova estrutura: authorId com name e lastname
+    if (comment.authorId) {
+      const name = comment.authorId.name || '';
+      const lastname = comment.authorId.lastname || '';
+      const fullName = `${name} ${lastname}`.trim();
+      if (fullName) return fullName;
+    }
+    
+    // Estrutura antiga: author.name
+    if (comment.author?.name) {
+      return comment.author.name;
+    }
+    
+    return 'Usuário';
+  }
+
+  getCommentAuthorInitial(comment: any): string {
+    const name = this.getCommentAuthorName(comment);
+    return name[0]?.toUpperCase() || 'U';
+  }
+
+  canMarkReceived(n: NegotiationDetail | null): boolean {
+    if (!n || !this.isBuyer()) return false;
+    
+    // Não mostra se já está concluído
+    const status = (n.status || '').toLowerCase();
+    if (status === 'concluido' || status === 'concluído' || n.evaluated) return false;
+    
+    // Pode marcar como recebido se:
+    // - Já foi enviado (tem shipment)
+    // - Status é "encaminhada" ou tem tracking code
+    const hasShipment = this.hasShipment(n);
+    const isEncaminhada = status === 'encaminhada';
+    return hasShipment && (isEncaminhada || !!n.shipment?.trackingCode);
+  }
+
+  markReceived(id: string): void {
+    if (!this.isBuyer()) return;
+    
+    this.loadingReceived = true;
+    this.negSvc.markReceived(id).subscribe({
+      next: () => {
+        this.loadingReceived = false;
+        this.loadDetail(id);
+      },
+      error: (err) => {
+        this.loadingReceived = false;
+        console.error('Erro ao marcar produto como recebido', err);
+        // Você pode adicionar uma mensagem de erro aqui se quiser
+      }
+    });
+  }
+
   openAction(type: 'payment' | 'shipment'): void {
     if (this.actionType === type) {
       this.actionFormOpen = !this.actionFormOpen;
@@ -203,15 +287,84 @@ export class NegotiationDetailComponent implements OnInit, OnDestroy {
 
   submitComment(): void {
     const text = this.commentText.trim();
-    if (!text) return;
-    console.log('Comentário registrado (TODO integrar com backend):', text);
-    this.commentText = '';
-    this.commentOpen = false;
+    const negId = this.neg()?.id;
+    if (!text || !negId) {
+      this.commentError = 'Digite uma mensagem';
+      return;
+    }
+    
+    this.commentError = '';
+    this.loadingComment = true;
+    
+    this.negSvc.addComment(negId, { message: text }).subscribe({
+      next: () => {
+        this.commentText = '';
+        this.commentOpen = false;
+        this.loadingComment = false;
+        this.loadDetail(negId);
+      },
+      error: (err) => {
+        this.commentError = err?.error?.message || 'Erro ao enviar comentário';
+        this.loadingComment = false;
+      }
+    });
   }
 
-  report(): void {
-    console.log('Denúncia acionada para negociação:', this.neg()?.id);
-    // TODO integrar serviço de denúncia
+  openReport(): void {
+    const n = this.neg();
+    if (!n) return;
+    this.reportOpen = true;
+    this.reportReason = '';
+    this.reportAccusedId = this.isBuyer() ? n.seller.id : n.buyer.id;
+    this.reportAttachments = [];
+    this.reportError = '';
+  }
+
+  closeReport(): void {
+    this.reportOpen = false;
+    this.reportReason = '';
+    this.reportAccusedId = '';
+    this.reportAttachments = [];
+    this.reportError = '';
+  }
+
+  submitReport(): void {
+    const negId = this.neg()?.id;
+    const reason = this.reportReason.trim();
+    
+    if (!reason) {
+      this.reportError = 'Informe o motivo da denúncia';
+      return;
+    }
+    
+    if (!negId) {
+      this.reportError = 'Negociação não encontrada';
+      return;
+    }
+    
+    this.reportError = '';
+    this.loadingReport = true;
+    
+    const body: any = {
+      reason,
+      attachments: this.reportAttachments.length > 0 ? this.reportAttachments : undefined
+    };
+    
+    if (this.reportAccusedId) {
+      body.accusedId = this.reportAccusedId;
+    }
+    
+    this.negSvc.createReport(negId, body).subscribe({
+      next: () => {
+        this.closeReport();
+        this.loadingReport = false;
+        this.loadDetail(negId);
+      },
+      error: (err) => {
+        this.reportError = err?.error?.message || 'Erro ao criar denúncia';
+        this.loadingReport = false;
+      }
+    });
   }
 
   closeAction(): void {
@@ -222,12 +375,18 @@ export class NegotiationDetailComponent implements OnInit, OnDestroy {
 
   buyerMustAct(n: NegotiationDetail | null): boolean {
     if (!n) return false;
-    return this.isBuyer() && !this.hasPayment(n);
+    if (!this.isBuyer()) return false;
+    // Comprador deve agir quando status é "esperando_pagamento" ou não há pagamento
+    const status = (n.status || '').toLowerCase();
+    return status === 'esperando_pagamento' || !this.hasPayment(n);
   }
 
   sellerMustAct(n: NegotiationDetail | null): boolean {
     if (!n) return false;
-    return this.isSeller() && this.hasPayment(n) && !this.hasShipment(n);
+    if (!this.isSeller()) return false;
+    // Vendedor deve agir quando status é "aguardando_envio" (pagamento feito, aguardando envio)
+    const status = (n.status || '').toLowerCase();
+    return status === 'aguardando_envio' || (this.hasPayment(n) && !this.hasShipment(n));
   }
 
   onPaymentProofSelected(event: Event): void {

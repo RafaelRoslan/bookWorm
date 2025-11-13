@@ -15,9 +15,9 @@
 
     <div class="summary-right">
       <span class="status-chip"
-        [class.pend]="n.status==='PENDING_SELLER_ACCEPT'"
-        [class.act]="n.status==='ACTIVE'||n.status==='WAITING_BUYER'||n.status==='WAITING_SELLER'"
-        [class.done]="n.status==='COMPLETED'"
+        [class.pend]="n.status==='esperando_pagamento' || n.status==='PENDING_SELLER_ACCEPT'"
+        [class.act]="n.status==='aguardando_envio' || n.status==='encaminhada' || n.status==='ACTIVE' || n.status==='WAITING_BUYER' || n.status==='WAITING_SELLER'"
+        [class.done]="n.status==='concluido' || n.status==='concluído' || n.status==='COMPLETED'"
         [class.cancel]="n.status==='CANCELLED'"
         [class.exp]="n.status==='EXPIRED'">
           {{ (n.status ?? '') | statusLabel }}
@@ -36,14 +36,15 @@
       </small>
     </div>
     <div class="info-card">
-      <span class="label">Prazo comprador</span>
-      <strong>{{ n.buyerDeadline ? (n.buyerDeadline | date:'shortDate') : '—' }}</strong>
-      <small class="countdown" *ngIf="buyerCountdown()">{{ buyerCountdown() }}</small>
+      <span class="label">Situação de pagamento</span>
+      <strong>{{ getPaymentStatus(n) }}</strong>
+      <small class="muted" *ngIf="n.payment?.method">{{ n.payment?.method }}</small>
     </div>
     <div class="info-card">
-      <span class="label">Prazo vendedor</span>
-      <strong>{{ n.sellerDeadline ? (n.sellerDeadline | date:'shortDate') : '—' }}</strong>
-      <small class="countdown" *ngIf="sellerCountdown()">{{ sellerCountdown() }}</small>
+      <span class="label">Código de rastreio</span>
+      <strong *ngIf="getTrackingCode(n); else noTracking">{{ getTrackingCode(n) }}</strong>
+      <ng-template #noTracking>—</ng-template>
+      <small class="muted" *ngIf="trackingList(n).length > 1">{{ trackingList(n).length }} códigos</small>
     </div>
     <div class="info-card">
       <span class="label">Itens</span>
@@ -121,48 +122,68 @@
 
       <div *ngIf="isSeller()">
         <button
-          *ngIf="n.status==='PENDING_SELLER_ACCEPT'"
+          *ngIf="!n.acceptedAt"
           class="btn"
           (click)="accept(n.id)">
           Aceitar negociação
         </button>
 
-        <button
-          *ngIf="sellerMustAct(n)"
-          class="btn tertiary"
-          (click)="openAction('shipment')">
-          Fiz minha parte
-        </button>
+        <div class="action-buttons-row" *ngIf="sellerMustAct(n)">
+          <button
+            class="btn tertiary"
+            (click)="openAction('shipment')">
+            Fiz minha parte
+          </button>
+        </div>
 
         <div *ngIf="n.shipment?.sentAt" class="muted mtop">
-          Enviado em {{ n.shipment?.sentAt | date:'short' }} — {{ n.shipment?.carrier }} / {{ n.shipment?.trackingCode }}
+          Enviado em {{ n.shipment?.sentAt | date:'short' }}
+          <span *ngIf="n.shipment?.carrier"> — {{ n.shipment?.carrier }}</span>
+          <span *ngIf="n.shipment?.trackingCode"> / {{ n.shipment?.trackingCode }}</span>
         </div>
       </div>
 
       <div *ngIf="isBuyer()">
-        <button
-          *ngIf="buyerMustAct(n)"
-          class="btn tertiary"
-          (click)="openAction('payment')">
-          Fiz minha parte
-        </button>
+        <div class="action-buttons-row" *ngIf="buyerMustAct(n) || canMarkReceived(n)">
+          <button
+            *ngIf="buyerMustAct(n)"
+            class="btn tertiary"
+            (click)="openAction('payment')">
+            Fiz minha parte
+          </button>
+
+          <button
+            *ngIf="canMarkReceived(n)"
+            class="btn"
+            (click)="markReceived(n.id)"
+            [disabled]="loadingReceived">
+            {{ loadingReceived ? 'Confirmando...' : 'Produto recebido' }}
+          </button>
+        </div>
 
         <div *ngIf="n.payment?.paidAt" class="muted mtop">
           Pago em {{ n.payment?.paidAt | date:'short' }} — {{ n.payment?.method }}
         </div>
+
+        <div *ngIf="n.evaluated" class="muted mtop">
+          Produto recebido e negociação finalizada
+        </div>
       </div>
 
       <div class="action-links">
-        <button class="link-btn" (click)="report()">Denunciar negociação</button>
         <button class="link-btn" (click)="toggleComment()">
           {{ commentOpen ? 'Cancelar comentário' : 'Comentar negociação' }}
         </button>
+        <button class="link-btn" (click)="openReport()">Denunciar negociação</button>
       </div>
 
       <div class="comment-box" *ngIf="commentOpen">
         <label>Comentário</label>
         <textarea [(ngModel)]="commentText" rows="3" placeholder="Compartilhe uma atualização sobre a negociação"></textarea>
-        <button class="btn" (click)="submitComment()">Enviar comentário</button>
+        <p class="error" *ngIf="commentError">{{ commentError }}</p>
+        <button class="btn" (click)="submitComment()" [disabled]="loadingComment">
+          {{ loadingComment ? 'Enviando...' : 'Enviar comentário' }}
+        </button>
       </div>
     </div>
 
@@ -230,6 +251,35 @@
       </li>
     </ul>
   </section>
+
+  <section class="comments">
+    <div class="comments-header">
+      <h3>Comentários</h3>
+      <span class="comment-count" *ngIf="n.comments?.length">{{ n.comments.length }} {{ n.comments.length === 1 ? 'comentário' : 'comentários' }}</span>
+    </div>
+    
+    <div class="comment-list" *ngIf="n.comments?.length; else noComments">
+      <div class="comment-item" *ngFor="let comment of n.comments">
+        <div class="comment-avatar">
+          <span>{{ getCommentAuthorInitial(comment) }}</span>
+        </div>
+        <div class="comment-content">
+          <div class="comment-header">
+            <strong class="comment-author">{{ getCommentAuthorName(comment) }}</strong>
+            <span class="comment-role" *ngIf="comment.role">{{ comment.role === 'buyer' ? 'Comprador' : 'Vendedor' }}</span>
+            <span class="comment-date" *ngIf="comment.createdAt">{{ comment.createdAt | date:'dd/MM/yy, h:mm a' }}</span>
+          </div>
+          <p class="comment-message">{{ comment.message }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <ng-template #noComments>
+      <div class="no-comments">
+        <p class="muted">Nenhum comentário ainda. Seja o primeiro a comentar!</p>
+      </div>
+    </ng-template>
+  </section>
 </main>
 
 <!-- Modal pagamento -->
@@ -294,6 +344,29 @@
     </header>
     <section class="image-view">
       <img [src]="proofModalImage!" [alt]="proofModalTitle" />
+    </section>
+  </div>
+</div>
+
+<!-- Modal denúncia -->
+<div class="modal-backdrop" *ngIf="reportOpen">
+  <div class="modal" role="dialog" aria-modal="true">
+    <header>
+      <h3>Denunciar negociação</h3>
+      <button class="close-btn" (click)="closeReport()">✕</button>
+    </header>
+    <section>
+      <label>Motivo da denúncia *</label>
+      <textarea [(ngModel)]="reportReason" rows="4" placeholder="Descreva o motivo da denúncia..."></textarea>
+      
+      <p class="error" *ngIf="reportError">{{ reportError }}</p>
+      
+      <div class="form-actions">
+        <button class="btn secondary" (click)="closeReport()" [disabled]="loadingReport">Cancelar</button>
+        <button class="btn" (click)="submitReport()" [disabled]="loadingReport">
+          {{ loadingReport ? 'Enviando...' : 'Enviar denúncia' }}
+        </button>
+      </div>
     </section>
   </div>
 </div>

@@ -49,6 +49,8 @@ export type NegotiationDetail = NegotiationSummary & {
   shipment?: ShipmentDetail | null;
   logs: NegotiationLogDetail[];
   trackingCodes: string[];
+  comments: Comment[];
+  reports: Report[];
 };
 
 export type NegotiationItemDetail = {
@@ -79,6 +81,50 @@ export type NegotiationLogDetail = {
   at: string;
   by: string;
   message: string;
+};
+
+export type CommentDto = {
+  message: string;
+};
+
+export type Comment = {
+  _id?: string;
+  id?: string;
+  message: string;
+  createdAt?: string;
+  role?: 'buyer' | 'seller';
+  authorId?: {
+    _id?: string;
+    id?: string;
+    name?: string;
+    lastname?: string;
+    email?: string;
+    address?: {
+      cidade?: string;
+      estado?: string;
+    };
+  };
+  // Compatibilidade com estrutura antiga
+  author?: { id: string; name: string };
+  createdBy?: string;
+};
+
+export type ReportDto = {
+  accusedId?: string;
+  reason: string;
+  attachments?: string[];
+};
+
+export type Report = {
+  _id?: string;
+  id?: string;
+  negotiationId: string;
+  accusedId?: string;
+  reason: string;
+  attachments?: string[];
+  createdAt?: string;
+  createdBy?: string;
+  author?: { id: string; name: string };
 };
 
 @Injectable({ providedIn: 'root' })
@@ -139,6 +185,38 @@ export class NegotiationsService {
     );
   }
 
+  // PATCH /negotiations/:id/mark-received — Marcar produto como recebido (comprador)
+  markReceived(id: string): Observable<Negotiation> {
+    return this.http.patch<Negotiation>(`${this.api}/negotiations/${id}/mark-received`, {}).pipe(
+      tap(updated => this.patchInList(updated))
+    );
+  }
+
+  // POST /negotiations/:negotiationId/comments — Adicionar comentário
+  addComment(negotiationId: string, body: CommentDto): Observable<{ message: string; comment?: Comment }> {
+    return this.http.post<{ message: string; comment?: Comment }>(
+      `${this.api}/negotiations/${negotiationId}/comments`,
+      body
+    );
+  }
+
+  // POST /negotiations/:negotiationId/reports — Criar denúncia
+  createReport(negotiationId: string, body: ReportDto): Observable<{ message: string; report?: Report }> {
+    return this.http.post<{ message: string; report?: Report }>(
+      `${this.api}/negotiations/${negotiationId}/reports`,
+      body
+    );
+  }
+
+  // GET /negotiations/:negotiationId/reports — Listar denúncias da negociação
+  listReports(negotiationId: string): Observable<Report[]> {
+    return this.http.get<Report[] | { reports: Report[] }>(
+      `${this.api}/negotiations/${negotiationId}/reports`
+    ).pipe(
+      map(res => Array.isArray(res) ? res : (res?.reports ?? []))
+    );
+  }
+
   private patchInList(updated: Negotiation | NegotiationSummary | NegotiationDetail | null | undefined): void {
     if (!updated?.id) return;
     const summary = this.toSummary(updated as any);
@@ -185,7 +263,8 @@ export class NegotiationsService {
 
     const status = this.deriveStatus(raw);
 
-    return {
+    // Preserva dados extras do backend (shipment, trackingCodes, etc) mesmo que não estejam no tipo
+    const summary: NegotiationSummary & { shipment?: any; trackingCodes?: string[]; shipments?: any[] } = {
       id: raw._id ?? raw.id ?? '',
       createdAt: raw.date ?? raw.createdAt ?? '',
       totalPrice: Number(raw.price) || listings.reduce((sum, l) => sum + (l.price ?? 0), 0),
@@ -193,8 +272,16 @@ export class NegotiationsService {
       status,
       buyer,
       seller,
-      listings
+      listings,
+      // Preserva dados de shipment para uso na lista
+      shipment: raw.shipment ?? raw.shipping ?? null,
+      trackingCodes: Array.isArray(raw.trackingCodes) ? raw.trackingCodes : 
+                     (raw.shipment?.trackingCode ? [raw.shipment.trackingCode] : 
+                     (raw.shipping?.trackingCode ? [raw.shipping.trackingCode] : [])),
+      shipments: Array.isArray(raw.shipments) ? raw.shipments : null
     };
+
+    return summary;
   };
 
   private toDetail = (raw: any): NegotiationDetail => {
@@ -275,6 +362,49 @@ export class NegotiationsService {
     ];
     const trackingCodes = trackingSources.filter((value): value is string => !!value);
 
+    const comments: Comment[] = Array.isArray(raw.comments)
+      ? raw.comments.map((comment: any) => {
+          const authorId = comment.authorId ?? null;
+          const authorName = authorId 
+            ? `${authorId.name || ''} ${authorId.lastname || ''}`.trim() || 'Usuário'
+            : null;
+          
+          return {
+            _id: comment._id ?? comment.id ?? undefined,
+            id: comment.id ?? comment._id ?? undefined,
+            message: comment.message ?? '',
+            createdAt: comment.createdAt ?? comment.created_at ?? undefined,
+            role: comment.role ?? undefined,
+            authorId: authorId ? {
+              _id: authorId._id ?? authorId.id ?? undefined,
+              id: authorId.id ?? authorId._id ?? undefined,
+              name: authorId.name ?? undefined,
+              lastname: authorId.lastname ?? undefined,
+              email: authorId.email ?? undefined,
+              address: authorId.address ?? undefined
+            } : undefined,
+            // Compatibilidade com estrutura antiga
+            author: authorName ? { id: authorId?._id ?? authorId?.id ?? '', name: authorName } : 
+                   (comment.author ?? comment.createdByUser ?? undefined),
+            createdBy: comment.createdBy ?? comment.created_by ?? authorId?._id ?? authorId?.id ?? undefined
+          };
+        })
+      : [];
+
+    const reports: Report[] = Array.isArray(raw.reports)
+      ? raw.reports.map((report: any) => ({
+          _id: report._id ?? report.id ?? undefined,
+          id: report.id ?? report._id ?? undefined,
+          negotiationId: report.negotiationId ?? report.negotiation_id ?? summary.id,
+          accusedId: report.accusedId ?? report.accused_id ?? undefined,
+          reason: report.reason ?? '',
+          attachments: Array.isArray(report.attachments) ? report.attachments : [],
+          createdAt: report.createdAt ?? report.created_at ?? undefined,
+          createdBy: report.createdBy ?? report.created_by ?? undefined,
+          author: report.author ?? report.createdByUser ?? undefined
+        }))
+      : [];
+
     return {
       ...summary,
       items,
@@ -282,6 +412,8 @@ export class NegotiationsService {
       payment,
       shipment,
       trackingCodes,
+      comments,
+      reports,
       status: this.deriveStatus(raw),
       whoFirst: raw.whoFirst ?? null,
       acceptedAt: raw.acceptedAt ?? null,
@@ -318,11 +450,19 @@ export class NegotiationsService {
   }
 
   private deriveStatus(raw: any): string {
-    if (raw?.status) return raw.status;
+    // Se o backend já retornou um status, usa ele diretamente
+    if (raw?.status) {
+      const status = String(raw.status).toLowerCase();
+      // Normaliza os status do backend
+      if (status === 'esperando_pagamento') return 'esperando_pagamento';
+      if (status === 'aguardando_envio') return 'aguardando_envio';
+      if (status === 'encaminhada') return 'encaminhada';
+      if (status === 'concluido' || status === 'concluído') return 'concluido';
+      // Fallback para status antigos (compatibilidade)
+      return raw.status;
+    }
 
-    const evaluatedStatus =
-      raw?.isEvaluated === true ? 'COMPLETED' : raw?.isEvaluated === false ? null : null;
-
+    // Fallback: tenta derivar status baseado nos dados (para compatibilidade)
     const paymentDone = !!(
       raw?.payment?.paidAt ||
       raw?.paymentDate ||
@@ -339,10 +479,9 @@ export class NegotiationsService {
       raw?.trackingCode
     );
 
-    if (evaluatedStatus === 'COMPLETED') return 'COMPLETED';
-    if (shipmentDone) return 'COMPLETED';
-    if (paymentDone) return 'WAITING_SELLER';
-    return 'WAITING_BUYER';
+    if (shipmentDone) return 'concluido';
+    if (paymentDone) return 'aguardando_envio';
+    return 'esperando_pagamento';
   }
 }
 

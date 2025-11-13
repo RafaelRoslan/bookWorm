@@ -1,9 +1,25 @@
 <main class="neg-list">
   <header class="neg-header">
     <h2>Minhas Negociações</h2>
+    <div class="header-actions">
+      <ng-container *ngIf="(rows$ | async) as rows">
+        <span class="count-badge" *ngIf="rows.length">
+          {{ rows.length }} {{ rows.length === 1 ? 'negociação' : 'negociações' }}
+        </span>
+      </ng-container>
+    </div>
   </header>
 
-  <section class="table-wrapper" *ngIf="rows$ | async as rows; else vazio">
+  <div class="error-message" *ngIf="error()">
+    <p>{{ error() }}</p>
+  </div>
+
+  <div class="loading" *ngIf="loading()">
+    <p>Carregando negociações...</p>
+  </div>
+
+  <section class="table-wrapper" *ngIf="!loading() && !error(); else vazio">
+    <ng-container *ngIf="rows$ | async as rows">
     <table class="neg-table">
       <thead>
         <tr>
@@ -28,7 +44,7 @@
           <td>{{ row.createdAt | date:'dd/MM/yyyy' }}</td>
           <td class="counterparty">
             <strong>{{ row.counterpartName }}</strong>
-            <small class="muted">Negociação</small>
+            <small class="muted">{{ row.roleChip === 'B' ? 'Vendedor' : 'Comprador' }}</small>
           </td>
           <td>
             <div class="actions">
@@ -38,9 +54,9 @@
           <td>R$ {{ row.total | number:'1.2-2' }}</td>
           <td>
             <span class="status-pill"
-              [class.pend]="row.status==='PENDING_SELLER_ACCEPT'"
-              [class.act]="row.status==='ACTIVE' || row.status==='WAITING_BUYER' || row.status==='WAITING_SELLER'"
-              [class.done]="row.status==='COMPLETED'"
+              [class.pend]="row.status==='esperando_pagamento' || row.status==='PENDING_SELLER_ACCEPT'"
+              [class.act]="row.status==='aguardando_envio' || row.status==='encaminhada' || row.status==='ACTIVE' || row.status==='WAITING_BUYER' || row.status==='WAITING_SELLER'"
+              [class.done]="row.status==='concluido' || row.status==='concluído' || row.status==='COMPLETED'"
               [class.cancel]="row.status==='CANCELLED'"
               [class.exp]="row.status==='EXPIRED'">
               {{ row.status | statusLabel }}
@@ -55,9 +71,14 @@
         </tr>
       </tbody>
     </table>
+    </ng-container>
   </section>
 
   <ng-template #vazio>
-    <p class="muted vazio-texto">Você ainda não possui negociações.</p>
+    <div class="empty-state">
+      <div class="empty-icon">📦</div>
+      <h3>Nenhuma negociação encontrada</h3>
+      <p class="muted">Você ainda não possui negociações. Quando você criar ou receber uma negociação, ela aparecerá aqui.</p>
+    </div>
   </ng-template>
 </main>

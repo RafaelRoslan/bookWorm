@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { StatusLabelPipe } from '../../pipes/status-label.pipe';
@@ -27,17 +27,26 @@ export class NegotiationsComponent implements OnInit {
 
   private currentUserId: string | null = null;
 
+  loading = signal(false);
+  error = signal('');
+
   rows$ = this.negSvc.list$.pipe(
     map(list => (Array.isArray(list) ? list : []).map(n => this.toRow(n)))
   );
 
   ngOnInit(): void {
-    if (!this.auth.isAuthenticated()) return;
+    if (!this.auth.isAuthenticated()) {
+      this.error.set('Você precisa estar autenticado para ver suas negociações');
+      return;
+    }
+
+    this.loading.set(true);
+    this.error.set('');
 
     const user = this.auth.currentUser;
     if (user?._id) {
       this.currentUserId = user._id;
-      this.negSvc.listMine(user._id).subscribe();
+      this.loadNegotiations(user._id);
       return;
     }
 
@@ -45,10 +54,32 @@ export class NegotiationsComponent implements OnInit {
       next: (loaded) => {
         if (loaded?._id) {
           this.currentUserId = loaded._id;
-          this.negSvc.listMine(loaded._id).subscribe();
+          this.loadNegotiations(loaded._id);
+        } else {
+          this.loading.set(false);
+          this.error.set('Não foi possível carregar seus dados');
         }
       },
-      error: (err) => console.error('Falha ao buscar usuário para listar negociações', err)
+      error: (err) => {
+        this.loading.set(false);
+        this.error.set('Falha ao buscar usuário para listar negociações');
+        console.error('Falha ao buscar usuário para listar negociações', err);
+      }
+    });
+  }
+
+  private loadNegotiations(userId: string): void {
+    this.loading.set(true);
+    this.error.set('');
+    this.negSvc.listMine(userId).subscribe({
+      next: () => {
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.error.set(err?.error?.message || 'Falha ao carregar negociações');
+        console.error('Erro ao carregar negociações', err);
+      }
     });
   }
 
@@ -63,7 +94,8 @@ export class NegotiationsComponent implements OnInit {
 
     const actions = this.buildActions(n, isBuyer);
 
-    const tracking = this.resolveTracking(n);
+    // Busca tracking do raw data (n pode ter campos extras do backend)
+    const tracking = this.resolveTracking(n as any);
     const zip = this.resolveLocation(isBuyer ? n.buyer : n.seller);
 
     return {
@@ -100,19 +132,20 @@ export class NegotiationsComponent implements OnInit {
   }
 
   private resolveStatus(n: NegotiationSummary): string {
-    const status = n.status ?? (n.evaluated ? 'COMPLETED' : null);
-    switch (status) {
-      case 'COMPLETED':
-        return 'COMPLETED';
-      case 'CANCELLED':
-        return 'CANCELLED';
-      case 'WAITING_BUYER':
-      case 'WAITING_SELLER':
-      case 'ACTIVE':
-        return status;
-      default:
-        return n.evaluated ? 'COMPLETED' : 'ACTIVE';
+    // Usa o status do backend diretamente se existir
+    if (n.status) {
+      const status = String(n.status).toLowerCase();
+      // Normaliza os status do backend
+      if (status === 'esperando_pagamento') return 'esperando_pagamento';
+      if (status === 'aguardando_envio') return 'aguardando_envio';
+      if (status === 'encaminhada') return 'encaminhada';
+      if (status === 'concluido' || status === 'concluído') return 'concluido';
+      // Retorna o status original se não for um dos novos
+      return n.status;
     }
+    
+    // Fallback: deriva status baseado em evaluated
+    return n.evaluated ? 'concluido' : 'esperando_pagamento';
   }
 
   private resolveLocation(party?: { cidade?: string | null; estado?: string | null }): string {
@@ -122,12 +155,35 @@ export class NegotiationsComponent implements OnInit {
   }
 
   private resolveTracking(n: NegotiationSummary): string {
+    // Tenta buscar do shipment da negociação
+    const shipmentTracking = (n as any)?.shipment?.trackingCode ?? 
+                            (n as any)?.shipment?.codigo ??
+                            (n as any)?.trackingCode ??
+                            null;
+    
+    if (shipmentTracking) return shipmentTracking;
+    
+    // Tenta buscar de trackingCodes (array)
+    const trackingCodes = (n as any)?.trackingCodes;
+    if (Array.isArray(trackingCodes) && trackingCodes.length > 0) {
+      return trackingCodes[0];
+    }
+    
+    // Tenta buscar de shipments (array)
+    const shipments = (n as any)?.shipments;
+    if (Array.isArray(shipments) && shipments.length > 0) {
+      const firstShipment = shipments[0];
+      return firstShipment?.trackingCode ?? firstShipment?.codigo ?? null;
+    }
+    
+    // Fallback: tenta buscar dos listings (compatibilidade)
     const first = n.listings?.[0];
     const tracking =
       (first as any)?.trackingCode ??
       (first as any)?.tracking ??
       (first as any)?.shipment?.trackingCode ??
       null;
+    
     return tracking || '—';
   }
 
