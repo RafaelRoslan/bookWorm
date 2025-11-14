@@ -1,69 +1,83 @@
 .auth-main {
-  min-height: calc(100vh - 64px); /* se houver header fixo, ajuste aqui */
+  min-height: calc(100vh - 64px);
   display: grid;
   place-items: center;
   background: var(--background-color);
-  padding: 24px;
+  padding: 20px;
 }
 
+/* Card mais compacto */
 .auth-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 380px;            /* antes 420px */
   background: #fff;
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 24px 22px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  padding: 18px 18px;          /* antes 24px 22px */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
 .auth-card h2 {
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;          /* menos espaço */
   color: var(--secondary-color);
-  font-size: 1.6rem;
+  font-size: 1.4rem;           /* levemente menor */
   font-weight: 700;
 }
 
+/* Grid do form mais apertado */
 form {
   display: grid;
-  gap: 12px;
+  gap: 8px;                    /* antes 12px */
 }
 
+/* Rótulos mais discretos */
 label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--muted-text-color);
 }
 
+/* Inputs compactos */
 input[type="email"],
 input[type="password"] {
+  box-sizing: border-box;
   width: 100%;
-  padding: 10px 12px;
+  height: 38px;                /* altura fixa menor */
+  padding: 8px 10px;           /* antes 10px 12px */
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 6px;          /* antes 8px */
+  font-size: 0.9rem;           /* antes 0.95rem */
   color: var(--text-color);
+  background: #fff;
   outline: none;
   transition: border-color .2s ease, box-shadow .2s ease;
-  background: #fff;
+}
+
+/* Placeholder um pouco mais suave */
+input::placeholder {
+  color: #9aa0a6;
+  opacity: .9;
 }
 
 input:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px var(--highlight-color);
+  box-shadow: 0 0 0 2px var(--highlight-color); /* anel mais fino */
 }
 
+/* Botão mais enxuto */
 button[type="submit"] {
-  margin-top: 8px;
+  margin-top: 6px;
   width: 100%;
-  padding: 12px;
+  height: 40px;                /* altura controlada */
+  padding: 0 12px;
   border: 0;
   border-radius: 8px;
   background: var(--primary-color);
   color: #fff;
   font-weight: 700;
-  letter-spacing: 0.2px;
+  letter-spacing: .2px;
   cursor: pointer;
   transition: transform .05s ease, box-shadow .2s ease, opacity .2s ease;
-  box-shadow: 0 6px 14px rgba(42,157,143,0.25);
+  box-shadow: 0 6px 14px rgba(42,157,143,0.22);
 }
 
 button[disabled] {
@@ -73,18 +87,18 @@ button[disabled] {
 }
 
 button:hover:not([disabled]) {
-  box-shadow: 0 10px 24px rgba(42,157,143,0.32);
+  box-shadow: 0 10px 22px rgba(42,157,143,0.28);
 }
 
 .error {
-  margin-top: 6px;
+  margin-top: 4px;
   color: #b00020;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .link {
   display: inline-block;
-  margin-top: 14px;
+  margin-top: 12px;            /* um pouco menos */
   color: var(--secondary-color);
   text-decoration: none;
   font-weight: 600;
@@ -92,4 +106,21 @@ button:hover:not([disabled]) {
 
 .link:hover {
   text-decoration: underline;
+}
+
+/* Ajustes finos em telas pequenas */
+@media (max-width: 420px) {
+  .auth-card {
+    max-width: 92%;
+    padding: 16px;
+  }
+  input[type="email"],
+  input[type="password"] {
+    height: 36px;
+    padding: 8px 10px;
+    font-size: 0.88rem;
+  }
+  button[type="submit"] {
+    height: 38px;
+  }
 }

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { User } from '../../models/api.models';
 import { AuthService } from '../../services/auth.service';
 import { CartItem, CartService } from '../../services/cart.service';
@@ -9,7 +9,7 @@ import { NegotiationsService } from '../../services/negotiations.service';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterLink],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush

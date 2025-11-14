@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
+  standalone: true,
   selector: 'app-terms',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './terms.component.html',
   styleUrl: './terms.component.css'
 })

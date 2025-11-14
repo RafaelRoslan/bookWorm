@@ -22,13 +22,13 @@
         <legend>Dados pessoais *</legend>
         <div class="field">
           <label for="name">Nome</label>
-          <input id="name" type="text" formControlName="name" placeholder="Ex.: Rafael" />
+          <input id="name" type="text" formControlName="name" placeholder="Ex.: Arthur" />
           <small class="error" *ngIf="f.get('name')?.touched && f.get('name')?.invalid">Informe seu nome.</small>
         </div>
 
         <div class="field">
           <label for="lastname">Sobrenome</label>
-          <input id="lastname" type="text" formControlName="lastname" placeholder="Ex.: Roslan" />
+          <input id="lastname" type="text" formControlName="lastname" placeholder="Ex.: Rei dos bretões" />
           <small class="error" *ngIf="f.get('lastname')?.touched && f.get('lastname')?.invalid">Informe seu sobrenome.</small>
         </div>
       </fieldset>
@@ -124,7 +124,7 @@
       <div class="block">
         <label class="check">
           <input type="checkbox" formControlName="aceitarPolitica" />
-          Eu li e aceito a <a href="#" (click)="$event.preventDefault()">Política de Privacidade</a> e os Termos de Uso.
+          Eu li e aceito a <a routerLink="/privacy">Política de Privacidade</a> e os <a routerLink="/terms">Termos de Uso</a>.
         </label>
         <small class="error" *ngIf="f.get('aceitarPolitica')?.touched && f.get('aceitarPolitica')?.invalid">
           Você precisa aceitar para continuar.

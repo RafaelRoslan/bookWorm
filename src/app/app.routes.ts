@@ -14,8 +14,10 @@ import { MeuBazarComponent } from './pages/meu-bazar/meu-bazar.component';
 import { MyProfileComponent } from './pages/my-profile/my-profile.component';
 import { NegotiationDetailComponent } from './pages/negotiation-detail/negotiation-detail.component';
 import { NegotiationsComponent } from './pages/negotiations/negotiations.component';
+import { PrivacyComponent } from './pages/privacy/privacy.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { SubscriptionComponent } from './pages/subscription/subscription.component';
+import { TermsComponent } from './pages/terms/terms.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -34,6 +36,8 @@ export const routes: Routes = [
     { path: 'carrinho', component: CartComponent },
     { path: 'negociacoes', component: NegotiationsComponent, canActivate:[authGuard]},
     { path: 'negociacoes/:id', component: NegotiationDetailComponent, canActivate:[authGuard]},
+    { path: 'terms', component: TermsComponent },
+    { path: 'privacy', component: PrivacyComponent },
 
     { path: '**', redirectTo: 'home' }
 ];
