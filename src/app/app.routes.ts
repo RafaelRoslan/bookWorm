@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './guards/admin.guard';
 import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
+import { ArticleAdminComponent } from './pages/article-admin/article-admin.component';
 import { ArticleComponent } from './pages/article/article.component';
 import { ArticlesNewsComponent } from './pages/articles-news/articles-news.component';
 import { BazarComponent } from './pages/bazar/bazar.component';
@@ -38,6 +40,8 @@ export const routes: Routes = [
     { path: 'negociacoes/:id', component: NegotiationDetailComponent, canActivate:[authGuard]},
     { path: 'terms', component: TermsComponent },
     { path: 'privacy', component: PrivacyComponent },
+    { path: 'admin/article/new', component: ArticleAdminComponent, canActivate:[adminGuard] },
+    { path: 'admin/article/:id/edit', component: ArticleAdminComponent, canActivate:[adminGuard] },
 
     { path: '**', redirectTo: 'home' }
 ];

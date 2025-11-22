@@ -1,13 +1,13 @@
-.store-navbar__container{
+.store-navbar__container {
   padding: 0 1.20rem;
   min-height: 65px;
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  background-color: var(--primary-color);
+  background-color: var(--color-primary); /* antes: var(--primary-color) */
 }
 
-.store-logo{
+.store-logo {
   object-fit: cover;
   position: absolute;
   min-height: 64px;
@@ -17,15 +17,16 @@
   gap: 8px;
 }
 
-.logo-img{
+.logo-img {
   width: 64px;
   height: auto;
 }
-.logo-title{
+
+.logo-title {
   color: var(--color-text-on-dark);
 }
 
-.store__navbar{
+.store__navbar {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -33,7 +34,8 @@
   gap: 10px;
 }
 
-.store__nav-list, .cart-link{
+.store__nav-list,
+.cart-link {
   margin-top: 0.5rem;
   list-style: none;
   display: flex;
@@ -42,25 +44,26 @@
   gap: 5px;
 }
 
-.store__nav-item{
+.store__nav-item {
   padding: 4px 10px;
   font-size: .9rem;
   font-weight: 700;
   border-radius: 2rem;
   transition: .7s;
 }
-.store__nav-item:hover{
+
+.store__nav-item:hover {
   background-color: var(--color-text-on-dark);
 }
-.store__nav-item:hover a{
-  color: var(--text-color);
+
+.store__nav-item:hover a {
+  color: var(--color-text); /* antes: var(--text-color) */
 }
 
-.store__nav-item a{
+.store__nav-item a {
   text-decoration: none;
   color: var(--color-text-on-dark);
 }
-
 
 .cart-link {
   display: flex;
@@ -73,7 +76,7 @@
 .cart-icon {
   width: 22px;
   height: 22px;
-  filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1); /* mantém ícone claro sobre fundo escuro */
   transition: transform .2s ease;
 }
 
@@ -85,8 +88,8 @@
   position: absolute;
   top: -6px;
   right: -10px;
-  background: #ff4444;
-  color: #fff;
+  background: var(--color-error);         /* antes: #ff4444 */
+  color: var(--color-text-on-dark);       /* antes: #fff */
   font-size: 0.7rem;
   border-radius: 50%;
   width: 16px;
@@ -99,7 +102,7 @@
 /* ===== Dropdown "Minha conta" ===== */
 .account {
   position: relative;
-  padding: 0; /* o botão já tem padding */
+  padding: 0;
 }
 
 .account-btn {
@@ -118,13 +121,14 @@
 .account-btn:hover,
 .account.open .account-btn {
   background-color: var(--color-text-on-dark);
-  color: var(--text-color);
+  color: var(--color-text); /* antes: var(--text-color) */
 }
 
 .chevron {
   display: inline-block;
   transition: transform .2s ease;
 }
+
 .chevron.up {
   transform: rotate(180deg);
 }
@@ -134,8 +138,8 @@
   top: calc(100% + 6px);
   right: 0;
   min-width: 220px;
-  background: #fff;
-  color: var(--text-color);
+  background: var(--color-background); /* antes: #fff */
+  color: var(--color-text);            /* antes: var(--text-color) */
   border-radius: .5rem;
   box-shadow: 0 8px 24px rgba(0,0,0,.18);
   padding: .5rem 0;
@@ -161,11 +165,11 @@
   padding: .6rem 1rem;
   font-weight: 600;
   text-decoration: none;
-  color: var(--text-color);
+  color: var(--color-text); /* antes: var(--text-color) */
   cursor: pointer;
 }
 
 .account-dropdown a:hover,
 .account-dropdown .logout-btn:hover {
-  background: rgba(0,0,0,.06);
+  background: var(--color-background-alt); /* antes: rgba(0,0,0,.06) */
 }

@@ -16,37 +16,23 @@
     <button (click)="load(1)">Filtrar</button>
     <button class="secondary" (click)="clearFilters()">Limpar</button>
   </section>
-<hr/>
+
+  <hr />
+
   <p class="muted" *ngIf="loading">Carregando…</p>
   <p class="error" *ngIf="!loading && error">{{ error }}</p>
 
   <section class="grid" *ngIf="!loading && !error">
-    <article class="card" *ngFor="let it of items">
-      <div class="thumb">
-        <img *ngIf="it.bookSnapshot.image" [src]="it.bookSnapshot.image" alt="" />
-        <div class="noimg" *ngIf="!it.bookSnapshot.image">SEM CAPA</div>
-      </div>
-
-      <div class="meta">
-        <div class="title" [title]="it.bookSnapshot.title">{{ it.bookSnapshot.title }}</div>
-        <div class="author">{{ it.bookSnapshot.author }}</div>
-        <div class="price">R$ {{ it.price | number:'1.2-2' }}</div>
-        <div class="badges">
-          <span class="badge">{{ it.condition }}</span>
-          <span class="badge">Disp.: {{ it.stock }}</span>
-          <span class="badge">{{ it.shipping }}</span>
-        </div>
-        <div class="actions">
-          <div class="quantity">
-            <button type="button" class="qty-btn" (click)="decrease(it)" [disabled]="getQuantity(it) <= 1">−</button>
-            <span class="qty">{{ getQuantity(it) }}</span>
-            <button type="button" class="qty-btn" (click)="increase(it)" [disabled]="getQuantity(it) >= it.stock">+</button>
-            <small *ngIf="it.stock">/ {{ it.stock }}</small>
-          </div>
-          <button class="add" type="button" (click)="addToCart(it)">Adicionar ao carrinho</button>
-        </div>
-      </div>
-    </article>
+    <app-offer-card
+      *ngFor="let it of items"
+      variant="grid"
+      [oferta]="toOferta(it)"
+      [quantity]="getQuantity(it)"
+      [maxStock]="it.stock"
+      (increaseQty)="increase(it)"
+      (decreaseQty)="decrease(it)"
+      (addToCart)="addToCart(it)"
+    ></app-offer-card>
   </section>
 
   <footer class="pager" *ngIf="total > pageSize && !loading && !error">

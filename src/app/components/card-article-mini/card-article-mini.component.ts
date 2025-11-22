@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-card-article-mini',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './card-article-mini.component.html',
   styleUrl: './card-article-mini.component.css'
 })
@@ -12,13 +13,11 @@ export class CardArticleMiniComponent {
   @Input() imagemUrl!: string;
   @Input() titulo!: string;
   @Input() resumo!: string;
-  @Input() idArtigo!: number;
+  @Input() idArtigo!: string;
+  @Input() tipo?: 'article' | 'news'; // opcional, pra mostrar #Artigo / #Notícia
 
-  constructor(private router: Router) {}
-
-  irParaArtigo() {
-      // Ex: navegar para rota de todos os livros
-      console.log('Ir para página completa do artigo');
-    
+  get tipoLabel(): string | null {
+    if (!this.tipo) return null;
+    return this.tipo === 'news' ? 'Notícia' : 'Artigo';
   }
 }

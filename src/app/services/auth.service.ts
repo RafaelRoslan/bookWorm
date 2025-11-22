@@ -19,6 +19,10 @@ export class AuthService {
   get token() { return localStorage.getItem('bw_token'); }
   isAuthenticated() { return !!this.token; }
   get currentUser(): User | null { return this.userSub.value; }
+  get isAdmin(): boolean {
+    return this.currentUser?.role === 'admin';
+  }
+
 
   // BACK: POST /login
   onLogin(dto: LoginDto) {
@@ -50,7 +54,8 @@ export class AuthService {
           _id: (payload._id as string) ?? (payload._id as string) ?? '',
           name: (payload.name as string) ?? '',
           lastname: (payload.lastname as string) ?? '',
-          email: (payload.email as string) ?? ''
+          email: (payload.email as string) ?? '',
+          role: (payload as any).role ?? 'user'
         };
 
         return normalized;

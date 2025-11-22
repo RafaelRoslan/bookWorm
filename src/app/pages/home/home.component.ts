@@ -1,120 +1,152 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, SlicePipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { BannerComponent } from "../../components/banner/banner.component";
+import { Router, RouterLink } from '@angular/router';
+
+import { BannerComponent } from '../../components/banner/banner.component';
 import { CardArticleMiniComponent } from '../../components/card-article-mini/card-article-mini.component';
-import { CardBookComponent } from "../../components/card-book/card-book.component";
+import { HomeBookCardComponent } from '../../components/home-book-card/home-book-card.component';
+
+import { Article } from '../../models/api.models';
+import { ArticleService } from '../../services/article.service';
+import { Listing, ListingService } from '../../services/listing.service';
+
+type HomeBookVM = {
+  titulo: string;
+  autor: string;
+  ano: string;
+  status: string;
+  imageUrl: string;
+};
+
+type HomeArticleVM = {
+  id: string;
+  titulo: string;
+  imagemUrl: string;
+  resumo: string;
+  tipo: 'article' | 'news';
+};
 
 @Component({
   selector: 'app-home',
-  imports: [BannerComponent, CardBookComponent, CardArticleMiniComponent, NgFor, NgIf],
+  standalone: true,
+  imports: [
+    BannerComponent,
+    HomeBookCardComponent,
+    CardArticleMiniComponent,
+    NgFor,
+    NgIf,
+    RouterLink,
+    SlicePipe
+  ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
+  @ViewChild('carousel', { static: false }) carousel!: ElementRef<HTMLDivElement>;
 
-  @ViewChild('carousel', { static: false }) carousel!: ElementRef;  
+  // Destaques do bazar
+  livros: HomeBookVM[] = [];
+  loadingBooks = true;
+  errorBooks = '';
 
-  livros = [
-    {
-      titulo: 'Pegasus e o Fogo do Olimpo',
-      autor: 'Kate O\'Hearn',
-      ano: '2020',
-      status: 'Disponível',
-      imageUrl: ''
-    },
-    {
-      titulo: 'Mestres do Tempo',
-      autor: 'R.V. Campbell',
-      ano: '2021',
-      status: 'Disponível',
-      imageUrl: ''
-    },
-    {
-      titulo: 'É Assim que Acaba',
-      autor: 'Colleen Hoover',
-      ano: '2022',
-      status: 'Indisponível',
-      imageUrl: ''
-    },
-    {
-      titulo: 'Pegasus e o Fogo do Olimpo4',
-      autor: 'Kate O\'Hearn',
-      ano: '2020',
-      status: 'Disponível',
-      imageUrl: ''
-    },
-    {
-      titulo: 'Mestres do Tempo5',
-      autor: 'R.V. Campbell',
-      ano: '2021',
-      status: 'Disponível',
-      imageUrl: ''
-    },
-    {
-      titulo: 'É Assim que Acaba6',
-      autor: 'Colleen Hoover',
-      ano: '2022',
-      status: 'Indisponível',
-      imageUrl: ''
-    },
-    {
-      titulo: 'Pegasus e o Fogo do Olimpo7',
-      autor: 'Kate O\'Hearn',
-      ano: '2020',
-      status: 'Disponível',
-      imageUrl: ''
-    },
-    {
-      titulo: 'Mestres do Tempo8',
-      autor: 'R.V. Campbell',
-      ano: '2021',
-      status: 'Disponível',
-      imageUrl: ''
-    },
-    {
-      titulo: 'É Assim que Acaba9',
-      autor: 'Colleen Hoover',
-      ano: '2022',
-      status: 'Indisponível',
-      imageUrl: ''
+  // Assunto do momento (artigos / notícias)
+  artigos: HomeArticleVM[] = [];
+  loadingArticles = true;
+  errorArticles = '';
+
+  constructor(
+    private articleService: ArticleService,
+    private listingService: ListingService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadBooksFromBazar();
+    this.loadArticles();
+  }
+
+  // ---------- BAZAR: destaques ----------
+  private loadBooksFromBazar(): void {
+    this.listingService.getListings({ page: 1, pageSize: 8 }).subscribe({
+      next: (res) => {
+        const latest = res.items.slice(0, 8);
+
+        this.livros = latest.map((l: Listing): HomeBookVM => ({
+          titulo: l.bookSnapshot?.title ?? 'Livro',
+          autor: l.bookSnapshot?.author ?? 'Autor desconhecido',
+          ano: '',
+          status: this.mapListingStatus(l.status),
+          imageUrl: l.bookSnapshot?.image ?? '',
+        }));
+
+        this.loadingBooks = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar bazar na home:', err);
+        this.errorBooks = 'Não foi possível carregar os destaques do bazar.';
+        this.loadingBooks = false;
+      },
+    });
+  }
+
+  private mapListingStatus(status: Listing['status']): string {
+    switch (status) {
+      case 'ativo':
+        return 'Disponível';
+      case 'pausado':
+        return 'Pausado';
+      case 'vendido':
+        return 'Vendido';
+      case 'expirado':
+        return 'Expirado';
+      case 'removido':
+        return 'Removido';
+      default:
+        return 'Indisponível';
     }
-  ];
+  }
 
-  artigos = [
-    {
-      id: 1,
-      titulo: 'Como organizar sua estante de livros',
-      imagemUrl: '',
-      resumo: 'Aprenda dicas práticas para manter sua coleção organizada, bonita e funcional no dia a dia.',
-    },
-    {
-      id: 2,
-      titulo: 'Os melhores lançamentos de fantasia em 2025',
-      imagemUrl: '',
-      resumo: 'Uma lista com os principais títulos do ano para quem ama mundos mágicos, criaturas e aventuras épicas.',
-    },
-    {
-      id: 3,
-      titulo: 'Dicas de leitura para iniciantes',
-      imagemUrl: '',
-      resumo: 'Se você quer começar a ler mais, confira essas sugestões de livros leves e cativantes para todos os gostos.',
-    },
-  ];
+  // ---------- ARTIGOS / NOTÍCIAS ----------
+  private loadArticles(): void {
+    this.articleService.getArticles().subscribe({
+      next: (articles: Article[]) => {
+        const latest = articles.slice(0, 3);
+        this.artigos = latest.map((a): HomeArticleVM => ({
+          id: a.id,
+          titulo: a.title,
+          imagemUrl: a.bannerImage ?? '',
+          resumo: a.summary,
+          tipo: a.type,
+        }));
+        this.loadingArticles = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar artigos na home:', err);
+        this.errorArticles = 'Não foi possível carregar os artigos.';
+        this.loadingArticles = false;
+      },
+    });
+  }
 
-  scrollLeft() {
+  // ---------- Carousel ----------
+  scrollLeft(): void {
+    if (!this.carousel) return;
     this.carousel.nativeElement.scrollBy({ left: -220, behavior: 'smooth' });
   }
 
-  scrollRight() {
+  scrollRight(): void {
+    if (!this.carousel) return;
     this.carousel.nativeElement.scrollBy({ left: 220, behavior: 'smooth' });
   }
 
-  irParaPaginaCompleta() {
-    // Ex: navegar para rota de todos os livros
-    console.log('Ir para página completa de livros');
+  // “Veja mais” → bazar
+  irParaPaginaCompleta(): void {
+    this.router.navigate(['/bazar']);
   }
 
-  constructor() { }
-
-  ngOnInit(): void { }
+  // Clique no card do livro na home → bazar com filtro pelo título
+  irParaBazarComFiltro(livro: HomeBookVM): void {
+    const q = livro.titulo || '';
+    this.router.navigate(['/bazar'], { queryParams: { q } });
+  }
 }

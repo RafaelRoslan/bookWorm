@@ -1,92 +1,373 @@
-/* ===== LIST ===== */
-.offer-card--list {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1.5px solid var(--border-color);
-  border-radius: 8px;
-  padding: 12px 16px;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,.05);
-  transition: border-color .2s ease, box-shadow .2s ease;
-}
-.offer-card--list.highlight { border-color: var(--primary-color); }
-.offer-card--list .offer-info p { margin: 4px 0; }
-.offer-card--list .book-condition {
-  background: #f5f5f5; padding: 2px 6px; border-radius: 4px; color: var(--muted-text-color);
-}
-.offer-card--list .lowest-price-badge { color: var(--primary-color); font-weight: 700; }
-.offer-card--list .buy-button {
-  background: var(--primary-color); color: #fff; border: none; border-radius: 6px;
-  padding: 8px 14px; cursor: pointer;
-}
-.offer-card--list .buy-button:hover { background: #21867a; }
+/* ===========================
+   CARD BASE
+   =========================== */
 
-/* ===== GRID / VITRINE ===== */
-.offer-card--grid {
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
+.offer-card {
+  border: 1.5px solid var(--border-color, #e0d6c2);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--text-color, #3b2f2f);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  background: #fff;
-  transition: transform .15s ease, box-shadow .15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+  cursor: pointer;
 }
-.offer-card--grid:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,.08);
-}
-.offer-card--grid.highlight { box-shadow: 0 0 0 2px var(--primary-color) inset; }
 
+.offer-card.highlight {
+  border-color: var(--primary-color, #8B1E3F);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  background: #fffaf5;
+}
+
+.offer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* ===========================
+   MODO GRADE / VITRINE
+   =========================== */
+
+.offer-card--grid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 240px;
+  min-height: 100%;
+}
+
+/* capa maior */
 .offer-card--grid .thumb {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4; /* 180x240 feel */
-  background: #fafafa;
-}
-.offer-card--grid .thumb img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-}
-.offer-card--grid .thumb-placeholder {
-  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-  background: var(--border-color); color: var(--muted-text-color); font-weight: 600;
-}
-.offer-card--grid .badge {
-  position: absolute; top: 8px; left: 8px;
-  background: var(--primary-color); color: #fff; font-size: 11px; font-weight: 700;
-  padding: 4px 8px; border-radius: 999px;
+  height: 220px; /* imagem maior */
+  background: var(--color-background-alt, #EFE8D8);
+  border-bottom: 1px solid var(--border-color, #e0d6c2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.offer-card--grid .grid-info {
-  padding: 10px;
-  display: grid;
+.offer-card--grid .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.offer-card--grid .thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--border-color, #e0d6c2);
+  color: var(--muted-text-color, #6b5a4d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* badge "Menor preço" */
+.offer-card--grid .badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--primary-color, #8B1E3F);
+  color: var(--color-text-on-dark, #F7EFE3);
+}
+
+/* conteúdo abaixo da capa */
+.grid-info {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+/* título & autor */
+.grid-info .title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-color, #3b2f2f);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grid-info .author {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted-text-color, #6b5a4d);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* preço destacado */
+.grid-info .price {
+  margin: 4px 0 0;
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: var(--secondary-color, #D6C295);
+}
+
+/* linha de chips: estado / disponibilidade / envio */
+.badges-row {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* vendedor */
+.grid-info .seller {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted-text-color, #6b5a4d);
+}
+
+/* bloco quantidade + botão no modo grid */
+.grid-info .actions {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ===========================
+   MODO LISTA
+   =========================== */
+
+.offer-card--list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.offer-card--list .offer-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   gap: 4px;
 }
-.offer-card--grid .title {
-  margin: 0; font-size: 14px; font-weight: 700; color: var(--text-color);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.offer-card--grid .author {
-  margin: 0; font-size: 12px; color: var(--muted-text-color);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.offer-card--grid .price {
-  margin: 4px 0 0; font-weight: 800; color: var(--secondary-color);
-}
-.offer-card--grid .seller {
-  margin: 0; font-size: 12px; color: var(--muted-text-color);
+
+.list-seller {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-color, #3b2f2f);
 }
 
-.grid-info .meta-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px;
+.list-price {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--secondary-color, #D6C295);
 }
+
+.list-badges {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.list-rep {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted-text-color, #6b5a4d);
+}
+
+.lowest-price-badge {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary-color, #8B1E3F);
+}
+
+/* botão no modo lista */
+.offer-card--list .buy-button {
+  align-self: center;
+  min-width: 140px;
+}
+
+/* ===========================
+   BOTÃO "COMPRAR"
+   =========================== */
+
+.buy-button {
+  border-radius: 999px;
+  border: 0;
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: var(--primary-color, #8B1E3F);
+  color: var(--color-text-on-dark, #F7EFE3);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.05s ease,
+    filter 0.15s ease;
+}
+
+.buy-button:hover {
+  background: #6e162f;
+  box-shadow: 0 3px 8px rgba(139, 30, 63, 0.35);
+  transform: translateY(-1px);
+}
+
+.buy-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.buy-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* versão full-width embaixo (se usar) */
+.buy-button--full {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ===========================
+   CHIPS / BADGES
+   =========================== */
 
 .chip {
-  font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border-color);
-  background: #fff; color: var(--text-color); white-space: nowrap; max-width: 60%; overflow: hidden; text-overflow: ellipsis;
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #e0d6c2);
+  background: #fff;
+  color: var(--text-color, #3b2f2f);
+  white-space: nowrap;
 }
 
-/* Paleta das condições */
-.chip--mint   { border-color: #2ecc71; background: #eafaf1; color: #1e874b; }
-.chip--near   { border-color: #27ae60; background: #e9f7ef; color: #1a7f4b; }
-.chip--good   { border-color: #f1c40f; background: #fef9e7; color: #8a6d1a; }
-.chip--played { border-color: #e67e22; background: #fdf2e9; color: #8c4b16; }
-.chip--default{ border-color: var(--border-color); background: #f7f7f7; color: var(--muted-text-color); }
+/* condições especiais */
+.chip--mint {
+  border-color: #2ecc71;
+  background: #eafaf1;
+  color: #1e874b;
+}
+.chip--near {
+  border-color: #27ae60;
+  background: #e9f7ef;
+  color: #1a7f4b;
+}
+.chip--good {
+  border-color: #f1c40f;
+  background: #fef9e7;
+  color: #8a6d1a;
+}
+.chip--played {
+  border-color: #e67e22;
+  background: #fdf2e9;
+  color: #8c4b16;
+}
+.chip--default {
+  border-color: var(--border-color, #e0d6c2);
+  background: #f7f7f7;
+  color: var(--muted-text-color, #6b5a4d);
+}
+
+.chip--neutral {
+  background: var(--highlight-color, #4E8C56);
+  border-color: transparent;
+  color: var(--color-text-on-dark, #F7EFE3);
+}
+
+/* ===========================
+   QUANTIDADE (modo grid)
+   =========================== */
+
+.actions .quantity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-color, #e0d6c2);
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #ffffff;
+}
+
+.qty-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #e0d6c2);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.qty {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.actions .quantity small {
+  font-size: 0.75rem;
+  color: var(--muted-text-color, #6b5a4d);
+}
+
+/* ===========================
+   RESPONSIVO
+   =========================== */
+
+@media (max-width: 600px) {
+  .offer-card--list {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .offer-card--list .buy-button {
+    align-self: stretch;
+    margin-top: 8px;
+    justify-content: center;
+  }
+
+  .offer-card--grid {
+    max-width: 100%;
+  }
+
+  .offer-card--grid .thumb {
+    height: 200px;
+  }
+}

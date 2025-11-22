@@ -1,39 +1,54 @@
 .legal {
   padding: 1.5rem;
-  background: var(--background-color, #f6f7fb);
+  background: var(--color-background-alt);
   min-height: 100vh;
 }
+
 .legal__card {
   max-width: 900px;
   margin: 0 auto;
-  background: #fff;
-  border: 1px solid #eef1f4;
+  background: var(--color-background);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   padding: 1.25rem 1.25rem 1.5rem;
   box-shadow: 0 6px 18px rgba(0,0,0,.04);
 }
+
 h1 {
   margin: 0 0 .5rem;
-  color: var(--text-color, #1d2230);
+  color: var(--color-text);
 }
+
 .legal__muted {
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }
+
 .legal__section + .legal__section {
   margin-top: 1rem;
 }
+
 .legal__section h2 {
   margin: .25rem 0 .25rem;
   font-size: 1.05rem;
-  color: var(--text-color, #1d2230);
+  color: var(--color-text);
 }
-.legal__section p, .legal__section li {
-  color: #374151;
+
+.legal__section p,
+.legal__section li {
+  color: var(--color-text);
   line-height: 1.6;
 }
+
 .legal__section ul {
   padding-left: 1.2rem;
 }
-a { color: var(--primary-color, #2a9d8f); text-decoration: none; }
-a:hover { text-decoration: underline; }
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

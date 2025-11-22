@@ -1,3 +1,4 @@
+export type UserRole = 'user' | 'admin';
 export interface User {
   _id: string;               // padronize _id
   name: string;
@@ -20,6 +21,7 @@ export interface User {
     cpfTitular?: string;
   };
   pix?: { chave?: string };
+  role: UserRole;
 }
 
 export interface Collection {
@@ -106,4 +108,38 @@ export interface Book {
   image?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+// api.models.ts
+
+export interface ArticleAuthorBio {
+  name: string;
+  bio: string;
+  avatarUrl: string;
+}
+
+export type ArticleType = 'article' | 'news';
+
+export interface Article {
+  id: string;              // mapeado do _id pelo back (ou usa _id se você preferir)
+  title: string;
+  type: ArticleType;
+  summary: string;
+  content: string[];
+  bannerImage?: string;
+  authorName: string;
+  authorId?: string;
+  authorBio?: ArticleAuthorBio;
+  publishedAt: string;     // ISO string
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ArticleComment {
+  id: string;
+  articleId: string;
+  authorName: string;
+  text: string;
+  createdAt: string;       // ou date, se você preferir esse nome
+  avatarUrl?: string;
 }

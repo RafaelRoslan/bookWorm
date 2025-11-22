@@ -4,75 +4,27 @@
 }
 
 body{
-    background-color: var(--background-color);
+    background-color: var(--color-background);
 }
 
 :root {
-    --primary-color: #7BAE7F; /* Verde principal */
-    --secondary-color: #526E7F; /* Azul escuro */
-    --background-color: #F5F8FA; /* Fundo */
-    --text-color: #2E2E2E; /* Texto padrão */
-    --color-text-on-dark: #F8FAFC; /* Branco Suave */
-    --text-color-secondary: #f5f5f5; /* Texto padrão */
-    --border-color: #e0e0e0; /* Para bordas suaves */
-    --muted-text-color: #666666; /* Para datas e textos secundários */
-    --highlight-color: #e9f5f3; /* Cor de destaque leve (variação do primary) */
+--color-primary: #8B1E3F;
+  --color-secondary: #D6C295;
+  --color-background: #F9F5EC;
+  --color-background-alt: #EFE8D8;
+  --color-text: #3B2F2F;
+  --color-text-secondary: #6B5A4D;
+  --color-text-on-dark: #F7EFE3;
+  --color-highlight: #4E8C56;
+  --color-success: #83A66A;
+  --color-warning: #C9A45C;
+  --color-error: #C65D52;
+
 }
 
 main {
     max-width: 72rem;
     margin: 0 auto;
-    background-color: var(--background-color);
+    background-color: var(--color-background);
 }
 
-/* ===============================
-   TEMA 1 – CLÁSSICO DE BIBLIOTECA
-   =============================== */
-.theme-classic {
-  /* Cores principais */
-  --color-primary: #8B1E3F;        /* Borgonha */
-  --color-secondary: #D6C295;      /* Dourado Papel */
-
-  /* Fundos */
-  --color-background: #F9F5EC;     /* Creme Claro */
-  --color-background-alt: #EFE8D8; /* Areia */
-
-  /* Texto */
-  --color-text: #3B2F2F;           /* Marrom Escuro */
-  --color-text-secondary: #6B5A4D; /* Marrom Suave */
-  --color-text-on-dark: #F7EFE3;   /* Marfim Quente */
-
-  /* Destaques */
-  --color-highlight: #4E8C56;      /* Verde Folha */
-
-  /* Feedback */
-  --color-success: #83A66A;        /* Verde Oliva Claro */
-  --color-warning: #C9A45C;        /* Ocre Envelhecido */
-  --color-error: #C65D52;          /* Vermelho Antigo */
-}
-
-/* ===============================
-   TEMA 2 – NATUREZA & HARMONIA
-   =============================== */
-.theme-harmony {
-  /* Cores principais */
-  --color-primary: #7BAE7F;        /* Verde Sálvia */
-  --color-secondary: #526E7F;      /* Azul Acinzentado */
-
-  /* Fundos */
-  --color-background: #F5F8FA;     /* Branco Gelo */
-  --color-background-alt: #E9EEF1; /* Cinza Neve */
-
-  /* Texto */
-  --color-text: #2E2E2E;           /* Cinza Noite */
-  --color-text-secondary: #6A6A6A; /* Cinza Médio */
-  --color-text-on-dark: #F8FAFC;   /* Branco Suave */
-
-  /* Destaques */
-  --color-highlight: #D8A85B;      /* Ocre Suave */
-
-  /* Feedback */
-  --color-success: #A5D6A7;        /* Verde Claro */
-  --color-warning: #EBC26A;        /* Amarelo Canela */
-  --color-error: #D06A5B;          /* Coral Natural */
-}

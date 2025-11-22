@@ -1,17 +1,81 @@
-.mylistings { padding: 1.5rem; background: var(--background-color,#f7f7f7); min-height:100vh; }
-h2 { text-align:center; margin-bottom: 1rem; }
-.tbl { width:100%; border-collapse: collapse; background:#fff; border:1px solid var(--border-color,#e4e4e4); }
-th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; vertical-align: middle; }
+.mylistings {
+  padding: 1.5rem;
+  background: var(--color-background-alt);
+  min-height: 100vh;
+}
 
-.book { display:flex; gap:10px; align-items:center; }
-.book img { width: 42px; height: 56px; object-fit: cover; border-radius: 6px; }
-.title { font-weight:700; }
-.author { font-size:.9rem; color: var(--muted-text-color,#666); }
+h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
 
-.actions button { margin-right: 6px; padding: 6px 10px; border: 0; border-radius: 8px; background: var(--primary-color,#2a9d8f); color:#fff; font-weight:700; }
-.actions .secondary { background:#d9d9d9; color:#333; }
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-background);
+  border: 1px solid var(--border-color);
+}
 
-input, select { padding:6px; border:1px solid #ddd; border-radius:8px; background:#fff; }
+th,
+td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  vertical-align: middle;
+}
 
-.muted { color:#666; }
-.error { color:#b00020; }
+.book {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.book img {
+  width: 42px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.title {
+  font-weight: 700;
+}
+
+.author {
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+}
+
+.actions button {
+  margin-right: 6px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.actions .secondary {
+  background: var(--color-background-alt);
+  color: var(--color-text);
+}
+
+input,
+select {
+  padding: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+.muted {
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-error);
+}

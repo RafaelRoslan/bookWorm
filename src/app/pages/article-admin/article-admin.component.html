@@ -1,0 +1,95 @@
+<main class="article-admin-page">
+  <div *ngIf="loading" class="state">Carregando…</div>
+  <div *ngIf="!loading && error" class="state state--error">{{ error }}</div>
+
+  <section *ngIf="!loading && !error" class="form-card">
+    <header class="form-header">
+      <h1>{{ isEdit ? 'Editar artigo' : 'Novo artigo' }}</h1>
+      <a routerLink="/articles" class="back-link">← Voltar para artigos</a>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label>Título</label>
+        <input type="text" formControlName="title" />
+      </div>
+
+      <div class="field-inline">
+        <div class="field">
+          <label>Tipo</label>
+          <select formControlName="type">
+            <option *ngFor="let t of typeOptions" [value]="t">
+              {{ t === 'article' ? 'Artigo' : 'Notícia' }}
+            </option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Data de publicação</label>
+          <input type="date" formControlName="publishedAt" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Resumo</label>
+        <textarea rows="3" formControlName="summary"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Conteúdo (um parágrafo por linha)</label>
+        <textarea rows="10" formControlName="contentText"></textarea>
+      </div>
+
+      <div class="field">
+  <label>Banner do artigo</label>
+  <input type="file" accept="image/*" (change)="onBannerSelected($event)" />
+  <small>Imagem será comprimida e salva como base64, igual as capas dos livros.</small>
+</div>
+
+<!-- Campo hidden só pra manter no form (não editar manualmente) -->
+<input type="hidden" formControlName="bannerImage" />
+
+<!-- Prévia do banner -->
+<div class="field" *ngIf="form.value.bannerImage">
+  <label>Prévia do banner</label>
+  <img
+    class="banner-preview"
+    [src]="form.value.bannerImage"
+    alt="Prévia do banner"
+  />
+</div>
+
+      <fieldset class="fieldset">
+        <legend>Autor</legend>
+
+        <div class="field">
+          <label>Nome exibido</label>
+          <input type="text" formControlName="authorName" />
+        </div>
+
+        <div class="field">
+          <label>Nome na bio (opcional)</label>
+          <input type="text" formControlName="authorBioName" />
+        </div>
+
+        <div class="field">
+          <label>Texto da bio</label>
+          <textarea rows="3" formControlName="authorBioText"></textarea>
+        </div>
+
+        <div class="field">
+          <label>URL do avatar</label>
+          <input type="text" formControlName="authorAvatarUrl" />
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="submit" [disabled]="saving">
+          {{ saving ? 'Salvando...' : (isEdit ? 'Atualizar' : 'Criar') }}
+        </button>
+      </div>
+
+      <p *ngIf="error" class="form-error">{{ error }}</p>
+    </form>
+  </section>
+</main>

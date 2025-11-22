@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ListingService, Listing } from '../../services/listing.service';
-import { CartService, CartItem, Seller } from '../../services/cart.service';
+import { ActivatedRoute } from '@angular/router';
+import { OfertaView, OfferCardComponent } from '../../components/offer-card/offer-card.component';
+import { CartItem, CartService, Seller } from '../../services/cart.service';
+import { Listing, ListingService } from '../../services/listing.service';
 
 @Component({
   standalone: true,
   selector: 'app-bazar',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, OfferCardComponent],
   templateUrl: './bazar.component.html',
   styleUrls: ['./bazar.component.css']
 })
@@ -21,35 +23,67 @@ export class BazarComponent implements OnInit {
 
   constructor(
     private listing: ListingService,
-    private cart: CartService
+    private cart: CartService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.load(1);
+    this.route.queryParamMap.subscribe(params => {
+      const qParam = params.get('q');
+      this.q = qParam ?? '';
+      this.load(1);
+    });
   }
 
   load(p = this.page) {
     this.loading = true;
     this.error = '';
     this.page = Math.max(1, p);
-    this.listing.getListings({ q: this.q, sort: this.sort, page: this.page, pageSize: this.pageSize, minPrice: this.minPrice, maxPrice: this.maxPrice })
-      .subscribe({
-        next: res => {
-          this.items = res.items;
-          this.total = res.total;
-          this.pages = Math.max(1, Math.ceil(res.total / this.pageSize));
-          this.loading = false;
-        },
-        error: e => {
-          this.error = e?.error?.message || 'Falha ao carregar bazar';
-          this.loading = false;
-        }
-      });
+
+    this.listing.getListings({
+      q: this.q,
+      sort: this.sort,
+      page: this.page,
+      pageSize: this.pageSize,
+      minPrice: this.minPrice,
+      maxPrice: this.maxPrice
+    }).subscribe({
+      next: res => {
+        this.items = res.items;
+        this.total = res.total;
+        this.pages = Math.max(1, Math.ceil(res.total / this.pageSize));
+        this.loading = false;
+      },
+      error: e => {
+        this.error = e?.error?.message || 'Falha ao carregar bazar';
+        this.loading = false;
+      }
+    });
   }
 
-  clearFilters(){
-    this.q = ''; this.sort = 'recent'; this.minPrice = undefined; this.maxPrice = undefined;
+  clearFilters() {
+    this.q = '';
+    this.sort = 'recent';
+    this.minPrice = undefined;
+    this.maxPrice = undefined;
     this.load(1);
+  }
+
+  /** Listing -> OfertaView usada no offer-card */
+  toOferta(listing: Listing): OfertaView {
+    const seller = this.resolveSeller(listing);
+    return {
+      id: listing._id,
+      vendedor: seller,
+      estado: listing.condition,
+      preco: listing.price,
+      titulo: listing.bookSnapshot.title,
+      autor: listing.bookSnapshot.author,
+      capa: listing.bookSnapshot.image,
+      disponibilidade: listing.stock,
+      envio: listing.shipping
+      // menorPreco: (pode adicionar lógica depois)
+    };
   }
 
   addToCart(listing: Listing) {
@@ -96,6 +130,7 @@ export class BazarComponent implements OnInit {
     };
 
     const sellerPayload = anyListing.seller ?? null;
+
     const id =
       (sellerPayload?.id as string) ??
       (sellerPayload?._id as string) ??

@@ -1,8 +1,8 @@
 .cart-container {
   padding: 20px;
-  background-color: var(--background-color);
+  background-color: var(--color-background-alt);
   min-height: 100vh;
-  color: var(--text-color);
+  color: var(--color-text);
 }
 
 .cart-header {
@@ -23,10 +23,12 @@
   border-radius: 6px;
   cursor: pointer;
   transition: 0.2s;
+  color: var(--color-text);
 }
 
 .clear-btn:hover {
-  background-color: var(--highlight-color);
+  background-color: var(--color-highlight);
+  color: var(--color-text-on-dark);
 }
 
 .cart-empty {
@@ -35,7 +37,7 @@
 }
 
 .cart-empty .link {
-  color: var(--primary-color);
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -44,7 +46,7 @@
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px;
-  background-color: #fff;
+  background-color: var(--color-background);
 }
 
 .item-list {
@@ -85,7 +87,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--muted-text-color);
+  color: var(--color-text-secondary);
   border-radius: 6px;
   font-size: 0.8rem;
 }
@@ -106,7 +108,7 @@
   height: 28px;
   border-radius: 6px;
   border: 1px solid var(--border-color);
-  background: #fff;
+  background: var(--color-background);
   cursor: pointer;
   font-weight: 700;
   line-height: 1;
@@ -125,7 +127,7 @@
 
 .qty-control small {
   font-size: 0.75rem;
-  color: var(--muted-text-color);
+  color: var(--color-text-secondary);
 }
 
 .title {
@@ -135,12 +137,12 @@
 
 .meta {
   font-size: 0.9rem;
-  color: var(--muted-text-color);
+  color: var(--color-text-secondary);
 }
 
 .price {
   font-weight: bold;
-  color: var(--secondary-color);
+  color: var(--color-secondary);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -149,14 +151,14 @@
 
 .price small {
   font-weight: 400;
-  color: var(--muted-text-color);
+  color: var(--color-text-secondary);
   font-size: 0.75rem;
 }
 
 .remove {
   border: none;
   background: none;
-  color: var(--primary-color);
+  color: var(--color-primary);
   cursor: pointer;
 }
 
@@ -175,8 +177,8 @@
 }
 
 .checkout-btn {
-  background-color: var(--primary-color);
-  color: #fff;
+  background-color: var(--color-primary);
+  color: var(--color-text-on-dark);
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
@@ -186,5 +188,5 @@
 }
 
 .checkout-btn:hover {
-  background-color: #21867a;
+  filter: brightness(0.95);
 }

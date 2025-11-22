@@ -1,99 +1,107 @@
 .collection-article {
-    padding-top: 20px;
-  }
-  
-  .collection-header {
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-  }
-  
-  .collection-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .collection-info h1 {
-    font-size: 1.8rem;
-    color: var(--secondary-color);
-    margin: 0;
-  }
-  
-  .collection-title-input {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--secondary-color);
-    border: 1px solid var(--border-color);
-    padding: 6px 12px;
-    border-radius: 6px;
-    width: auto;
-  }
-  
-  .collection-actions {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .edit-btn,
-  .add-book-btn {
-    background-color: var(--primary-color);
-    color: #fff;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease;
-  }
-  
-  .edit-btn:hover,
-  .add-book-btn:hover {
-    background-color: #21867a;
-  }
-  
-  .book-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
-  }
-  
-  .book-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .remove-book-btn {
-    margin-top: 10px;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease;
-  }
-  
-  .remove-book-btn:hover {
-    background-color: #c0392b;
-  }
-  
-  .inline-actions{ display:flex; gap:8px; margin-top:6px; }
-.sell-btn{
-  padding:8px 12px; border:0; border-radius:8px;
-  background: var(--primary-color,#2a9d8f); color:#fff; font-weight:700; cursor:pointer;
+  padding-top: 20px;
 }
 
-/* ==== SEU BLOCO EXISTENTE (mantém igual) ==== */
-/* ... (o bloco que você já me passou) ... */
+.collection-header {
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.collection-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.collection-info h1 {
+  font-size: 1.8rem;
+  color: var(--color-secondary);
+  margin: 0;
+}
+
+.collection-title-input {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--color-secondary);
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: 6px;
+  width: auto;
+  background: var(--color-background);
+}
+
+.collection-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn,
+.add-book-btn {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-dark);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, filter 0.2s ease;
+}
+
+.edit-btn:hover,
+.add-book-btn:hover {
+  filter: brightness(0.95);
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.book-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.remove-book-btn {
+  margin-top: 10px;
+  background-color: var(--color-error);
+  color: var(--color-text-on-dark);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: filter 0.2s ease;
+}
+
+.remove-book-btn:hover {
+  filter: brightness(0.9);
+}
+
+.inline-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.sell-btn {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
+  font-weight: 700;
+  cursor: pointer;
+}
 
 /* Mensagem de erro */
 .error-text {
-  color: #b00020;
+  color: var(--color-error);
 }
 
 /* Formulário inline (criar livro) */
@@ -110,14 +118,14 @@
 }
 
 .help-text {
-  color: var(--muted-text-color, #666);
+  color: var(--color-text-secondary);
   font-size: 0.85rem;
 }
 
 /* Preview de imagem no form de criação */
 .img-preview {
   max-width: 160px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
 }
 
@@ -139,8 +147,8 @@
 
 /* Botão "usar como capa" (neutro) */
 .icon-btn {
-  background: #f1f3f5;
-  color: #333;
+  background: var(--color-background-alt);
+  color: var(--color-text);
   border: 1px solid var(--border-color);
   padding: 6px 10px;
   border-radius: 6px;
@@ -148,9 +156,10 @@
   font-weight: 600;
   transition: background-color .2s ease, border-color .2s ease;
 }
+
 .icon-btn:hover {
-  background: #e9ecef;
-  border-color: #d0d7de;
+  background: var(--color-background);
+  border-color: var(--border-color);
 }
 
 /* Form de edição inline do livro */
@@ -161,15 +170,24 @@
   padding: 10px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background: #fafafa;
+  background: var(--color-background-alt);
 }
 
 /* Preview menor no form de edição */
 .img-preview-sm {
   max-width: 140px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
 }
 
-.icon-btn[disabled] { opacity:.6; cursor:not-allowed }
-.icon-btn.done { background:#e8f7f4; color:#166e62; border-color:#a6e0d6 }
+.icon-btn[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* estado visual de “feito” */
+.icon-btn.done {
+  background: #e8f7f4;
+  color: #166e62;
+  border-color: #a6e0d6;
+}

@@ -1,0 +1,19 @@
+<div class="home-book-card">
+  <div class="home-book-image">
+    <ng-container *ngIf="imageUrl; else noImage">
+      <img [src]="imageUrl" [alt]="'Capa de ' + titulo" />
+    </ng-container>
+
+    <ng-template #noImage>
+      <div class="home-book-placeholder">
+        <span>SEM CAPA</span>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="home-book-body">
+    <h3 class="home-book-title" [title]="titulo">{{ titulo }}</h3>
+    <p class="home-book-author">{{ autor }}</p>
+    <p class="home-book-status">{{ status }}</p>
+  </div>
+</div>

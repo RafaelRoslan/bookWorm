@@ -1,47 +1,53 @@
-import { NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
 import { AuthorBioComponent } from '../../components/author-bio/author-bio.component';
 import { BannerComponent } from '../../components/banner/banner.component';
 import { CommentComponent } from '../../components/comment/comment.component';
 
+import { Article, ArticleComment } from '../../models/api.models';
+import { ArticleService } from '../../services/article.service';
+
 @Component({
   selector: 'app-article',
-  imports: [BannerComponent, AuthorBioComponent, CommentComponent, NgFor],
+  standalone: true,
+  imports: [CommonModule, BannerComponent, AuthorBioComponent, CommentComponent],
   templateUrl: './article.component.html',
-  styleUrl: './article.component.css'
+  styleUrls: ['./article.component.css'],
 })
 export class ArticleComponent {
-  artigo = {
-    titulo: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    autor: 'Roslan Andrade',
-    dataPublicacao: '09/04/2025',
-    conteudo: [
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fermentum, ante a aliquet pretium, risus dui malesuada dolor, nec pharetra magna dui ac ex. Proin sit amet nunc ultricies, sollicitudin metus ac, egestas neque. In hac habitasse platea dictumst. Nam pretium fringilla elit, vel lobortis odio scelerisque vitae. Integer sapien tortor, pretium non lacus sit amet, tincidunt tincidunt augue. Integer lorem orci, pretium id consequat eu, molestie vitae quam. Phasellus molestie a diam interdum semper. Aliquam vel nulla ut risus interdum pharetra quis at ex. Nunc quis sem eros. Vivamus a dui varius, ultricies quam sed, dictum magna. Cras vel nisi vel sapien sagittis mollis. Morbi et risus sapien.`,
+  loading = true;
+  error = '';
+  artigo: Article | null = null;
 
-      `Mauris bibendum orci ligula. Aenean eget neque quis tortor venenatis rhoncus vitae id dui. Fusce malesuada nisi a magna rutrum tincidunt. Vestibulum nec ultrices mi. Pellentesque vitae pulvinar odio. Nulla quis purus posuere, rutrum neque sed, convallis felis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi iaculis laoreet consequat. Donec vestibulum efficitur sem, id hendrerit nulla tempor egestas.`,
-      
-      `Donec quis imperdiet libero. Aliquam egestas eros lectus, nec mollis sapien varius sed. In hac habitasse platea dictumst. Morbi ullamcorper mi et risus pretium, at vehicula turpis blandit. Suspendisse erat odio, vulputate nec malesuada eu, suscipit et justo. Vestibulum efficitur facilisis dolor interdum dignissim. Quisque tincidunt ligula vitae consequat sagittis. Ut pharetra urna at nulla mattis, sed lacinia quam eleifend. Praesent efficitur semper risus quis semper. Nunc quis vulputate orci, in vestibulum nulla. Phasellus diam quam, lobortis sed eleifend non, imperdiet id eros. Fusce pellentesque enim nec nisl pulvinar, eu pulvinar erat imperdiet. Pellentesque eu interdum nisi, ut accumsan metus. Aliquam condimentum id lorem at porttitor.`
-    ],
-    imagemBanner: '',
-    autorBio: {
-      nome: 'Roslan Andrade',
-      bio: ' Vivamus a dui varius, ultricies quam sed, dictum magna. Cras vel nisi vel sapien sagittis mollis. Morbi et risus sapien',
-      fotoUrl: ''
-    }
-  };
+  // por enquanto, comentários mock (back de comentários fica pra depois)
+  comentarios: ArticleComment[] = [];
 
-  comentarios = [
-    {
-      usuario: 'Ana Souza',
-      texto: 'Donec quis imperdiet libero. Aliquam egestas eros lectus, nec mollis sapien varius sed.',
-      data: '09/04/2025',
-      imagemUrl: ''
-    },
-    {
-      usuario: 'Lucas Lima',
-      texto: 'Fusce lacinia, nulla sed luctus porttitor, ante nunc porta augue, facilisis gravida magna erat sed enim. ',
-      data: '09/04/2025',
-      imagemUrl: ''
+  constructor(
+    private route: ActivatedRoute,
+    private articleService: ArticleService
+  ) {}
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (!id) {
+      this.error = 'Artigo não informado.';
+      this.loading = false;
+      return;
     }
-  ];
+
+    this.articleService.getArticleById(id).subscribe({
+      next: (article) => {
+        this.artigo = article;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar artigo:', err);
+        this.error = 'Não foi possível carregar o artigo.';
+        this.loading = false;
+      },
+    });
+  }
 }

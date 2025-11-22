@@ -14,6 +14,6 @@ export class AsideCardComponent {
   @Input() autor!: string;
   @Input() tempo!: string;
   @Input() tags!: string[];
-  @Input() id!: number;
+  @Input() id!: string;
 
 }

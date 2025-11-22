@@ -1,45 +1,53 @@
 <main class="article-page">
-  <article class="article-container">
+  <div *ngIf="loading" class="state">Carregando…</div>
+  <div *ngIf="!loading && error" class="state state--error">{{ error }}</div>
 
+  <article
+    *ngIf="!loading && !error && artigo"
+    class="article-container"
+  >
     <!-- Título e Metadados -->
     <header class="article-header">
-      <h1 class="article-title">{{ artigo.titulo }}</h1>
+      <h1 class="article-title">{{ artigo.title }}</h1>
       <p class="article-subtitle">
-        Publicado em {{ artigo.dataPublicacao }} por {{ artigo.autor }}
+        Publicado em {{ artigo.publishedAt | date: 'dd/MM/yyyy' }}
+        por {{ artigo.authorName }}
       </p>
     </header>
 
     <!-- Banner -->
-    <div class="article-banner">
-      <app-banner [imageUrl]="artigo.imagemBanner"></app-banner>
+    <div class="article-banner" *ngIf="artigo.bannerImage">
+      <app-banner [imageUrl]="artigo.bannerImage || ''"></app-banner>
     </div>
+
 
     <!-- Conteúdo -->
     <section class="article-body">
-      <p *ngFor="let paragrafo of artigo.conteudo">{{ paragrafo }}</p>
+      <p *ngFor="let paragrafo of artigo.content">
+        {{ paragrafo }}
+      </p>
     </section>
 
     <!-- Autor -->
-    <section class="article-author">
+    <section class="article-author" *ngIf="artigo.authorBio">
       <h3>Sobre o autor</h3>
       <app-author-bio
-        [nome]="artigo.autorBio.nome"
-        [bio]="artigo.autorBio.bio"
-        [fotoUrl]="artigo.autorBio.fotoUrl"
+        [nome]="artigo.authorBio?.name ?? ''"
+        [bio]="artigo.authorBio?.bio ?? ''"
+        [fotoUrl]="artigo.authorBio?.avatarUrl"
       ></app-author-bio>
     </section>
 
-    <!-- Comentários -->
-    <section class="article-comments">
+    <!-- Comentários (por enquanto, vazio / futuro back) -->
+    <section class="article-comments" *ngIf="comentarios.length">
       <h3>Comentários</h3>
       <app-comment
         *ngFor="let comentario of comentarios"
-        [author]="comentario.usuario"
-        [content]="comentario.texto"
-        [date]="comentario.data"
-        [avatarUrl]="comentario.imagemUrl"
+        [author]="comentario.authorName"
+        [content]="comentario.text"
+        [date]="(comentario.createdAt | date: 'dd/MM/yyyy') ?? ''"
+        [avatarUrl]="comentario.avatarUrl ?? ''"
       ></app-comment>
     </section>
-
   </article>
 </main>

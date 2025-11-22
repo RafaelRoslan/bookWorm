@@ -1,18 +1,26 @@
-<div class="card-article-mini" (click)="irParaArtigo()">
-  <div class="img-container">
-    <ng-container *ngIf="imagemUrl; else placeholder">
-        <img [src]="imagemUrl" alt="Banner" class="banner-image">
+<div class="card-article-mini">
+  <a [routerLink]="['/article', idArtigo]">
+    <div class="img-container">
+      <ng-container *ngIf="imagemUrl; else placeholder">
+        <img [src]="imagemUrl" alt="Banner" class="banner-image" />
       </ng-container>
-    
+
       <ng-template #placeholder>
         <div class="banner-placeholder">
           <p class="placeholder-text">IMAGEM BANNER</p>
         </div>
       </ng-template>
-  </div>
-  <h3>{{ titulo }}</h3>
-  <p>
-    {{ resumo | slice : 0 : 100 }}...
-    <span class="leia-mais">Leia mais</span>
-  </p>
+    </div>
+
+    <h3>{{ titulo }}</h3>
+
+    <p>
+      {{ resumo | slice: 0 : 100 }}...
+      <span class="leia-mais">Leia mais</span>
+    </p>
+
+    <div class="mini-tag" *ngIf="tipoLabel">
+      #{{ tipoLabel }}
+    </div>
+  </a>
 </div>

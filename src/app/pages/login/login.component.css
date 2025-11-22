@@ -2,38 +2,38 @@
   min-height: calc(100vh - 64px);
   display: grid;
   place-items: center;
-  background: var(--background-color);
+  background: var(--color-background-alt);
   padding: 20px;
 }
 
 /* Card mais compacto */
 .auth-card {
   width: 100%;
-  max-width: 380px;            /* antes 420px */
-  background: #fff;
+  max-width: 380px;
+  background: var(--color-background);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 18px 18px;          /* antes 24px 22px */
+  padding: 18px 18px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
 .auth-card h2 {
-  margin: 0 0 10px 0;          /* menos espaço */
-  color: var(--secondary-color);
-  font-size: 1.4rem;           /* levemente menor */
+  margin: 0 0 10px 0;
+  color: var(--color-secondary);
+  font-size: 1.4rem;
   font-weight: 700;
 }
 
 /* Grid do form mais apertado */
 form {
   display: grid;
-  gap: 8px;                    /* antes 12px */
+  gap: 8px;
 }
 
 /* Rótulos mais discretos */
 label {
   font-size: 0.85rem;
-  color: var(--muted-text-color);
+  color: var(--color-text-secondary);
 }
 
 /* Inputs compactos */
@@ -41,13 +41,13 @@ input[type="email"],
 input[type="password"] {
   box-sizing: border-box;
   width: 100%;
-  height: 38px;                /* altura fixa menor */
-  padding: 8px 10px;           /* antes 10px 12px */
+  height: 38px;
+  padding: 8px 10px;
   border: 1px solid var(--border-color);
-  border-radius: 6px;          /* antes 8px */
-  font-size: 0.9rem;           /* antes 0.95rem */
-  color: var(--text-color);
-  background: #fff;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--color-background);
   outline: none;
   transition: border-color .2s ease, box-shadow .2s ease;
 }
@@ -59,25 +59,25 @@ input::placeholder {
 }
 
 input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--highlight-color); /* anel mais fino */
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-highlight);
 }
 
 /* Botão mais enxuto */
 button[type="submit"] {
   margin-top: 6px;
   width: 100%;
-  height: 40px;                /* altura controlada */
+  height: 40px;
   padding: 0 12px;
   border: 0;
   border-radius: 8px;
-  background: var(--primary-color);
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
   font-weight: 700;
   letter-spacing: .2px;
   cursor: pointer;
   transition: transform .05s ease, box-shadow .2s ease, opacity .2s ease;
-  box-shadow: 0 6px 14px rgba(42,157,143,0.22);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.16);
 }
 
 button[disabled] {
@@ -87,19 +87,19 @@ button[disabled] {
 }
 
 button:hover:not([disabled]) {
-  box-shadow: 0 10px 22px rgba(42,157,143,0.28);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.22);
 }
 
 .error {
   margin-top: 4px;
-  color: #b00020;
+  color: var(--color-error);
   font-size: 0.88rem;
 }
 
 .link {
   display: inline-block;
-  margin-top: 12px;            /* um pouco menos */
-  color: var(--secondary-color);
+  margin-top: 12px;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 600;
 }

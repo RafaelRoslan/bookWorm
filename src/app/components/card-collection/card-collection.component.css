@@ -3,10 +3,10 @@
   flex-direction: column;
   width: 245px;
   height: 170px;
-  background-color: #fff;
+  background-color: var(--color-background);   /* antes: #fff */
   border-radius: 12px;
   overflow: hidden;
-  border: 2px solid #000;
+  border: 2px solid var(--color-primary);      /* antes: #000 */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
@@ -34,7 +34,7 @@
 
 .placeholder-text {
   font-style: italic;
-  color: var(--muted-text-color);
+  color: var(--color-text-secondary);  /* antes: var(--muted-text-color) */
   font-size: 0.9rem;
 }
 
@@ -43,7 +43,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px 10px;
-  background-color: #fff;
+  background-color: var(--color-background);   /* antes: #fff */
   height: 50px;
 }
 
@@ -62,7 +62,7 @@
 .collection-name {
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--color-text);  /* antes: var(--text-color) */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -74,7 +74,6 @@
   text-decoration: underline;
 }
 
-
 .collection-actions {
   display: flex;
   gap: 8px;
@@ -85,10 +84,10 @@
   border: none;
   cursor: pointer;
   padding: 2px;
-  color: var(--secondary-color);
+  color: var(--color-secondary);      /* antes: var(--secondary-color) */
   transition: color 0.2s ease;
 }
 
 .icon-btn:hover {
-  color: var(--primary-color);
+  color: var(--color-primary);        /* antes: var(--primary-color) */
 }

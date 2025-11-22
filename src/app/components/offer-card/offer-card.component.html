@@ -1,40 +1,121 @@
 <!-- MODO LISTA -->
-<div *ngIf="variant === 'list'" class="offer-card offer-card--list" [class.highlight]="oferta.menorPreco" (click)="handleOpen()">
+<div
+  *ngIf="variant === 'list'"
+  class="offer-card offer-card--list"
+  [class.highlight]="oferta.menorPreco"
+  (click)="handleOpen()"
+>
   <div class="offer-info">
-    <p><strong>Vendido por:</strong> {{ seller.nome }}</p>
-    <p><strong>Estado:</strong> <span class="book-condition">{{ oferta.estado }}</span></p>
-    <p><strong>Preço:</strong> {{ oferta.preco | currency:'BRL':'symbol-narrow':'1.2-2' }}</p>
-    <p *ngIf="seller.reputacao"><strong>Reputação:</strong> {{ seller.reputacao | number:'1.1-1' }}</p>
-    <p *ngIf="oferta.menorPreco" class="lowest-price-badge">Menor Preço!</p>
-  </div>
-  <button class="buy-button" (click)="handleAddToCart($event)">Comprar</button>
+    <p class="list-seller">
+      <strong>Vendido por:</strong> {{ seller.nome }}
+    </p>
 
+    <p class="list-price">
+      <strong>Preço:</strong>
+      {{ oferta.preco | currency:'BRL':'symbol-narrow':'1.2-2' }}
+    </p>
+
+    <div class="list-badges">
+      <span *ngIf="oferta.estado" class="chip" [ngClass]="conditionClass(oferta.estado)">
+        {{ oferta.estado }}
+      </span>
+      <span *ngIf="oferta.disponibilidade != null" class="chip chip--neutral">
+        Disp.: {{ oferta.disponibilidade }}
+      </span>
+      <span *ngIf="oferta.envio" class="chip chip--neutral">
+        {{ oferta.envio }}
+      </span>
+    </div>
+
+    <p *ngIf="seller.reputacao" class="list-rep">
+      Reputação: {{ seller.reputacao | number:'1.1-1' }}
+    </p>
+
+    <p *ngIf="oferta.menorPreco" class="lowest-price-badge">
+      Menor Preço!
+    </p>
+  </div>
+
+  <button class="buy-button" (click)="handleAddToCart($event)">
+    Comprar
+  </button>
 </div>
 
 <!-- MODO GRADE / VITRINE -->
-<div *ngIf="variant === 'grid'" class="offer-card offer-card--grid" [class.highlight]="oferta.menorPreco" (click)="handleOpen()">
+<div
+  *ngIf="variant === 'grid'"
+  class="offer-card offer-card--grid"
+  [class.highlight]="oferta.menorPreco"
+  (click)="handleOpen()"
+>
   <div class="thumb">
     <ng-container *ngIf="oferta.capa; else thumbPlaceholder">
-      <img [src]="oferta.capa" [alt]="oferta.titulo || 'Capa do livro'">
+      <img [src]="oferta.capa" [alt]="oferta.titulo || 'Capa do livro'" />
     </ng-container>
     <ng-template #thumbPlaceholder>
-      <div class="thumb-placeholder">CAPA</div>
+      <div class="thumb-placeholder">SEM CAPA</div>
     </ng-template>
-    <span *ngIf="oferta.menorPreco" class="badge">Menor Preço</span>
+
+    <span *ngIf="oferta.menorPreco" class="badge">
+      Menor Preço
+    </span>
   </div>
 
   <div class="grid-info">
     <h4 class="title" [title]="oferta.titulo">{{ oferta.titulo }}</h4>
     <p class="author" *ngIf="oferta.autor">{{ oferta.autor }}</p>
-    
 
-    <div class="meta-row">
-      <span class="chip" [ngClass]="conditionClass(oferta.estado)" [title]="oferta.estado">{{ oferta.estado }}</span>
-      <span class="price">{{ oferta.preco | currency:'BRL':'symbol-narrow':'1.2-2' }}</span>
+    <p class="price">
+      {{ oferta.preco | currency:'BRL':'symbol-narrow':'1.2-2' }}
+    </p>
+
+    <!-- status / disponibilidade / envio -->
+    <div class="badges-row">
+      <span *ngIf="oferta.estado" class="chip" [ngClass]="conditionClass(oferta.estado)">
+        {{ oferta.estado }}
+      </span>
+      <span *ngIf="oferta.disponibilidade != null" class="chip chip--neutral">
+        Disp.: {{ oferta.disponibilidade }}
+      </span>
+      <span *ngIf="oferta.envio" class="chip chip--neutral">
+        {{ oferta.envio }}
+      </span>
     </div>
 
-    <p class="seller">por {{ seller.nome }}</p>
+    <p class="seller">
+      por {{ seller.nome }}
+    </p>
 
-    <button class="buy-button" (click)="handleAddToCart($event)">Comprar</button>
+    <!-- QUANTIDADE + COMPRAR -->
+    <div class="actions">
+      <div class="quantity">
+        <button
+          type="button"
+          class="qty-btn"
+          (click)="handleDecrease($event)"
+          [disabled]="!canDecrease"
+        >
+          −
+        </button>
+        <span class="qty">{{ quantity }}</span>
+        <button
+          type="button"
+          class="qty-btn"
+          (click)="handleIncrease($event)"
+          [disabled]="!canIncrease"
+        >
+          +
+        </button>
+        <small *ngIf="maxStock != null">/ {{ maxStock }}</small>
+      </div>
+
+      <button
+        class="buy-button"
+        type="button"
+        (click)="handleAddToCart($event)"
+      >
+        Adicionar ao carrinho
+      </button>
+    </div>
   </div>
 </div>

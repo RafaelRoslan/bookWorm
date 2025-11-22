@@ -1,36 +1,42 @@
 <main>
-    <article class="artigos-main">
-      <div class="title">
-        <h2>Artigos e Notícias</h2>
+  <article class="artigos-main">
+    <div class="title">
+      <h2>Artigos e Notícias</h2>
+    </div>
+
+    <div *ngIf="loading" class="state">Carregando…</div>
+    <div *ngIf="!loading && error" class="state state--error">
+      {{ error }}
+    </div>
+
+    <div class="content" *ngIf="!loading && !error">
+      <div class="main-content">
+        <app-card-article
+          *ngFor="let artigo of artigos"
+          [id]="artigo.id"
+          [titulo]="artigo.titulo"
+          [resumo]="artigo.resumo"
+          [imagemUrl]="artigo.imagem"
+          [autor]="artigo.autor"
+          [tempo]="artigo.tempo"
+          [tags]="artigo.tags"
+        ></app-card-article>
       </div>
-  
-      <div class="content">
-        <div class="main-content">
-          <app-card-article
-            *ngFor="let artigo of artigos"
-            [titulo]="artigo.titulo"
-            [resumo]="artigo.resumo"
-            [imagemUrl]="artigo.imagem"
-            [autor]="artigo.autor"
-            [tempo]="artigo.tempo"
-            [tags]="artigo.tags"
-          ></app-card-article>
-        </div>
-  
-        <div class="aside-content">
-          <aside>
-            <h3 class="aside-title">Mais Lidos</h3>
-            <app-aside-card
-              *ngFor="let destaque of destaques"
-              [titulo]="destaque.titulo"
-              [autor]="destaque.autor"
-              [imagemUrl]="destaque.imagem"
-              [tempo]="destaque.tempo"
-              [tags]="destaque.tags"
-            ></app-aside-card>
-          </aside>
-        </div>
+
+      <div class="aside-content" *ngIf="destaques.length">
+        <aside>
+          <h3 class="aside-title">Mais Lidos</h3>
+          <app-aside-card
+            *ngFor="let destaque of destaques"
+            [id]="destaque.id"
+            [titulo]="destaque.titulo"
+            [autor]="destaque.autor"
+            [imagemUrl]="destaque.imagem"
+            [tempo]="destaque.tempo"
+            [tags]="destaque.tags"
+          ></app-aside-card>
+        </aside>
       </div>
-    </article>
-  </main>
-  
+    </div>
+  </article>
+</main>

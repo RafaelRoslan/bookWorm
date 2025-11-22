@@ -1,7 +1,10 @@
 .neg-list {
   padding: 24px;
+  background: var(--color-background-alt);
+  min-height: 100vh;
 }
 
+/* Cabeçalho da lista de negociações */
 .neg-header {
   display: flex;
   align-items: center;
@@ -14,7 +17,7 @@
 .neg-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #1f2937;
+  color: var(--color-text);
 }
 
 .header-actions {
@@ -24,19 +27,20 @@
 }
 
 .count-badge {
-  background: #eef2ff;
-  color: #3730a3;
+  background: var(--color-background-alt);
+  color: var(--color-text);
   padding: 6px 12px;
   border-radius: 12px;
   font-size: 0.85rem;
   font-weight: 600;
 }
 
+/* Tabela em cartão */
 .table-wrapper {
   overflow-x: auto;
-  background: #fff;
+  background: var(--color-background);
   border-radius: 12px;
-  border: 1px solid var(--border-color, #e5e5e5);
+  border: 1px solid var(--border-color);
   box-shadow: 0 2px 8px rgba(15, 18, 49, 0.04);
 }
 
@@ -53,15 +57,16 @@
 }
 
 .neg-table thead tr {
-  background: var(--table-header-bg, #f6f7fb);
+  background: var(--color-background-alt);
 }
 
 .neg-table th,
 .neg-table td {
   padding: 14px 16px;
   text-align: left;
-  border-bottom: 1px solid var(--border-color, #ececec);
+  border-bottom: 1px solid var(--border-color);
   font-size: 0.92rem;
+  color: var(--color-text);
 }
 
 .neg-table tbody tr.neg-row {
@@ -70,15 +75,17 @@
 }
 
 .neg-table tbody tr.neg-row:hover {
-  background: #f9f9ff;
+  background: rgba(214, 194, 149, 0.12);
 }
 
+/* Coluna ID + papel (comprador/vendedor) */
 .id-cell {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+/* bolinha com inicial do papel */
 .role-chip {
   width: 28px;
   height: 28px;
@@ -87,8 +94,8 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: #fff;
-  background: #8257e6;
+  color: var(--color-text-on-dark);
+  background: var(--color-primary);
 }
 
 .role-chip.buyer {
@@ -99,9 +106,10 @@
   background: #ff6584;
 }
 
+/* link com ID da negociação */
 .id-link {
   font-weight: 600;
-  color: var(--primary-color, #2a2a44);
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -109,6 +117,7 @@
   text-decoration: underline;
 }
 
+/* Contra-parte (comprador/vendedor) */
 .counterparty strong {
   display: block;
   font-weight: 600;
@@ -116,10 +125,11 @@
 }
 
 .muted {
-  color: var(--muted-text-color, #6b7280);
+  color: var(--muted-text-color);
   font-size: 0.82rem;
 }
 
+/* Ações em texto (ex: aguarda pagamento, confirmar recebimento) */
 .actions {
   display: flex;
   gap: 8px;
@@ -144,6 +154,7 @@
   color: #0369a1;
 }
 
+/* Status pill */
 .status-pill {
   display: inline-flex;
   padding: 6px 12px;
@@ -153,23 +164,23 @@
 }
 
 .status-pill.pend {
-  background: #fff7d6;
-  color: #b08900;
+  background: rgba(201, 164, 92, 0.16);
+  color: var(--color-warning);
 }
 
 .status-pill.act {
-  background: #e9f5f3;
-  color: #0c766e;
+  background: rgba(78, 140, 86, 0.14);
+  color: var(--color-highlight);
 }
 
 .status-pill.done {
-  background: #d1f0d6;
-  color: #0b4f1a;
+  background: rgba(131, 166, 106, 0.16);
+  color: var(--color-success);
 }
 
 .status-pill.cancel {
-  background: #ffe6e6;
-  color: #b00020;
+  background: rgba(198, 93, 82, 0.16);
+  color: var(--color-error);
 }
 
 .status-pill.exp {
@@ -177,19 +188,22 @@
   color: #ad1457;
 }
 
+/* coluna com “tracking” / resumo */
 .tracking {
   font-family: 'Fira Code', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 0.8rem;
+  color: var(--color-text);
 }
 
 .tracking.is-empty {
-  color: var(--muted-text-color, #9ca3af);
+  color: var(--muted-text-color);
 }
 
+/* Mensagem de erro geral */
 .error-message {
-  background: #fee2e2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
+  background: rgba(198, 93, 82, 0.08);
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 16px;
@@ -200,18 +214,19 @@
   font-size: 0.9rem;
 }
 
+/* Estados de loading / vazio */
 .loading {
   text-align: center;
   padding: 40px;
-  color: var(--muted-text-color, #6b7280);
+  color: var(--muted-text-color);
 }
 
 .empty-state {
   text-align: center;
   padding: 60px 24px;
-  background: #fff;
+  background: var(--color-background);
   border-radius: 12px;
-  border: 1px solid var(--border-color, #e5e5e5);
+  border: 1px solid var(--border-color);
 }
 
 .empty-icon {
@@ -221,7 +236,7 @@
 
 .empty-state h3 {
   margin: 0 0 8px;
-  color: #1f2937;
+  color: var(--color-text);
   font-size: 1.2rem;
 }
 
@@ -230,4 +245,5 @@
   max-width: 400px;
   margin-left: auto;
   margin-right: auto;
+  color: var(--color-text-secondary);
 }

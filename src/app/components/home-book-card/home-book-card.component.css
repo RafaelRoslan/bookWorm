@@ -1,0 +1,75 @@
+.home-book-card {
+  width: 180px;
+  min-width: 180px;
+  height: 320px;
+  background: var(--color-background);           /* antes: #fff */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 10px;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.home-book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* container da capa com tamanho fixo 155x216 */
+.home-book-image {
+  width: 155px;
+  height: 216px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--color-background-alt); /* antes: #eee */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.home-book-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-book-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-background-alt); /* antes: #ddd */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
+.home-book-body {
+  margin-top: 0.5rem;
+}
+
+.home-book-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.home-book-author {
+  font-size: 0.85rem;
+  margin: 0 0 0.25rem 0;
+  color: var(--color-text-secondary);           /* antes: #555 */
+}
+
+.home-book-status {
+  font-size: 0.8rem;
+  margin: 0;
+  color: var(--color-primary);                  /* antes: #2a9d8f */
+  font-weight: 500;
+}

@@ -2,47 +2,104 @@
   <section>
     <app-banner></app-banner>
   </section>
+
   <article>
+    <!-- ===================== DESTAQUES (BAZAR) ===================== -->
     <section class="destaques-container">
       <h2 class="titulo-destaques">DESTAQUES</h2>
 
-      <div class="carousel-container">
-        <button class="nav-btn left" (click)="scrollLeft()">&lt;</button>
+      <!-- estados de carregamento/erro -->
+      <div *ngIf="loadingBooks" class="state">
+        Carregando destaques…
+      </div>
+      <div
+        *ngIf="!loadingBooks && errorBooks"
+        class="state state--error"
+      >
+        {{ errorBooks }}
+      </div>
+
+      <!-- carrossel só aparece se tiver livros -->
+      <div
+        class="carousel-container"
+        *ngIf="!loadingBooks && !errorBooks && livros.length"
+      >
+        <button class="nav-btn left" (click)="scrollLeft()">
+          &lt;
+        </button>
 
         <div class="carousel-wrapper" #carousel>
-          <ng-container *ngFor="let livro of livros.slice(0, 8); let i = index">
-            <ng-container *ngIf="i < 7; else vejaMais">
-              <app-card-book
-                [imageUrl]="livro.imageUrl"
-                [titulo]="livro.titulo"
-                [autor]="livro.autor"
-                [ano]="livro.ano"
-                [status]="livro.status"
-              >
-              </app-card-book>
-            </ng-container>
-          </ng-container>
+          <!-- até 7 livros -->
+          <div
+            class="carousel-item"
+            *ngFor="let livro of livros | slice:0:7"
+            (click)="irParaBazarComFiltro(livro)"
+          >
+            <app-home-book-card
+              [imageUrl]="livro.imageUrl"
+              [titulo]="livro.titulo"
+              [autor]="livro.autor"
+              [ano]="livro.ano"
+              [status]="livro.status"
+            ></app-home-book-card>
+          </div>
 
-          <ng-template #vejaMais>
-            <div class="veja-mais-card" (click)="irParaPaginaCompleta()">
-              <p>Veja Mais</p>
-            </div>
-          </ng-template>
+          <!-- card Veja Mais SEMPRE que houver pelo menos 1 livro -->
+          <div
+            class="veja-mais-card"
+            *ngIf="livros.length"
+            (click)="irParaPaginaCompleta()"
+          >
+            <p>Veja Mais</p>
+          </div>
         </div>
 
-        <button class="nav-btn right" (click)="scrollRight()">&gt;</button>
+        <button class="nav-btn right" (click)="scrollRight()">
+          &gt;
+        </button>
+      </div>
+
+      <!-- sem livros -->
+      <div
+        class="state"
+        *ngIf="!loadingBooks && !errorBooks && !livros.length"
+      >
+        Nenhum livro encontrado no bazar.
       </div>
     </section>
 
+    <!-- ===================== ASSUNTO DO MOMENTO ===================== -->
     <section class="artigos">
-      <h3>Assunto do momento</h3>
-      <div class="container-artigos">
+      <div class="artigos-header">
+        <h3>Assunto do momento</h3>
+
+        <!-- link canto direito para página de artigos e notícias -->
+        <a class="link-todos" [routerLink]="['/articles-news']">
+          Ver todos
+        </a>
+      </div>
+
+      <div *ngIf="loadingArticles" class="state">
+        Carregando…
+      </div>
+      <div
+        *ngIf="!loadingArticles && errorArticles"
+        class="state state--error"
+      >
+        {{ errorArticles }}
+      </div>
+
+      <div
+        class="container-artigos"
+        *ngIf="!loadingArticles && !errorArticles"
+      >
         <app-card-article-mini
           *ngFor="let artigo of artigos"
           [imagemUrl]="artigo.imagemUrl"
           [titulo]="artigo.titulo"
           [resumo]="artigo.resumo"
           [idArtigo]="artigo.id"
+          [tipo]="artigo.tipo"
         ></app-card-article-mini>
       </div>
     </section>
