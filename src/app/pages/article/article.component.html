@@ -32,9 +32,9 @@
     <section class="article-author" *ngIf="artigo.authorBio">
       <h3>Sobre o autor</h3>
       <app-author-bio
-        [nome]="artigo.authorBio?.name ?? ''"
-        [bio]="artigo.authorBio?.bio ?? ''"
-        [fotoUrl]="artigo.authorBio?.avatarUrl"
+        [nome]="artigo.authorBio.name"
+        [bio]="artigo.authorBio.bio"
+        [fotoUrl]="artigo.authorBio.avatarUrl"
       ></app-author-bio>
     </section>
 

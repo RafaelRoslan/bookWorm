@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 
-export type Seller = { id: string; nome: string; reputacao?: number; cidade?: string };
+export type Seller = { id: string; nome: string; reputacao?: number; cidade?: string; rating?: number };
 
 export interface CartItem {
   id: string;

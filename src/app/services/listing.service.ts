@@ -14,6 +14,9 @@ export type Listing = {
   status: 'ativo'|'pausado'|'vendido'|'expirado'|'removido';
   expiresAt: string;
   createdAt: string;
+  sellerRating?: number;
+  seller?: { id?: string; nome?: string; name?: string; _id?: string };
+  sellerName?: string;
 };
 
 @Injectable({ providedIn: 'root' })

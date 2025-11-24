@@ -148,7 +148,8 @@ export class BazarComponent implements OnInit {
       id,
       nome,
       reputacao: sellerPayload?.reputacao,
-      cidade: sellerPayload?.cidade
+      cidade: sellerPayload?.cidade,
+      rating: listing.sellerRating
     };
   }
 

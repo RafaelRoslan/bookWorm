@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-type Seller = { id?: string; nome: string; reputacao?: number; cidade?: string };
+type Seller = { id?: string; nome: string; reputacao?: number; cidade?: string; rating?: number };
 
 export interface OfertaView {
   id?: string;
@@ -95,5 +95,13 @@ export class OfferCardComponent {
     if (s.includes('bom') || s.includes('good')) return 'chip--good';
     if (s.includes('regular') || s.includes('played')) return 'chip--played';
     return 'chip--default';
+  }
+
+  getStars(rating?: number): string {
+    if (rating == null || rating <= 0) return '☆☆☆☆☆';
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    return '★'.repeat(fullStars) + (hasHalfStar ? '½' : '') + '☆'.repeat(emptyStars);
   }
 }

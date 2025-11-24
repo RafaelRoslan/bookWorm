@@ -67,6 +67,24 @@
   color: var(--color-text-secondary);           /* antes: #555 */
 }
 
+.home-book-vendedor {
+  font-size: 0.75rem;
+  margin: 0.25rem 0;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.home-book-rating {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.rating-stars {
+  color: #ffa500;
+  letter-spacing: 0.05em;
+}
+
 .home-book-status {
   font-size: 0.8rem;
   margin: 0;

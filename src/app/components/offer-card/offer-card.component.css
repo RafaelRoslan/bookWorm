@@ -138,6 +138,17 @@
   color: var(--muted-text-color, #6b5a4d);
 }
 
+.grid-rating {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.grid-rating .rating-stars {
+  color: #ffa500;
+  letter-spacing: 0.05em;
+}
+
 /* bloco quantidade + botão no modo grid */
 .grid-info .actions {
   margin-top: 10px;
@@ -192,6 +203,17 @@
   margin: 4px 0 0;
   font-size: 0.8rem;
   color: var(--muted-text-color, #6b5a4d);
+}
+
+.list-rating {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted-text-color, #6b5a4d);
+}
+
+.list-rating .rating-stars {
+  color: #ffa500;
+  letter-spacing: 0.05em;
 }
 
 .lowest-price-badge {

@@ -14,6 +14,10 @@
   <div class="home-book-body">
     <h3 class="home-book-title" [title]="titulo">{{ titulo }}</h3>
     <p class="home-book-author">{{ autor }}</p>
+    <p class="home-book-vendedor" *ngIf="vendedor">por {{ vendedor }}</p>
+    <div class="home-book-rating" *ngIf="rating != null">
+      <span class="rating-stars">{{ getStars(rating) }}</span>
+    </div>
     <p class="home-book-status">{{ status }}</p>
   </div>
 </div>

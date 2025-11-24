@@ -16,6 +16,8 @@ type HomeBookVM = {
   ano: string;
   status: string;
   imageUrl: string;
+  vendedor: string;
+  rating?: number;
 };
 
 type HomeArticleVM = {
@@ -71,13 +73,28 @@ export class HomeComponent implements OnInit {
       next: (res) => {
         const latest = res.items.slice(0, 8);
 
-        this.livros = latest.map((l: Listing): HomeBookVM => ({
-          titulo: l.bookSnapshot?.title ?? 'Livro',
-          autor: l.bookSnapshot?.author ?? 'Autor desconhecido',
-          ano: '',
-          status: this.mapListingStatus(l.status),
-          imageUrl: l.bookSnapshot?.image ?? '',
-        }));
+        this.livros = latest.map((l: Listing): HomeBookVM => {
+          const anyListing = l as Listing & {
+            seller?: { nome?: string; name?: string };
+            sellerName?: string;
+          };
+          
+          const vendedorNome =
+            anyListing.seller?.nome ??
+            anyListing.seller?.name ??
+            anyListing.sellerName ??
+            'Vendedor';
+
+          return {
+            titulo: l.bookSnapshot?.title ?? 'Livro',
+            autor: l.bookSnapshot?.author ?? 'Autor desconhecido',
+            ano: '',
+            status: this.mapListingStatus(l.status),
+            imageUrl: l.bookSnapshot?.image ?? '',
+            vendedor: vendedorNome,
+            rating: l.sellerRating,
+          };
+        });
 
         this.loadingBooks = false;
       },

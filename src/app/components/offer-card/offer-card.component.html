@@ -30,6 +30,9 @@
     <p *ngIf="seller.reputacao" class="list-rep">
       Reputação: {{ seller.reputacao | number:'1.1-1' }}
     </p>
+    <p *ngIf="seller.rating != null" class="list-rating">
+      Rating: <span class="rating-stars">{{ getStars(seller.rating) }}</span>
+    </p>
 
     <p *ngIf="oferta.menorPreco" class="lowest-price-badge">
       Menor Preço!
@@ -85,6 +88,9 @@
     <p class="seller">
       por {{ seller.nome }}
     </p>
+    <div *ngIf="seller.rating != null" class="grid-rating">
+      <span class="rating-stars">{{ getStars(seller.rating) }}</span>
+    </div>
 
     <!-- QUANTIDADE + COMPRAR -->
     <div class="actions">
