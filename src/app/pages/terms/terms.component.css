@@ -1,6 +1,6 @@
 .legal {
   padding: 1.5rem;
-  background: var(--color-background-alt);
+  background: var(--color-background);
   min-height: 100vh;
 }
 
@@ -8,10 +8,9 @@
   max-width: 900px;
   margin: 0 auto;
   background: var(--color-background);
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--color-background-alt);
   border-radius: 14px;
   padding: 1.25rem 1.25rem 1.5rem;
-  box-shadow: 0 6px 18px rgba(0,0,0,.04);
 }
 
 h1 {

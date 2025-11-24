@@ -2,15 +2,14 @@
   display: flex;
   justify-content: center;
   padding: 24px;
-  background: var(--color-background-alt);
+  background: var(--color-background);
 }
 
 .signup {
   width: min(920px, 95vw);
   background: var(--color-background);
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--color-background-alt);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.06);
   padding: 20px 22px;
 }
 
@@ -31,7 +30,7 @@ form {
 
 /* blocos/fieldsets */
 .block {
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--color-background-alt);
   border-radius: 10px;
   padding: 14px;
   background: var(--color-background);
@@ -64,7 +63,7 @@ form {
   padding: 10px 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background: var(--color-background);
+  background: var(--color-background-alt);
   color: var(--color-text);
 }
 
@@ -94,6 +93,10 @@ form {
   gap: 8px;
   font-size: 0.9rem;
   color: var(--color-text);
+}
+
+.check a{
+  color: var(--color-primary);
 }
 
 /* mensagens de erro */

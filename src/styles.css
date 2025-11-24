@@ -25,6 +25,7 @@ body{
 
 main {
     max-width: 72rem;
+    min-height: 100vh;
     margin: 0 auto;
     background-color: var(--color-background);
 }

@@ -1,5 +1,5 @@
 .article-page {
-  background-color: var(--color-background-alt);
+  background-color: var(--color-background);
   padding: 2rem 1rem;
   display: flex;
   justify-content: center;
@@ -11,7 +11,7 @@
   background-color: var(--color-background);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--color-background-alt);
 }
 
 /* Header */
@@ -22,7 +22,7 @@
 
 .article-title {
   font-size: 2rem;
-  color: var(--color-secondary);
+  color: var(--color-text);
   margin: 0;
 }
 
@@ -48,13 +48,13 @@
 /* Autor */
 .article-author {
   margin-top: 3rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--color-background-alt);
   padding-top: 2rem;
 }
 
 .article-author h3 {
   font-size: 1.2rem;
-  color: var(--color-secondary);
+  color: var(--color-text);
   margin-bottom: 1rem;
 }
 

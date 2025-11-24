@@ -1,7 +1,7 @@
 .article-admin-page {
   padding: 1.5rem;
   min-height: 100vh;
-  background: var(--color-background-alt);
+  background: var(--color-background);
 }
 
 /* ESTADOS (carregando / erro) */
@@ -19,7 +19,7 @@
 .form-card {
   max-width: 840px;
   margin: 0 auto;
-  background: var(--color-background);
+  background: var(--color-background-alt);
   border-radius: 1rem;
   padding: 1.5rem 1.75rem 1.75rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
