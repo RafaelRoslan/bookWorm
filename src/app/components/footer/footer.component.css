@@ -1,12 +1,106 @@
-.footer-container{
-    margin-top: 2rem;
-    background-color: var(--primary-color);
-    min-height: 20rem;
-    display: flex;
-    justify-content: center;
+.footer {
+  margin-top: 3rem;
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
+  font-size: 0.85rem;
 }
 
-.footer-content{
-    padding: 2rem;
+/* parte de cima: brand + colunas */
+.footer__top {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 1.75rem;
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 3fr);
+  gap: 2rem 3rem;
+}
 
+/* brand */
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer__brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--color-text-on-dark);
+}
+
+.footer__logo {
+  width: 52px;
+  height: auto;
+}
+
+.footer__brand-name {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footer__brand-text {
+  margin: 0;
+  max-width: 360px;
+  line-height: 1.5;
+  color: var(--color-text-on-dark);
+  opacity: 0.8;
+}
+
+/* colunas de links */
+.footer__columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.5rem 2rem;
+}
+
+.footer__column h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-on-dark);
+  opacity: 0.9;
+}
+
+.footer__column a {
+  display: block;
+  margin: 0.2rem 0;
+  color: var(--color-text-on-dark);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.footer__column a:hover {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* linha de baixo */
+.footer__bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 0.9rem 1.5rem 1.1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-text-on-dark);
+  opacity: 0.85;
+}
+
+/* responsivo */
+@media (max-width: 768px) {
+  .footer__top {
+    grid-template-columns: 1fr;
+    padding-inline: 1.25rem;
+  }
+
+  .footer__brand-text {
+    max-width: 100%;
+  }
+
+  .footer__bottom {
+    padding-inline: 1rem;
+  }
 }

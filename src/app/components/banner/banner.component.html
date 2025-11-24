@@ -1,6 +1,6 @@
 <div class="banner-container">
     <ng-container *ngIf="imageUrl; else placeholder">
-      <img [src]="imageUrl" alt="Banner" class="banner-image">
+      <img [src]="bannerSrc" alt="Banner" class="banner-image">
     </ng-container>
   
     <ng-template #placeholder>

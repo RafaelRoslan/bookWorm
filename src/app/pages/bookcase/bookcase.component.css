@@ -1,6 +1,6 @@
 .bookshelf-container {
   padding: 2rem;
-  background-color: var(--color-background-alt);
+  background-color: var(--color-background);
   min-height: 100vh;
 }
 
@@ -38,7 +38,7 @@ h2 {
   padding: 0;
   width: 245px;
   height: 170px;
-  background-color: var(--color-highlight);
+  background-color: var(--color-background-alt);
   border: 2px dashed var(--border-color);
   border-radius: 12px;
   overflow: hidden;

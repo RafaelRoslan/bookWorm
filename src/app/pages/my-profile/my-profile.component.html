@@ -1,11 +1,8 @@
 <main class="main">
   <section class="profile">
     <h2>Meu perfil</h2>
-    <p class="profile-legend">
-      Atualize seus dados pessoais, endereço e informações de recebimento.<br />
-      <strong>Obs.:</strong> alteração de e-mail e senha será feita em uma área própria.
-    </p>
-
+    <br/>
+    <br/>
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" novalidate>
       <!-- Tipo de conta -->
       <fieldset class="profile-block">
@@ -204,13 +201,15 @@
         {{ sucesso() }}
       </p>
 
-      <button
-        class="profile-primary"
-        type="submit"
-        [disabled]="invalido()"
-      >
-        {{ carregando() ? 'Salvando...' : 'Salvar alterações' }}
-      </button>
+      <div class="profile-actions">
+        <button
+          class="profile-primary"
+          type="submit"
+          [disabled]="invalido()"
+        >
+          {{ carregando() ? 'Salvando...' : 'Salvar alterações' }}
+        </button>
+      </div>
     </form>
   </section>
 </main>

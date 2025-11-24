@@ -9,4 +9,10 @@ import { Component, Input } from '@angular/core';
 })
 export class BannerComponent {
   @Input() imageUrl?: string;
+
+  readonly defaultBanner = 'assets/images/banner_home.jpg';
+
+  get bannerSrc(): string {
+    return this.imageUrl || this.defaultBanner;
+  }
 }

@@ -1,6 +1,6 @@
 .cart-container {
   padding: 20px;
-  background-color: var(--color-background-alt);
+  background-color: var(--color-background);
   min-height: 100vh;
   color: var(--color-text);
 }
@@ -14,10 +14,11 @@
 
 .cart-header h1 {
   font-size: 1.8rem;
+  
 }
 
 .clear-btn {
-  background: none;
+  background: var(--color-secondary);
   border: 1px solid var(--border-color);
   padding: 6px 12px;
   border-radius: 6px;
@@ -49,6 +50,17 @@
   background-color: var(--color-background);
 }
 
+.seller-group h2{
+  margin-bottom: 16px;
+}
+
+.seller-group ul{
+  background-color: var(--color-background-alt);
+  padding: 8px;
+  border-radius: 8px;
+}
+
+
 .item-list {
   list-style: none;
   padding: 0;
@@ -56,16 +68,30 @@
 }
 
 .item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: 12px 0;
 }
 
-.item:last-child {
-  border-bottom: none;
+/* cria uma “divisa” entre os itens, tipo um <hr> */
+.item + .item {
+  margin-top: 8px;
+  border-top: 1px solid var(--color-border);
 }
+
+.item + .item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--border-color);
+  opacity: 0.9;
+}
+
 
 .thumb {
   width: 60px;
@@ -142,10 +168,10 @@
 
 .price {
   font-weight: bold;
-  color: var(--color-secondary);
+  color: var(--color-text);
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   min-width: 120px;
 }
 
@@ -157,15 +183,18 @@
 
 .remove {
   border: none;
-  background: none;
-  color: var(--color-primary);
+  background: var(--color-primary);
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--color-text-on-dark);
   cursor: pointer;
 }
 
 .seller-total {
   text-align: right;
+  font-size: 18px;
   font-weight: 600;
-  margin-top: 8px;
+  margin-top: 16px;
 }
 
 .cart-footer {
@@ -174,6 +203,11 @@
   align-items: center;
   padding-top: 20px;
   border-top: 2px solid var(--border-color);
+}
+
+.cart-footer .grand-total{
+  font-size: 24px;
+  font-weight: 600;
 }
 
 .checkout-btn {

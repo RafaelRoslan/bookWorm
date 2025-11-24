@@ -20,57 +20,81 @@
 
   <section class="table-wrapper" *ngIf="!loading() && !error(); else vazio">
     <ng-container *ngIf="rows$ | async as rows">
-    <table class="neg-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Abertura</th>
-          <th>Negociando com</th>
-          <th>Ações</th>
-          <th>Valor</th>
-          <th>Status</th>
-          <th>CEP</th>
-          <th>Código de Rastreamento</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of rows" class="neg-row" (click)="open(row.id)">
-          <td class="id-cell">
-            <span class="role-chip" [class.buyer]="row.roleChip === 'B'" [class.seller]="row.roleChip === 'V'">
-              {{ row.roleChip }}
-            </span>
-            <a class="id-link" [routerLink]="['/negociacoes', row.id]" (click)="$event.stopPropagation()">#{{ row.idShort }}</a>
-          </td>
-          <td>{{ row.createdAt | date:'dd/MM/yyyy' }}</td>
-          <td class="counterparty">
-            <strong>{{ row.counterpartName }}</strong>
-            <small class="muted">{{ row.roleChip === 'B' ? 'Vendedor' : 'Comprador' }}</small>
-          </td>
-          <td>
-            <div class="actions">
-              <span class="action" *ngFor="let act of row.actions">{{ act }}</span>
-            </div>
-          </td>
-          <td>R$ {{ row.total | number:'1.2-2' }}</td>
-          <td>
-            <span class="status-pill"
-              [class.pend]="row.status==='esperando_pagamento' || row.status==='PENDING_SELLER_ACCEPT'"
-              [class.act]="row.status==='aguardando_envio' || row.status==='encaminhada' || row.status==='ACTIVE' || row.status==='WAITING_BUYER' || row.status==='WAITING_SELLER'"
-              [class.done]="row.status==='concluido' || row.status==='concluído' || row.status==='COMPLETED'"
-              [class.cancel]="row.status==='CANCELLED'"
-              [class.exp]="row.status==='EXPIRED'">
-              {{ row.status | statusLabel }}
-            </span>
-          </td>
-          <td>{{ row.zip || '—' }}</td>
-          <td>
-            <span class="tracking" [class.is-empty]="row.tracking === '—'">
-              {{ row.tracking }}
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <table class="neg-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Abertura</th>
+            <th>Negociando com</th>
+            <th>Ações</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>CEP</th>
+            <th>Código de Rastreamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows" class="neg-row" (click)="open(row.id)">
+            <td class="id-cell">
+              <span class="role-chip" [class.buyer]="row.roleChip === 'B'" [class.seller]="row.roleChip === 'V'">
+                {{ row.roleChip }}
+              </span>
+              <a class="id-link" [routerLink]="['/negociacoes', row.id]" (click)="$event.stopPropagation()">#{{ row.idShort }}</a>
+            </td>
+
+            <td>{{ row.createdAt | date:'dd/MM/yyyy' }}</td>
+
+            <td class="counterparty">
+              <strong>{{ row.counterpartName }}</strong>
+              <small class="muted">{{ row.roleChip === 'B' ? 'Vendedor' : 'Comprador' }}</small>
+            </td>
+
+            <td>
+              <div class="actions">
+                <span class="action" *ngFor="let act of row.actions">{{ act }}</span>
+              </div>
+            </td>
+
+            <td>R$ {{ row.total | number:'1.2-2' }}</td>
+
+            <td>
+              <span class="status-pill"
+                [class.pend]="row.status==='esperando_pagamento' || row.status==='PENDING_SELLER_ACCEPT'"
+                [class.act]="row.status==='aguardando_envio' || row.status==='encaminhada' || row.status==='ACTIVE' || row.status==='WAITING_BUYER' || row.status==='WAITING_SELLER'"
+                [class.done]="row.status==='concluido' || row.status==='concluído' || row.status==='COMPLETED'"
+                [class.cancel]="row.status==='CANCELLED'"
+                [class.exp]="row.status==='EXPIRED'">
+                {{ row.status | statusLabel }}
+              </span>
+            </td>
+
+            <td>{{ row.zip || '—' }}</td>
+
+            <!-- CÓDIGO DE RASTREIO COM LINK -->
+            <td class="tracking-cell">
+              <ng-container *ngIf="row.tracking && row.tracking !== '—'; else noTracking">
+                <a
+                  class="tracking tracking--link"
+                  [href]="'https://repositorio.sbrauble.com/rastreioCorreios.php?codigo=' + row.tracking"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  (click)="$event.stopPropagation()"
+                >
+                  {{ row.tracking }}
+                </a>
+              </ng-container>
+
+              <ng-template #noTracking>
+                <span class="tracking is-empty">
+                  {{ row.tracking || '—' }}
+                </span>
+              </ng-template>
+            </td>
+
+
+          </tr>
+        </tbody>
+      </table>
     </ng-container>
   </section>
 

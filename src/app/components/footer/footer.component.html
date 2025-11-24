@@ -1,9 +1,52 @@
-<footer class="footer-container">
-
-    <div class="footer-content">
-        <small class="caixa centralizar">
-            &copy; Grupo F: Rafael Roslan RA: 2650832113006
-        </small>
+<footer class="footer">
+  <div class="footer__top">
+    <!-- Brand / descrição -->
+    <div class="footer__brand">
+      <a routerLink="/" class="footer__brand-logo">
+        <img
+          src="/assets/icons/logo_branco_600.png"
+          alt="BookWorm"
+          class="footer__logo"
+        />
+        <span class="footer__brand-name">BookWorm</span>
+      </a>
+      <p class="footer__brand-text">
+        Plataforma para organizar coleções, descobrir novos títulos
+        e negociar livros com segurança entre leitores.
+      </p>
     </div>
 
+    <!-- Colunas de links -->
+    <nav class="footer__columns" aria-label="Links do rodapé">
+      <div class="footer__column">
+        <h4>Explorar</h4>
+        <a routerLink="/">Início</a>
+        <a routerLink="/articles">Artigos</a>
+        <a routerLink="/bazar">Bazar</a>
+        <a routerLink="/bookcase">Minha estante</a>
+      </div>
+
+      <div class="footer__column">
+        <h4>Conta</h4>
+        <a routerLink="/meu-bazar">Meu bazar</a>
+        <a routerLink="/negociacoes">Minhas negociações</a>
+        <a routerLink="/my-profile">Meu perfil</a>
+      </div>
+
+      <div class="footer__column">
+        <h4>Institucional</h4>
+        <a routerLink="/terms">Termos de uso</a>
+        <a routerLink="/privacy">Política de privacidade</a>
+        <a routerLink="/login">Login</a>
+        <a routerLink="/signup">Criar conta</a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="footer__bottom">
+    <small>
+      &copy; {{ currentYear }} · Grupo F — Rafael Roslan · RA: 2650832113006 · Projeto
+      acadêmico BookWorm.
+    </small>
+  </div>
 </footer>

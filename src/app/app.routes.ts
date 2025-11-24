@@ -18,7 +18,6 @@ import { NegotiationDetailComponent } from './pages/negotiation-detail/negotiati
 import { NegotiationsComponent } from './pages/negotiations/negotiations.component';
 import { PrivacyComponent } from './pages/privacy/privacy.component';
 import { SignupComponent } from './pages/signup/signup.component';
-import { SubscriptionComponent } from './pages/subscription/subscription.component';
 import { TermsComponent } from './pages/terms/terms.component';
 
 export const routes: Routes = [
@@ -32,7 +31,6 @@ export const routes: Routes = [
     { path: 'collection/:id', component: CollectionComponent, canActivate:[authGuard]},
     { path: 'collection/:collectionId/book/:bookId', component: BookPageComponent},
     { path: 'my-profile', component: MyProfileComponent, canActivate: [authGuard] },
-    { path: 'subscription', component: SubscriptionComponent, canActivate:[authGuard]},//assinatura
     { path: 'login', component: LoginComponent, canActivate:[guestGuard]},
     { path: 'signup', component: SignupComponent, canActivate:[guestGuard]},
     { path: 'carrinho', component: CartComponent },

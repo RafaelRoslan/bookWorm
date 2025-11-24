@@ -89,7 +89,7 @@
   background: none;
   border: 0;
   font-size: 2rem;
-  color: #d1b9a0; /* tom neutro, combina com o tema */
+  color: #d1b9a0;
   cursor: pointer;
   padding: 4px;
   transition: all 0.2s ease;
@@ -186,7 +186,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: var(--color-background-alt);
+  background: var(--color-background);
 }
 
 /* breadcrumb */
@@ -214,7 +214,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 24px;
-  background: var(--color-background);
+  background: var(--color-background-alt);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 20px;
@@ -307,7 +307,7 @@
 }
 
 .info-card {
-  background: var(--color-background);
+  background: var(--color-background-alt);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px;
@@ -346,7 +346,7 @@
 }
 
 .card {
-  background: var(--color-background);
+  background: var(--color-background-alt);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px;
@@ -355,7 +355,7 @@
 
 /* Itens da negociação (tabela) */
 .items {
-  background: var(--color-background);
+  background: var(--color-background-alt);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px;
@@ -731,7 +731,7 @@ select {
 
 /* === COMENTÁRIOS === */
 .comments {
-  background: var(--color-background);
+  background: var(--color-background-alt);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 20px;
@@ -766,10 +766,12 @@ select {
 }
 
 .comment-item {
+  background-color: var(--color-background);
   display: flex;
   gap: 12px;
-  padding: 12px 0;
+  padding: 12px;
   border-bottom: 1px solid #f3f4f6;
+  border-radius: 8px;
 }
 
 .comment-item:last-child {

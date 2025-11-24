@@ -27,8 +27,8 @@
 }
 
 .icon-btn {
-  background: var(--color-background-alt); /* antes: #f1f3f5 */
-  color: var(--color-text);                /* antes: #333 */
+  background: var(--color-primary); /* antes: #f1f3f5 */
+  color: var(--color-background);                /* antes: #333 */
   border: 1px solid var(--border-color);
   padding: 6px 10px;
   border-radius: 6px;
@@ -49,8 +49,16 @@
 }
 
 /* Form padrão */
-.form { display: grid; gap: 12px; }
-.form-row { display: grid; gap: 6px; }
+.form { 
+  display: grid; 
+  gap: 16px; 
+  padding-right: 12px;
+  border-right: 1px solid var(--color-border);
+}
+.form-row { 
+  display: grid; 
+  gap: 6px; 
+}
 
 .row-2col {
   display: grid;
@@ -101,7 +109,7 @@
 
 .preview-box {
   width: 300px;
-  min-height: 320px;
+  min-height: 380px;
   border: 1px dashed var(--border-color);
   border-radius: 8px;
   display: grid;

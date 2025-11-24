@@ -1,6 +1,6 @@
 .neg-list {
   padding: 24px;
-  background: var(--color-background-alt);
+  background: var(--color-background);
   min-height: 100vh;
 }
 
@@ -69,11 +69,21 @@
   color: var(--color-text);
 }
 
+/* Linhas zebradas */
+.neg-table tbody tr:nth-child(odd) {
+  background: var(--color-background);
+}
+
+.neg-table tbody tr:nth-child(even) {
+  background: var(--color-background-alt);
+}
+
 .neg-table tbody tr.neg-row {
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
+/* Hover acima das cores zebradas */
 .neg-table tbody tr.neg-row:hover {
   background: rgba(214, 194, 149, 0.12);
 }
@@ -195,6 +205,18 @@
   color: var(--color-text);
 }
 
+/* link de tracking clicável */
+.tracking--link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tracking--link:hover {
+  color: var(--color-secondary, var(--color-primary));
+  text-decoration: underline;
+}
+
 .tracking.is-empty {
   color: var(--muted-text-color);
 }
@@ -246,4 +268,22 @@
   margin-left: auto;
   margin-right: auto;
   color: var(--color-text-secondary);
+}
+
+/* centralizar a célula do código de rastreio */
+.tracking-cell {
+  display: flex;
+  justify-content: center;
+}
+
+
+.tracking--link {
+  color: var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tracking--link:hover {
+  text-decoration: none;
+  color: var(--color-secondary, var(--color-primary));
 }

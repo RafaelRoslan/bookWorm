@@ -7,12 +7,13 @@
 .profile h2 {
   font-size: 1.8rem;
   margin-bottom: 0.5rem;
-  color: var(--color-secondary);
+  color: var(--color-text);
+  text-align: center;
 }
 
 .profile-legend {
   font-size: 0.95rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
   margin-bottom: 1.5rem;
 }
 
@@ -28,7 +29,7 @@
 .profile-block legend {
   padding: 0 0.5rem;
   font-weight: 600;
-  color: var(--color-secondary);
+  color: var(--color-text);
 }
 
 /* grid 2 colunas */
@@ -48,7 +49,7 @@
 .profile-field label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--color-secondary);
+  color: var(--color-text);
 }
 
 .profile-field input {
@@ -56,7 +57,7 @@
   border-radius: 6px;
   border: 1px solid var(--border-color);
   font-size: 0.95rem;
-  background: var(--color-background);
+  background: var(--color-background-alt);
   color: var(--color-text);
 }
 
@@ -127,4 +128,28 @@
   .profile {
     padding-inline: 0.75rem;
   }
+}
+
+/* container do botão alinhado à direita */
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* botão principal */
+.profile-primary {
+  padding: 0.55rem 1.4rem;
+  border-radius: 6px;
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

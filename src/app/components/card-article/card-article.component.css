@@ -7,7 +7,7 @@
   overflow: hidden;
   transition: box-shadow 0.3s ease;
   margin-bottom: 8px;
-  border: 2px solid var(--border-color);
+  border: solid 2px var(--color-border);
 }
 
 .article-card:hover {
@@ -88,8 +88,7 @@
 }
 
 .article-tags span {
-  background-color: var(--color-highlight); /* antes: var(--highlight-color) */
-  color: var(--color-secondary);           /* antes: var(--secondary-color) */
+  color: var(--color-text);
   border-radius: 12px;
   padding: 4px 10px;
   font-size: 12px;

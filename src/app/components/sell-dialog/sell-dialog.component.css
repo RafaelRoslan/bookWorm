@@ -9,7 +9,7 @@
 
 .modal {
   width: min(560px, 92vw);
-  background: var(--color-background);              /* antes: #fff */
+  background: var(--color-background);
   border-radius: 14px;
   box-shadow: 0 20px 80px rgba(0,0,0,.35);
   overflow: hidden;
@@ -26,7 +26,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid var(--border-color);     /* antes: #eee */
+  border-bottom: 1px solid var(--border-color);
 }
 
 .modal__header h3 {
@@ -41,7 +41,9 @@
   cursor: pointer;
   padding: 6px;
   line-height: 1;
-  color: var(--color-text-secondary);
+  background-color: var(--color-primary);
+  border-radius: 4px;
+  color: var(--color-text-on-dark);
 }
 
 .modal__body {
@@ -91,15 +93,16 @@ select {
   padding: 8px 10px;
   border: 1px solid var(--border-color);           /* antes: #ddd */
   border-radius: 8px;
-  background: var(--color-background);
+  background: var(--color-background-alt);
   color: var(--color-text);
 }
 
 .actions {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 .actions button {
@@ -108,11 +111,12 @@ select {
   border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
-  background: var(--color-primary);                /* antes: var(--primary-color,#2a9d8f) */
-  color: var(--color-text-on-dark);                /* antes: #fff */
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
+  white-space: nowrap;
 }
 
 .actions .secondary {
-  background: var(--color-background-alt);         /* antes: #e6e6e6 */
-  color: var(--color-text);                        /* antes: #333 */
+  background: var(--color-background-alt);
+  color: var(--color-text);
 }

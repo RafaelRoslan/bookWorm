@@ -1,6 +1,6 @@
 .mylistings {
   padding: 1.5rem;
-  background: var(--color-background-alt);
+  background: var(--color-background);
   min-height: 100vh;
 }
 
@@ -13,8 +13,15 @@ h2 {
 .tbl {
   width: 100%;
   border-collapse: collapse;
-  background: var(--color-background);
+  border-radius: 8px;
+  overflow: hidden;                       /* ajuda o border-radius a aparecer */
   border: 1px solid var(--border-color);
+  background: transparent;                /* quem cuida da cor são thead/tbody */
+}
+
+/* Cabeçalho da tabela */
+.tbl thead tr {
+  background: var(--color-background-alt);
 }
 
 th,
@@ -23,6 +30,15 @@ td {
   border-bottom: 1px solid var(--border-color);
   text-align: left;
   vertical-align: middle;
+}
+
+/* Linhas alternadas no corpo */
+.tbl tbody tr:nth-child(odd) {
+  background: var(--color-background);    /* linha 1,3,5... */
+}
+
+.tbl tbody tr:nth-child(even) {
+  background: var(--color-background-alt);/* linha 2,4,6... */
 }
 
 .book {
