@@ -68,7 +68,7 @@ main {
 /* já existia, mas vale pro card "Veja mais" também */
 .veja-mais-card {
   background: var(--color-background-alt);
-  border: 2px dashed var(--border-color);
+  border: 2px solid var(--color-border);
   cursor: pointer;
   justify-content: center;
   align-items: center;
